@@ -8,7 +8,8 @@ Mihotel项目文档
 2. [⚠️注意事项](#️注意事项)
 3. [坑](#坑)
    1. [传感](#传感)
-4. [项目内容](#项目内容)
+4. [人员分工](#人员分工)
+5. [项目内容](#项目内容)
    1. [现场展示](#现场展示)
    2. [答辩](#答辩)
    3. [Patio 1](#Patio-1)
@@ -44,6 +45,23 @@ Mihotel项目文档
 - 图像识别受光线, 地面湿润度影响大
   - 光线不足导致曝光不足, 光线太强烈导致过曝
   - 怀疑是因为如果之前下过雨地面颜色发生变化导致
+
+## 人员分工
+
+- 组长: [宋铸恒](https://github.com/LeoJhonSong)
+  - 底盘组: [王灏天](https://github.com/Howard2503) [王子建](https://github.com/Prince-JIAN)
+  - 电气组
+    - 系统: [宋铸恒](https://github.com/LeoJhonSong) [许瀚鹏](https://github.com/Laince20)
+    - 视觉: [文博](https://github.com/wb05025) [树畅](https://github.com/shuchang) [韩浩然](https://github.com/HandAdam)
+    - 控制: [史超凡](https://github.com/allensted) [王子建](https://github.com/Prince-JIAN) [许瀚鹏](https://github.com/Laince20)
+    - 传感器及外围设备: [韩浩然](https://github.com/HandAdam) [文博](https://github.com/wb05025)
+  - 文档组
+    - PPT: [熊汇雨](Xiong-Huiyu)
+    - 视频: [王灏天](https://github.com/Howard2503)
+    - 报告: [树畅](https://github.com/shuchang) [熊汇雨](Xiong-Huiyu)
+  - 经理: [褚进炜](https://github.com/LiamBishop)
+
+📑 [详情](doc/人员分工.md)
 
 ## 项目内容
 
@@ -92,7 +110,7 @@ Mihotel项目文档
 
 #### Task 3
 
-小车下桥后在遇到的第二条轨迹处 (`标号8`) 左转, 通过过牌坊. `信标8`处考虑设置一个信标.
+小车下桥后在遇到的第二条轨迹处 (`标号8`) 左转, 通过牌坊. `信标8`处考虑设置一个信标.
 
 ### Patio 2
 
