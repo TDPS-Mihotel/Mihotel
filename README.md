@@ -1,14 +1,14 @@
 # Mihotel
 
-Mihotel项目文档
+Mihotel project document.
 
 ---
-目录
-1. [✔️得分项](#️得分项)
-2. [⚠️注意事项](#️注意事项)
-3. [坑](#坑)
-   1. [传感](#传感)
-4. [人员分工](#人员分工)
+Table of Contents
+1. [✔️ Highlights](#️-Highlights)
+2. [⚠️ Precautions](#️-Precautions)
+3. [Issues](#Issues)
+   1. [Sensor](#Sensor)
+4. [Personnel Division](#Personnel-Division)
 5. [项目内容](#项目内容)
    1. [现场展示](#现场展示)
    2. [答辩](#答辩)
@@ -22,46 +22,51 @@ Mihotel项目文档
       3. [Task 3](#Task-3-1)
 ---
 
-## ✔️得分项
+## ✔️ Highlights
 
-- 实现全部要求
-- 答辩和报告格式, 排版正确美观
-- 答辩, 报告注意内容组织, 可能按模块分割后需要分软硬件讨论
-- PPT和报告内容直观, 可以多一些图表图示
+- Fulfill all requirements
+- good and fancy format of slides and report
+- notice content organization of slides and report, may need to discuss the
+  content by hardware and software even if in a module
+- Slides and report should be intuitive, beautiful, clear tables and schematic
+  diagram are welcome
 
-## ⚠️注意事项
+## ⚠️ Precautions
 
-- 易损元件购买时注意考虑购买备件
-- 注意项目进度跟进
-- 注意到第八周项目应基本成型. 因为**要给期中考试留出复习时间**, 要避让11-13周 (甚至可能更早), 而第十五周就需要提交demo视频了, 因此第八周过后只有大致**三周**时间了.
-- 后期注意小组间沟通, 衔接
-- 注意多团建😏
+- Consider purchasing spare parts when buying vulnerable components
+- focus on project progress
+- we should get most design done until week 9. Because we **need to leave time
+  for mid-term review**, we need to avoid week 11-13 (or even earlier). However
+  demo video is needed in week 15, which means there's only 2 weeks left after
+  week 9...
+- be care of team communication and convergence
+- need more hang outs😏
 
-## 坑
+## Issues
 
-### 传感
+### Sensor
 
-- patio底下埋有金属水管, 地磁传感器受干扰大
-- 图像识别受光线, 地面湿润度影响大
-  - 光线不足导致曝光不足, 光线太强烈导致过曝
-  - 怀疑是因为如果之前下过雨地面颜色发生变化导致
+- there's metro pipe under the patio, geomagnetic sensor is greatly interfered
+- image identification is affected much by light, ground wetness
+  - insufficient light causes underexposure, too much light causes overexposure
+  - color change of ground caused by rain may affect this
 
-## 人员分工
+## Personnel Division
 
-- 组长: [宋铸恒](https://github.com/LeoJhonSong)
-  - 底盘组: [王灏天](https://github.com/Howard2503) [王子建](https://github.com/Prince-JIAN)
-  - 电气组
-    - 系统: [宋铸恒](https://github.com/LeoJhonSong) [许瀚鹏](https://github.com/Laince20)
-    - 视觉: [文博](https://github.com/wb05025) [树畅](https://github.com/shuchang) [韩浩然](https://github.com/HandAdam)
-    - 控制: [史超凡](https://github.com/allensted) [王子建](https://github.com/Prince-JIAN) [许瀚鹏](https://github.com/Laince20)
-    - 传感器及外围设备: [韩浩然](https://github.com/HandAdam) [文博](https://github.com/wb05025)
-  - 文档组
-    - PPT: [熊汇雨](Xiong-Huiyu)
-    - 视频: [王灏天](https://github.com/Howard2503)
-    - 报告: [树畅](https://github.com/shuchang) [熊汇雨](Xiong-Huiyu)
-  - 经理: [褚进炜](https://github.com/LiamBishop)
+- Tech Lead: [宋铸恒](https://github.com/LeoJhonSong)
+  - Chassis: [王灏天](https://github.com/Howard2503) [王子建](https://github.com/Prince-JIAN)
+  - Electronic
+    - System Architecture: [宋铸恒](https://github.com/LeoJhonSong) [许瀚鹏](https://github.com/Laince20)
+    - Vision: [文博](https://github.com/wb05025) [树畅](https://github.com/shuchang) [韩浩然](https://github.com/HandAdam)
+    - Control: [史超凡](https://github.com/allensted) [王子建](https://github.com/Prince-JIAN) [许瀚鹏](https://github.com/Laince20)
+    - Sensors and Peripheral Units: [韩浩然](https://github.com/HandAdam) [文博](https://github.com/wb05025)
+  - Document
+    - Slides: [熊汇雨](Xiong-Huiyu)
+    - Demo Video: [王灏天](https://github.com/Howard2503)
+    - Report: [树畅](https://github.com/shuchang) [熊汇雨](Xiong-Huiyu)
+  - Project Manager: [褚进炜](https://github.com/LiamBishop)
 
-📑 [详情](doc/人员分工.md)
+📑 [detail](doc/division.md)
 
 ## 项目内容
 
