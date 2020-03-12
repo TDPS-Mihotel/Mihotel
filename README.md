@@ -54,17 +54,17 @@ Table of Contents
 ## Personnel Division
 
 - Tech Lead: [宋铸恒](https://github.com/LeoJhonSong)
-  - Chassis: [王灏天](https://github.com/Howard2503) [王子建](https://github.com/Prince-JIAN)
-  - Electronic
+  - [Chassis](https://github.com/orgs/TDPS-Mihotel/teams/chassis): [王灏天](https://github.com/Howard2503) [王子建](https://github.com/Prince-JIAN) [史超凡](https://github.com/allensted)
+  - [Electrical](https://github.com/orgs/TDPS-Mihotel/teams/electrical)
     - System Architecture: [宋铸恒](https://github.com/LeoJhonSong) [许瀚鹏](https://github.com/Laince20)
-    - Vision: [文博](https://github.com/wb05025) [树畅](https://github.com/shuchang) [韩浩然](https://github.com/HandAdam)
-    - Control: [史超凡](https://github.com/allensted) [王子建](https://github.com/Prince-JIAN) [许瀚鹏](https://github.com/Laince20)
-    - Sensors and Peripheral Units: [韩浩然](https://github.com/HandAdam) [文博](https://github.com/wb05025)
-  - Document
+    - [Visual](https://github.com/orgs/TDPS-Mihotel/teams/visual): [文博](https://github.com/wb05025) [树畅](https://github.com/shuchang) [韩浩然](https://github.com/HandAdam)
+    - [Decision](https://github.com/orgs/TDPS-Mihotel/teams/decision): [王子建](https://github.com/Prince-JIAN) [许瀚鹏](https://github.com/Laince20)
+    - [Sensors and Peripheral Units](https://github.com/orgs/TDPS-Mihotel/teams/sensor): [韩浩然](https://github.com/HandAdam) [文博](https://github.com/wb05025)
+  - [Document](https://github.com/orgs/TDPS-Mihotel/teams/document)
     - Slides: [熊汇雨](Xiong-Huiyu)
     - Demo Video: [王灏天](https://github.com/Howard2503)
     - Report: [树畅](https://github.com/shuchang) [熊汇雨](Xiong-Huiyu)
-  - Project Manager: [褚进炜](https://github.com/LiamBishop)
+  - [Project Manager](https://github.com/orgs/TDPS-Mihotel/teams/project-manager): [褚进炜](https://github.com/LiamBishop)
 
 📑 [detail](doc/division.md)
 
