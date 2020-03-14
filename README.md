@@ -4,25 +4,24 @@ Mihotel project document.
 
 ---
 Table of Contents
-- [Mihotel](#mihotel)
-  - [- 报销流程及要求](#ul-li%e6%8a%a5%e9%94%80%e6%b5%81%e7%a8%8b%e5%8f%8a%e8%a6%81%e6%b1%82li-ul)
-  - [✔️ Highlights](#%e2%9c%94%ef%b8%8f-highlights)
-  - [⚠️ Precautions](#%e2%9a%a0%ef%b8%8f-precautions)
-  - [Issues](#issues)
-    - [Sensor](#sensor)
-  - [Personnel Division](#personnel-division)
-  - [项目内容](#%e9%a1%b9%e7%9b%ae%e5%86%85%e5%ae%b9)
-    - [现场展示](#%e7%8e%b0%e5%9c%ba%e5%b1%95%e7%a4%ba)
-    - [答辩](#%e7%ad%94%e8%be%a9)
-    - [Patio 1](#patio-1)
-      - [Task 1](#task-1)
-      - [Task 2](#task-2)
-      - [Task 3](#task-3)
-    - [Patio 2](#patio-2)
-      - [Task 1](#task-1-1)
-      - [Task 2](#task-2-1)
-      - [Task 3](#task-3-1)
-  - [报销流程及要求](#%e6%8a%a5%e9%94%80%e6%b5%81%e7%a8%8b%e5%8f%8a%e8%a6%81%e6%b1%82)
+1. [✔️ Highlights](#️-Highlights)
+2. [⚠️ Precautions](#️-Precautions)
+3. [Issues](#Issues)
+   1. [Sensor](#Sensor)
+4. [Personnel Division](#Personnel-Division)
+5. [项目内容](#项目内容)
+   1. [现场展示](#现场展示)
+   2. [答辩](#答辩)
+   3. [Patio 1](#Patio-1)
+      1. [Task 1](#Task-1)
+      2. [Task 2](#Task-2)
+      3. [Task 3](#Task-3)
+   4. [Patio 2](#Patio-2)
+      1. [Task 1](#Task-1-1)
+      2. [Task 2](#Task-2-1)
+      3. [Task 3](#Task-3-1)
+6. [报销流程及要求](#报销流程及要求)
+
 ---
 
 ## ✔️ Highlights
@@ -155,6 +154,7 @@ Table of Contents
 ![](doc/p2t3.png)
 
 ## 报销流程及要求
-学院对于本课程采取凭发票报账报销政策，需组员在购买过程中按照学院要求开具增值税发票。
 
-具体报账要求详见**报账.md**📑 [detail](doc/报账.md)
+学院对于本课程采取**凭发票报账报销政策**，需组员在购买过程中按照学院要求开具**增值税发票**.
+
+具体报账要求详见 📑[**报账.md**](doc/报账.md)
