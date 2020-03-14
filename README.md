@@ -5,7 +5,6 @@ Mihotel project document.
 ---
 Table of Contents
 - [Mihotel](#mihotel)
-  - [- 报销流程及要求](#ul-li%e6%8a%a5%e9%94%80%e6%b5%81%e7%a8%8b%e5%8f%8a%e8%a6%81%e6%b1%82li-ul)
   - [✔️ Highlights](#%e2%9c%94%ef%b8%8f-highlights)
   - [⚠️ Precautions](#%e2%9a%a0%ef%b8%8f-precautions)
   - [Issues](#issues)
@@ -23,6 +22,15 @@ Table of Contents
       - [Task 2](#task-2-1)
       - [Task 3](#task-3-1)
   - [报销流程及要求](#%e6%8a%a5%e9%94%80%e6%b5%81%e7%a8%8b%e5%8f%8a%e8%a6%81%e6%b1%82)
+  - [Tutorial on using Zenhub](#tutorial-on-using-zenhub)
+    - [Basic structure of Zenhub](#basic-structure-of-zenhub)
+      - [Workspace](#workspace)
+        - [New Issues](#new-issues)
+        - [Epics](#epics)
+        - [Help Wanted](#help-wanted)
+        - [In progress](#in-progress)
+        - [Back Log](#back-log)
+        - [Closed](#closed)
 ---
 
 ## ✔️ Highlights
@@ -158,3 +166,47 @@ Table of Contents
 学院对于本课程采取凭发票报账报销政策，需组员在购买过程中按照学院要求开具增值税发票。
 
 具体报账要求详见**报账.md**📑 [detail](doc/报账.md)
+
+## Tutorial on using Zenhub
+
+### Basic structure of Zenhub
+
+#### Workspace
+- ZenHub Workspaces are built using GitHub repositories. When a Workspace is created, each "card" on the Board represents a **GitHub Issue or Pull Request**.
+- Move the cursor onto the **Workspace region** and slide the mouse wheel to **look through the tasks**.
+
+##### New Issues
+This workspace is created for **Newly created Issues** which requires to be done.
+
+![](doc/NewIssues.png)
+
+##### Epics
+ZenHub Epics bundle **similar groups of Issues together**, providing a **visual progress bar** of work across related or dependent Issues. This panel can be regarded as a **group panel**, each group will have their own Epic panel containing their design tasks.
+
+![](doc/Epics.png)
+
+##### Help Wanted
+
+The function of this workspace is exactly what it looks like. This panel contains the **problems which requires suggestions or solution from each member of Team Mihotel**.
+
+![](doc/HelpWanted.png)
+
+##### In progress
+This panel shows **what the team is currently working on**.
+
+![](doc/InProgress.png)
+
+##### Back Log
+
+- This panel contains the issues which **require to be solved immediately** or the **delayed ones**.
+
+- The issues in Back-Log panel should **be placed by the order of their emergency levels**.
+
+![](doc/BackLog.png)
+
+##### Closed
+
+The **finished tasks** should be moved to this panel.
+
+![](doc/Closed.png)
+
