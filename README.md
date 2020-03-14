@@ -4,33 +4,32 @@ Mihotel project document.
 
 ---
 Table of Contents
-- [Mihotel](#mihotel)
-  - [✔️ Highlights](#%e2%9c%94%ef%b8%8f-highlights)
-  - [⚠️ Precautions](#%e2%9a%a0%ef%b8%8f-precautions)
-  - [Issues](#issues)
-    - [Sensor](#sensor)
-  - [Personnel Division](#personnel-division)
-  - [项目内容](#%e9%a1%b9%e7%9b%ae%e5%86%85%e5%ae%b9)
-    - [现场展示](#%e7%8e%b0%e5%9c%ba%e5%b1%95%e7%a4%ba)
-    - [答辩](#%e7%ad%94%e8%be%a9)
-    - [Patio 1](#patio-1)
-      - [Task 1](#task-1)
-      - [Task 2](#task-2)
-      - [Task 3](#task-3)
-    - [Patio 2](#patio-2)
-      - [Task 1](#task-1-1)
-      - [Task 2](#task-2-1)
-      - [Task 3](#task-3-1)
-  - [报销流程及要求](#%e6%8a%a5%e9%94%80%e6%b5%81%e7%a8%8b%e5%8f%8a%e8%a6%81%e6%b1%82)
-  - [Tutorial on using Zenhub](#tutorial-on-using-zenhub)
-    - [Basic structure of Zenhub](#basic-structure-of-zenhub)
-      - [Workspace](#workspace)
-        - [New Issues](#new-issues)
-        - [Epics](#epics)
-        - [Help Wanted](#help-wanted)
-        - [In progress](#in-progress)
-        - [Back Log](#back-log)
-        - [Closed](#closed)
+1. [✔️ Highlights](#️-Highlights)
+2. [⚠️ Precautions](#️-Precautions)
+3. [Issues](#Issues)
+   1. [Sensor](#Sensor)
+4. [Personnel Division](#Personnel-Division)
+5. [项目内容](#项目内容)
+   1. [现场展示](#现场展示)
+   2. [答辩](#答辩)
+   3. [Patio 1](#Patio-1)
+      1. [Task 1](#Task-1)
+      2. [Task 2](#Task-2)
+      3. [Task 3](#Task-3)
+   4. [Patio 2](#Patio-2)
+      1. [Task 1](#Task-1-1)
+      2. [Task 2](#Task-2-1)
+      3. [Task 3](#Task-3-1)
+6. [报销流程及要求](#报销流程及要求)
+7. [Tutorial on using Zenhub](#Tutorial-on-using-Zenhub)
+   1. [Basic structure of Zenhub](#Basic-structure-of-Zenhub)
+      1. [Workspace](#Workspace)
+         1. [New Issues](#New-Issues)
+         2. [Epics](#Epics)
+         3. [Help Wanted](#Help-Wanted)
+         4. [In progress](#In-progress)
+         5. [Back Log](#Back-Log)
+         6. [Closed](#Closed)
 ---
 
 ## ✔️ Highlights
@@ -97,7 +96,7 @@ Table of Contents
 
 ❗️ 虽然demo视频只需要一个, 但在答辩前几天才会知道抽中了哪个patio, 建议两个都做. (视频时间建议2-3min)
 
-![](doc/donghu.png)
+![](doc/project_content/donghu.png)
 
 - 下列图示中`绿条`为一个任务的起始点
 - `红条`为一个任务的终止点
@@ -108,17 +107,17 @@ Table of Contents
 
 ### Patio 1
 
-![](doc/patio1.png)
+![](doc/project_content/patio1.png)
 
 #### Task 1
 
-![](doc/p1t1.png)
+![](doc/project_content/p1t1.png)
 
 由`标号1`自主走到`标号6`
 
 #### Task 2
 
-![](doc/p1t23.png)
+![](doc/project_content/p1t23.png)
 
 在`标号7`处右转过小木桥, 木桥左边界 (照片视角) 对其对面台阶右边界.  `标号7`处考虑设置一个信标.
 
@@ -130,11 +129,11 @@ Table of Contents
 
 ### Patio 2
 
-![](doc/patio2.png)
+![](doc/project_content/patio2.png)
 
 #### Task 1
 
-![](doc/p2t1.png)
+![](doc/project_content/p2t1.png)
 
 从起始点走到`标号1`, 识别此处的提示色块, 然后到达同色色块处.
 
@@ -142,7 +141,7 @@ Table of Contents
 
 #### Task 2
 
-![](doc/p2t2.png)
+![](doc/project_content/p2t2.png)
 
 从任务1结束点以不违背总体要求的方式移动到斜槽处(`标号2`). 此处考虑使用两个信标或者利用花坛和水池. 然后将一开始携带的鱼食想法子弄到斜槽上.
 
@@ -160,7 +159,7 @@ Table of Contents
 
 等待确认收到信息后继续前进到达`粗红条`处. (下图花坛处)
 
-![](doc/p2t3.png)
+![](doc/project_content/p2t3.png)
 
 ## 报销流程及要求
 
