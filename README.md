@@ -4,32 +4,33 @@ Mihotel project document.
 
 ---
 Table of Contents
-1. [✔️ Highlights](#️-Highlights)
-2. [⚠️ Precautions](#️-Precautions)
-3. [Issues](#Issues)
-   1. [Sensor](#Sensor)
-4. [Personnel Division](#Personnel-Division)
-5. [项目内容](#项目内容)
-   1. [现场展示](#现场展示)
-   2. [答辩](#答辩)
-   3. [Patio 1](#Patio-1)
-      1. [Task 1](#Task-1)
-      2. [Task 2](#Task-2)
-      3. [Task 3](#Task-3)
-   4. [Patio 2](#Patio-2)
-      1. [Task 1](#Task-1-1)
-      2. [Task 2](#Task-2-1)
-      3. [Task 3](#Task-3-1)
-6. [报销流程及要求](#报销流程及要求)
-7. [Tutorial on using Zenhub](#Tutorial-on-using-Zenhub)
-   1. [Basic structure of Zenhub](#Basic-structure-of-Zenhub)
-      1. [Workspace](#Workspace)
-         1. [New Issues](#New-Issues)
-         2. [Epics](#Epics)
-         3. [Help Wanted](#Help-Wanted)
-         4. [In progress](#In-progress)
-         5. [Back Log](#Back-Log)
-         6. [Closed](#Closed)
+- [Mihotel](#mihotel)
+  - [✔️ Highlights](#%e2%9c%94%ef%b8%8f-highlights)
+  - [⚠️ Precautions](#%e2%9a%a0%ef%b8%8f-precautions)
+  - [Issues](#issues)
+    - [Sensor](#sensor)
+  - [Personnel Division](#personnel-division)
+  - [项目内容](#%e9%a1%b9%e7%9b%ae%e5%86%85%e5%ae%b9)
+    - [现场展示](#%e7%8e%b0%e5%9c%ba%e5%b1%95%e7%a4%ba)
+    - [答辩](#%e7%ad%94%e8%be%a9)
+    - [Patio 1](#patio-1)
+      - [Task 1](#task-1)
+      - [Task 2](#task-2)
+      - [Task 3](#task-3)
+    - [Patio 2](#patio-2)
+      - [Task 1](#task-1-1)
+      - [Task 2](#task-2-1)
+      - [Task 3](#task-3-1)
+  - [报销流程及要求](#%e6%8a%a5%e9%94%80%e6%b5%81%e7%a8%8b%e5%8f%8a%e8%a6%81%e6%b1%82)
+  - [Tutorial on using Zenhub](#tutorial-on-using-zenhub)
+    - [Basic structure of Zenhub](#basic-structure-of-zenhub)
+      - [Workspace](#workspace)
+        - [New Issues](#new-issues)
+        - [Epics](#epics)
+        - [Help Wanted](#help-wanted)
+        - [In progress](#in-progress)
+        - [Back Log](#back-log)
+        - [Closed](#closed)
 ---
 
 ## ✔️ Highlights
@@ -178,23 +179,23 @@ Table of Contents
 ##### New Issues
 This workspace is created for **Newly created Issues** which requires to be done.
 
-![](doc/NewIssues.png)
+![](doc/Tutorial_Zenhub/NewIssues.png)
 
 ##### Epics
 ZenHub Epics bundle **similar groups of Issues together**, providing a **visual progress bar** of work across related or dependent Issues. This panel can be regarded as a **group panel**, each group will have their own Epic panel containing their design tasks.
 
-![](doc/Epics.png)
+![](doc/Tutorial_Zenhub/Epics.png)
 
 ##### Help Wanted
 
 The function of this workspace is exactly what it looks like. This panel contains the **problems which requires suggestions or solution from each member of Team Mihotel**.
 
-![](doc/HelpWanted.png)
+![](doc/Tutorial_Zenhub/HelpWanted.png)
 
 ##### In progress
 This panel shows **what the team is currently working on**.
 
-![](doc/InProgress.png)
+![](doc/Tutorial_Zenhub/InProgress.png)
 
 ##### Back Log
 
@@ -202,11 +203,11 @@ This panel shows **what the team is currently working on**.
 
 - The issues in Back-Log panel should **be placed by the order of their emergency levels**.
 
-![](doc/BackLog.png)
+![](doc/Tutorial_Zenhub/BackLog.png)
 
 ##### Closed
 
 The **finished tasks** should be moved to this panel.
 
-![](doc/Closed.png)
+![](doc/Tutorial_Zenhub/Closed.png)
 
