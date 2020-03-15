@@ -23,22 +23,21 @@ Table of Contents
       - [Task 3](#task-3-1)
   - [报销流程及要求](#%e6%8a%a5%e9%94%80%e6%b5%81%e7%a8%8b%e5%8f%8a%e8%a6%81%e6%b1%82)
   - [Tutorial on using Zenhub](#tutorial-on-using-zenhub)
-    - [Basic structure of Zenhub](#basic-structure-of-zenhub)
-      - [Workspace](#workspace)
-        - [New Issues](#new-issues)
-        - [Epics](#epics)
-        - [Help Wanted](#help-wanted)
-        - [In progress](#in-progress)
-        - [Back Log](#back-log)
-        - [Closed](#closed)
-      - [Detailed panel operations](#detailed-panel-operations)
-        - [Establish new issues](#establish-new-issues)
-        - [Panel setting up](#panel-setting-up)
-          - [How to import the content of the issue into the panel](#how-to-import-the-content-of-the-issue-into-the-panel)
-          - [Setting of **Labels**](#setting-of-labels)
-          - [How to **evolve the group members into the issue**.](#how-to-evolve-the-group-members-into-the-issue)
-          - [How to evolve an issue into Epic.](#how-to-evolve-an-issue-into-epic)
-        - [How to set the emergency level.](#how-to-set-the-emergency-level)
+    - [Workspace](#workspace)
+      - [New Issues](#new-issues)
+      - [Epics](#epics)
+      - [Help Wanted](#help-wanted)
+      - [In progress](#in-progress)
+      - [Back Log](#back-log)
+      - [Closed](#closed)
+    - [Detailed panel operations](#detailed-panel-operations)
+      - [Establish new issues](#establish-new-issues)
+      - [Panel setting up](#panel-setting-up)
+        - [How to import the content of the issue into the panel](#how-to-import-the-content-of-the-issue-into-the-panel)
+        - [Setting of **Labels**](#setting-of-labels)
+        - [How to **evolve the group members into the issue**.](#how-to-evolve-the-group-members-into-the-issue)
+        - [How to evolve an issue into Epic.](#how-to-evolve-an-issue-into-epic)
+      - [How to set the emergency level.](#how-to-set-the-emergency-level)
 ---
 
 ## ✔️ Highlights
@@ -178,34 +177,32 @@ Table of Contents
 
 ## Tutorial on using Zenhub
 
-### Basic structure of Zenhub
-
-#### Workspace
+### Workspace
 - ZenHub Workspaces are built using GitHub repositories. When a Workspace is created, each "card" on the Board represents a **GitHub Issue or Pull Request**.
 - Move the cursor onto the **Workspace region** and slide the mouse wheel to **look through the tasks**.
 
-##### New Issues
+#### New Issues
 This workspace is created for **Newly created Issues** which requires to be done.
 
 ![](doc/Tutorial_Zenhub/NewIssues.png)
 
-##### Epics
+#### Epics
 ZenHub Epics bundle **similar groups of Issues together**, providing a **visual progress bar** of work across related or dependent Issues. This panel can be regarded as a **group panel**, each group will have their own Epic panel containing their design tasks.
 
 ![](doc/Tutorial_Zenhub/Epics.png)
 
-##### Help Wanted
+#### Help Wanted
 
 The function of this workspace is exactly what it looks like. This panel contains the **problems which requires suggestions or solution from each member of Team Mihotel**.
 
 ![](doc/Tutorial_Zenhub/HelpWanted.png)
 
-##### In progress
+#### In progress
 This panel shows **what the team is currently working on**.
 
 ![](doc/Tutorial_Zenhub/InProgress.png)
 
-##### Back Log
+#### Back Log
 
 - This panel contains the issues which **require to be solved immediately** or the **delayed ones**.
 
@@ -213,15 +210,15 @@ This panel shows **what the team is currently working on**.
 
 ![](doc/Tutorial_Zenhub/BackLog.png)
 
-##### Closed
+#### Closed
 
 The **finished tasks** should be moved to this panel.
 
 ![](doc/Tutorial_Zenhub/Closed.png)
 
-#### Detailed panel operations
+### Detailed panel operations
 
-##### Establish new issues
+#### Establish new issues
 
 This is the most basic and simple step to start our project management.
 - New issues can be created by simply clicking on the green bond **New Issue** in the following picture.
@@ -230,7 +227,7 @@ This is the most basic and simple step to start our project management.
 
 ⚠️Generally, team members are supposed to establish issues in Github. Zenhub is just a tool to help us have an eye on our project progress.
 
-##### Panel setting up
+#### Panel setting up
 
 This part is one of the most important step to do the project management which is related to the **division of team members** and the **project progress**. Therefore, in order to **develope the project systematically** and **finish the project on time**, it is necessary to learn how to set up the panel.
 
@@ -238,7 +235,7 @@ This part is one of the most important step to do the project management which i
 
 ![](doc/Tutorial_Zenhub/setting_up.png)
 
-###### How to import the content of the issue into the panel
+##### How to import the content of the issue into the panel
 
 ![](doc/Tutorial_Zenhub/import.png)
 
@@ -256,19 +253,19 @@ This region is used for describing the detailed content of the issue, including 
 
 This region is used for **previewing what the panel is about to look like** so that **necessary adjustments can be done before pulling the panel to the pipe line**.
 
-###### Setting of **Labels**
+##### Setting of **Labels**
 
 Issues can be divided into **several categories** as shown below. While setting the new issue, remind that **do not forget to mark the issue with labels** so that the team members are able to figure out what exactly category this issue belongs to. This can improve our efficiency.
 
 ![](doc/Tutorial_Zenhub/Labels.png)
 
-  ###### How to **evolve the group members into the issue**.
+  ##### How to **evolve the group members into the issue**.
 
 This step is somehow similar to dividing tasks to group members. Als it can be regarded as the function of **@**. It can be simply achieved to evolve the group members by clicking the bond **Asignees** showed below.
 
 ![](doc/Tutorial_Zenhub/Assign.png)
 
-###### How to evolve an issue into Epic.
+##### How to evolve an issue into Epic.
 
 This step is to **classify different issues**. As we have mentioned before, **Epic** is used to store similar or related issues. It is a good habit to classify the issues at the stage of developing an new issue. The newly established issue can be put into a proper Epic by clicking **Epics** bond shown below.
 
@@ -276,7 +273,7 @@ This step is to **classify different issues**. As we have mentioned before, **Ep
 
 After Clicking **Epics** bond, the existing Epics will be shown immediately. Simply click the related Epic so that the new issue will be put into this Epic.
 
-##### How to set the emergency level.
+#### How to set the emergency level.
 
 - Setting of **High Priority**
 
