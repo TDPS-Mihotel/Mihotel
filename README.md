@@ -5,6 +5,7 @@ Mihotel project document.
 ---
 Table of Contents
 - [Mihotel](#mihotel)
+  - [- 支出信息公开](#ul-li%e6%94%af%e5%87%ba%e4%bf%a1%e6%81%af%e5%85%ac%e5%bc%80li-ul)
   - [✔️ Highlights](#%e2%9c%94%ef%b8%8f-highlights)
   - [⚠️ Precautions](#%e2%9a%a0%ef%b8%8f-precautions)
   - [Issues](#issues)
@@ -22,6 +23,7 @@ Table of Contents
       - [Task 2](#task-2-1)
       - [Task 3](#task-3-1)
   - [报销流程及要求](#%e6%8a%a5%e9%94%80%e6%b5%81%e7%a8%8b%e5%8f%8a%e8%a6%81%e6%b1%82)
+  - [支出信息公开](#%e6%94%af%e5%87%ba%e4%bf%a1%e6%81%af%e5%85%ac%e5%bc%80)
 ---
 
 ## ✔️ Highlights
@@ -159,7 +161,11 @@ Table of Contents
 
 具体报账要求详见 📑[**报账.md**](doc/报账.md)
 
+## 支出信息公开
 
+本栏目每周更新一次，旨在进行**项目支出信息公开**。
+
+具体支出明细详见 📑[**信息公开.md**](doc/信息公开.md)
 
 
 
