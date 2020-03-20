@@ -69,10 +69,18 @@ Configurations on our Raspberry Pi
 
 ## Personnel Division
 
+A regular automatic system development looks like this👇
+
+![](doc/regular_development.svg)
+
+But since **we don't have much experience** and **we don't have very long time**, we do it like this👇, start from the two green circles **at the same time.**
+
+![](doc/our_development.svg)
+
 - Tech Lead: [宋铸恒](https://github.com/LeoJhonSong)
   - [Chassis](https://github.com/orgs/TDPS-Mihotel/teams/chassis): [王灏天](https://github.com/Howard2503) [王子建](https://github.com/Prince-JIAN) [史超凡](https://github.com/allensted)
   - [Electrical](https://github.com/orgs/TDPS-Mihotel/teams/electrical)
-    - System Architecture: [宋铸恒](https://github.com/LeoJhonSong) [许瀚鹏](https://github.com/Laince20)
+    - [System Architecture](https://github.com/orgs/TDPS-Mihotel/teams/system): [宋铸恒](https://github.com/LeoJhonSong) [许瀚鹏](https://github.com/Laince20)
     - [Visual](https://github.com/orgs/TDPS-Mihotel/teams/visual): [文博](https://github.com/wb05025) [树畅](https://github.com/shuchang) [韩浩然](https://github.com/HandAdam)
     - [Decision](https://github.com/orgs/TDPS-Mihotel/teams/decision): [王子建](https://github.com/Prince-JIAN) [许瀚鹏](https://github.com/Laince20)
     - [Sensors and Peripheral Units](https://github.com/orgs/TDPS-Mihotel/teams/sensor): [韩浩然](https://github.com/HandAdam) [文博](https://github.com/wb05025)

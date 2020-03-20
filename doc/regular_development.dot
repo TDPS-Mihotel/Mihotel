@@ -1,0 +1,7 @@
+digraph {
+    rankdir=LR;
+    Perception [color=blue;fontcolor=blue];
+    Decision [color=purple;fontcolor=purple];
+    Control [color=orange;fontcolor=orange];
+    Perception -> Decision -> Control;
+}

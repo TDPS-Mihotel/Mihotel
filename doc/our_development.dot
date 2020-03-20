@@ -1,0 +1,40 @@
+digraph {
+    rankdir=LR;
+    subgraph clusterd {
+        color=purple;
+        fontcolor=purple;
+        node [color=purple]
+        d0 [label="split project\ninto single function tasks"; color=green];
+        d1 [label="make CFG"];
+        d2 [label="edit code"];
+        label="Decision\nby Decision group"
+        d0; d1; d2;
+        {rank=same; d1; d2;}
+    }
+    subgraph clusterp {
+        color=blue;
+        fontcolor=blue;
+        node [color=blue]
+        p [label="widely search for possible solutions"];
+        p2 [label="exam solutions"];
+        label="Perception\nby Visual group\nand Sensors & Peripheral Units group"
+        p; p2;
+    }
+    subgraph clusterc {
+        color=orange;
+        fontcolor=orange;
+        node [color=orange]
+        c [label="set up the base chassis";color=green];
+        c2 [label="provide interface for RPi"]
+        label="Control\nby Chassis group"
+        c; c2;
+    }
+    d0 -> p;
+    p:sw -> d1[label="available plan";];
+    d1 -> p2[label="wanted plan" arrowhead="lvee";style=dashed];
+    p2:sw -> d1[label="improve"; arrowhead="lvee";style=dashed];
+    d1 -> d2[arrowhead="lvee";style=dashed];
+    d2 -> d1[arrowhead="lvee";style=dashed];
+    c -> d1[label="available control methods"];
+    d1 -> c2;
+}
