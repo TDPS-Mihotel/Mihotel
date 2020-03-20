@@ -4,24 +4,25 @@ Mihotel project document.
 
 ---
 Table of Contents
-- [Mihotel](#mihotel)
-  - [✔️ Highlights](#%e2%9c%94%ef%b8%8f-highlights)
-  - [⚠️ Precautions](#%e2%9a%a0%ef%b8%8f-precautions)
-  - [Issues](#issues)
-    - [Sensor](#sensor)
-  - [Personnel Division](#personnel-division)
-  - [项目内容](#%e9%a1%b9%e7%9b%ae%e5%86%85%e5%ae%b9)
-    - [现场展示](#%e7%8e%b0%e5%9c%ba%e5%b1%95%e7%a4%ba)
-    - [答辩](#%e7%ad%94%e8%be%a9)
-    - [Patio 1](#patio-1)
-      - [Task 1](#task-1)
-      - [Task 2](#task-2)
-      - [Task 3](#task-3)
-    - [Patio 2](#patio-2)
-      - [Task 1](#task-1-1)
-      - [Task 2](#task-2-1)
-      - [Task 3](#task-3-1)
-  - [报销流程及要求](#%e6%8a%a5%e9%94%80%e6%b5%81%e7%a8%8b%e5%8f%8a%e8%a6%81%e6%b1%82)
+1. [8. 报销流程及要求](#8-报销流程及要求)
+2. [✔️ Highlights](#️-Highlights)
+3. [⚠️ Precautions](#️-Precautions)
+4. [Issues](#Issues)
+   1. [Sensor](#Sensor)
+5. [Configurations](#Configurations)
+6. [Personnel Division](#Personnel-Division)
+7. [项目内容](#项目内容)
+   1. [现场展示](#现场展示)
+   2. [答辩](#答辩)
+   3. [Patio 1](#Patio-1)
+      1. [Task 1](#Task-1)
+      2. [Task 2](#Task-2)
+      3. [Task 3](#Task-3)
+   4. [Patio 2](#Patio-2)
+      1. [Task 1](#Task-1-1)
+      2. [Task 2](#Task-2-1)
+      3. [Task 3](#Task-3-1)
+8. [报销流程及要求](#报销流程及要求)
 ---
 
 ## ✔️ Highlights
@@ -52,6 +53,18 @@ Table of Contents
 - image identification is affected much by light, ground wetness
   - insufficient light causes underexposure, too much light causes overexposure
   - color change of ground caused by rain may affect this
+
+## Configurations
+
+Configurations on our Raspberry Pi
+
+| Item   | Argument        | Notes |
+| ------ | --------------- | ----- |
+| System | Raspbian Buster |       |
+| Python | 3.7.3           |       |
+| OpenCV | 4.1.0.25        |       |
+
+📑 [details config scripts](config/README.md)
 
 ## Personnel Division
 
