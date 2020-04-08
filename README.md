@@ -4,14 +4,13 @@ Mihotel project document.
 
 ---
 Table of Contents
-1. [9. 支出信息公开](#9-支出信息公开)
-2. [✔️ Highlights](#️-Highlights)
-3. [⚠️ Precautions](#️-Precautions)
-4. [Issues](#Issues)
+1. [✔️ Highlights](#️-Highlights)
+2. [⚠️ Precautions](#️-Precautions)
+3. [Issues](#Issues)
    1. [Sensor](#Sensor)
-5. [Configurations](#Configurations)
-6. [Personnel Division](#Personnel-Division)
-7. [项目内容](#项目内容)
+4. [Configurations](#Configurations)
+5. [Personnel Division](#Personnel-Division)
+6. [项目内容](#项目内容)
    1. [现场展示](#现场展示)
    2. [答辩](#答辩)
    3. [Patio 1](#Patio-1)
@@ -22,8 +21,9 @@ Table of Contents
       1. [Task 1](#Task-1-1)
       2. [Task 2](#Task-2-1)
       3. [Task 3](#Task-3-1)
-8. [报销流程及要求](#报销流程及要求)
-9. [支出信息公开](#支出信息公开)
+7. [报销流程及要求](#报销流程及要求)
+8. [支出信息公开](#支出信息公开)
+
 ---
 
 ## ✔️ Highlights
@@ -183,20 +183,6 @@ But since **we don't have much experience** and **we don't have very long time**
 
 ## 支出信息公开
 
-本栏目每周更新一次，旨在进行**项目支出信息公开**。
+本栏目每周更新一次, 旨在进行**项目支出信息公开**.
 
 具体支出明细详见 📑[**信息公开.md**](doc/信息公开.md)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
