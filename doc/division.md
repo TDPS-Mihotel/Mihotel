@@ -41,16 +41,15 @@
 
 #### Visual
 
-- route recongnization
-- fish spot recongnization (TBD)
-- color recongnization (TBD)
-- calibration board recongnization (TBD)
+- line recongnization
+- orange box recongnization
+- color recongnization
+- (tree recongnization)
 
 #### Decision
 
-- p2t2 route planning (work with Sensors & Peripheral Units group)
+- route planning (work with Sensors & Peripheral Units group)
 - rover behavioral decision making
-- signal filtering (TBD)
 
 #### Sensors and Peripheral Units
 
@@ -61,6 +60,9 @@
   members from chassis group to draw them into the 3D model
 - in charge of HC-12 RF module
 
+### Environment
+
+- build the webots world file to fit the specifications.
 
 ### Document
 
@@ -76,7 +78,7 @@
 
 #### Report
 
-- report leader writer
+- report leading writer
 
 ## Role Will Table
 
