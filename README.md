@@ -132,6 +132,8 @@ The **controller** is a python program using up to **3 processes**, one for move
 
 The **chassis** of the rover is size of **15cm*45cm**, with wheels which diameter is **10cm**. The max speed of the rover is not decided yet. It is a **4WD** chassis, which mean speed of each wheel is separately defined.
 
+![](doc/rover.jpg)
+
 The **feeding device** acts like a garbage truck dumping trash, we dump the kiwi by raising one side of the kiwi holder to let the kiwi slides down.
 
 Our **line detector** works like this:
@@ -142,6 +144,7 @@ Our **line detector** works like this:
 4. For each segmentation of the picture, find the direction which contains the most point whose magnitude of gradient exceed the threshold.
 5. Average the direction of the N segmentation and it is the direction of the eage of the path. Rotate it by 90° and we could get the direction of the path.
 
+The **decision making** is still working in progress at [#46](https://github.com/TDPS-Mihotel/Mihotel/issues/46)
 
 ## 报销流程及要求
 
