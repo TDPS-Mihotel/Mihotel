@@ -8,16 +8,23 @@ Table of Contents
 2. [⚠️ Precautions](#️-Precautions)
 3. [Configurations](#Configurations)
 4. [🔍 Output Description](#-Output-Description)
-5. [Development Strategy](#Development-Strategy)
-6. [Personnel Division](#Personnel-Division)
-7. [Project Specifications](#Project-Specifications)
-8. [Tasks](#Tasks)
+5. [Solution (WIP)](#Solution-WIP)
+   1. [System](#System)
+      1. [Structure](#Structure)
+      2. [Communication](#Communication)
+      3. [How it ends](#How-it-ends)
+   2. [Chassis](#Chassis)
+   3. [Visual & Sensor](#Visual--Sensor)
+   4. [Decision](#Decision)
+6. [Development Strategy](#Development-Strategy)
+7. [Personnel Division](#Personnel-Division)
+8. [Project Specifications](#Project-Specifications)
+9. [Tasks](#Tasks)
    1. [Task1](#Task1)
    2. [Task2](#Task2)
    3. [Task3](#Task3)
    4. [Task4](#Task4)
    5. [Task5](#Task5)
-9. [Solution (WIP)](#Solution-WIP)
 10. [报销流程及要求](#报销流程及要求)
 11. [支出信息公开](#支出信息公开)
 
@@ -45,16 +52,16 @@ Table of Contents
 
 ## Configurations
 
-list of tools, packages with their version
+List of tools, modules with their version
 
-| Item                                            | Argument      | Notes                                    |
-| ----------------------------------------------- | ------------- | ---------------------------------------- |
-| System                                          | Webots R2020a |                                          |
-| Python                                          | 3.7.3         |                                          |
-| opencv-contrib-python                           | 4.2.0.32      |                                          |
-| time                                            |               |                                          |
-| multiprocessing                                 |               |                                          |
-| [colorama](https://github.com/tartley/colorama) |               | python package for colored terminal text |
+| Item                                            | Argument      | Notes                                   |
+| ----------------------------------------------- | ------------- | --------------------------------------- |
+| System                                          | Webots R2020a |                                         |
+| Python                                          | 3.7.3         |                                         |
+| opencv-contrib-python                           | 4.2.0.32      | OpenCV module for python                |
+| time                                            |               | python built-in module                  |
+| multiprocessing                                 |               | python built-in module                  |
+| [colorama](https://github.com/tartley/colorama) |               | python module for colored terminal text |
 
 ## 🔍 Output Description
 
@@ -62,12 +69,52 @@ list of tools, packages with their version
 | ------------- | ---------- | ------------------------------------------------------------ |
 | Bright Green  | [Info]     |                                                              |
 | Bright Red    | [Debug]    | debug information, the difference against info is that, this should not show up unless is debugging |
-| Bright Yellow | [Movement] | change of chassis' movement state                            |
-| Bright Blue   | [Detected] | detect of object                                             |
-|               |            |                                                              |
-|               |            |                                                              |
-|               |            |                                                              |
+| Bright Blue   | [Command]  | command given to chassis                                     |
+| Bright Yellow | [Detected] | detect of object                                             |
 
+## Solution (WIP)
+
+### System
+
+#### Structure
+
+The **system** sets up **3 processes**, one for chassis controlling, one for decision, one for detection.
+
+![](doc/processes.svg)
+
+#### Communication
+
+Two queues, **signal_queue**, **command_queue** are used for communications between processes. Although it seems when there is only two endpoints to communicate, [`Pipe()` is a faster choice](https://stackoverflow.com/a/8463046/10088906), but it seems the code could be prettier with `Queue()`.
+
+❗️ notice that once `Queue.get()` is used, one item in the queue is taken out and returned, which means **it is not in the queue anymore** and you could not get it again with `Queue.get()`.
+
+#### How it ends
+
+the main process ends when `flag_patio_finished` turns to **True**. Now all three child processes are set to **daemonic child process** by `Process.daemon = True`, therefore, [the child processes will be terminated as soon as the main process completes](https://stackoverflow.com/a/25391156/10088906).
+
+📚 [document for `multiprocessing.Queue()`](https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue)
+
+### Chassis
+
+The **chassis** of the rover is size of **15cm*45cm**, with wheels which diameter is **10cm**. The max speed of the rover is not decided yet. It is a **4WD** chassis, which mean speed of each wheel is separately defined.
+
+![](doc/rover.jpg)
+
+The **feeding device** acts like a garbage truck dumping trash, we dump the kiwi by raising one side of the kiwi holder to let the kiwi slides down.
+
+### Visual & Sensor
+
+Our **line detector** works like this:
+
+1. Filtering the original picture to denoise then get the gradient distribution of the picture.
+2. Cut the whole picture into N rows averagely. (N=4 in current code)
+3. For each segmentation of the picture, for each the point whose magnitude of gradient is greater than the threshold (15 in current code), classify them according to the direction of their gradient. (from 1° to 360°)
+4. For each segmentation of the picture, find the direction which contains the most point whose magnitude of gradient exceed the threshold.
+5. Average the direction of the N segmentation and it is the direction of the eage of the path. Rotate it by 90° and we could get the direction of the path.
+
+### Decision
+
+The **decision making** is still working in progress at [#46](https://github.com/TDPS-Mihotel/Mihotel/issues/46)
 
 ## Development Strategy
 
@@ -140,26 +187,6 @@ Detect the arch and get through it. Then follow the line to the color box.
 recognize color of the color box and follow the line in same color to the end.
 
 💡 Color of the color box could be set manually.
-
-## Solution (WIP)
-
-The **controller** is a python program using up to **3 processes**, one for movement, one for visual detection and may be one for distance detection.
-
-The **chassis** of the rover is size of **15cm*45cm**, with wheels which diameter is **10cm**. The max speed of the rover is not decided yet. It is a **4WD** chassis, which mean speed of each wheel is separately defined.
-
-![](doc/rover.jpg)
-
-The **feeding device** acts like a garbage truck dumping trash, we dump the kiwi by raising one side of the kiwi holder to let the kiwi slides down.
-
-Our **line detector** works like this:
-
-1. Filtering the original picture to denoise then get the gradient distribution of the picture.
-2. Cut the whole picture into N rows averagely. (N=4 in current code)
-3. For each segmentation of the picture, for each the point whose magnitude of gradient is greater than the threshold (15 in current code), classify them according to the direction of their gradient. (from 1° to 360°)
-4. For each segmentation of the picture, find the direction which contains the most point whose magnitude of gradient exceed the threshold.
-5. Average the direction of the N segmentation and it is the direction of the eage of the path. Rotate it by 90° and we could get the direction of the path.
-
-The **decision making** is still working in progress at [#46](https://github.com/TDPS-Mihotel/Mihotel/issues/46)
 
 ## 报销流程及要求
 
