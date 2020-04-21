@@ -7,18 +7,19 @@ Table of Contents
 1. [✔️ Highlights](#️-Highlights)
 2. [⚠️ Precautions](#️-Precautions)
 3. [Configurations](#Configurations)
-4. [Development Strategy](#Development-Strategy)
-5. [Personnel Division](#Personnel-Division)
-6. [Project Specifications](#Project-Specifications)
-7. [Tasks](#Tasks)
+4. [🔍 Output Description](#-Output-Description)
+5. [Development Strategy](#Development-Strategy)
+6. [Personnel Division](#Personnel-Division)
+7. [Project Specifications](#Project-Specifications)
+8. [Tasks](#Tasks)
    1. [Task1](#Task1)
    2. [Task2](#Task2)
    3. [Task3](#Task3)
    4. [Task4](#Task4)
    5. [Task5](#Task5)
-8. [Solution (WIP)](#Solution-WIP)
-9. [报销流程及要求](#报销流程及要求)
-10. [支出信息公开](#支出信息公开)
+9. [Solution (WIP)](#Solution-WIP)
+10. [报销流程及要求](#报销流程及要求)
+11. [支出信息公开](#支出信息公开)
 
 ---
 
@@ -53,6 +54,19 @@ Configurations on our Raspberry Pi
 | OpenCV | 4.1.0.25        |       |
 
 📑 [detailed config scripts](config/README.md)
+
+## 🔍 Output Description
+
+| Style         | prefix     | Description                                                  |
+| ------------- | ---------- | ------------------------------------------------------------ |
+| Bright Green  | [Info]     |                                                              |
+| Bright Red    | [Debug]    | debug information, the difference against info is that, this should not show up unless is debugging |
+| Bright Yellow | [Movement] | change of chassis' movement state                            |
+| Bright Blue   | [Detected] | detect of object                                             |
+|               |            |                                                              |
+|               |            |                                                              |
+|               |            |                                                              |
+
 
 ## Development Strategy
 
