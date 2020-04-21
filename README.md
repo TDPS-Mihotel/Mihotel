@@ -45,15 +45,16 @@ Table of Contents
 
 ## Configurations
 
-Configurations on our Raspberry Pi
+list of tools, packages with their version
 
-| Item   | Argument        | Notes |
-| ------ | --------------- | ----- |
-| System | Webots R2020a   |       |
-| Python | 3.7.3           |       |
-| OpenCV | 4.1.0.25        |       |
-
-📑 [detailed config scripts](config/README.md)
+| Item                                            | Argument      | Notes                                    |
+| ----------------------------------------------- | ------------- | ---------------------------------------- |
+| System                                          | Webots R2020a |                                          |
+| Python                                          | 3.7.3         |                                          |
+| opencv-contrib-python                           | 4.2.0.32      |                                          |
+| time                                            |               |                                          |
+| multiprocessing                                 |               |                                          |
+| [colorama](https://github.com/tartley/colorama) |               | python package for colored terminal text |
 
 ## 🔍 Output Description
 
