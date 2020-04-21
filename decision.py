@@ -1,14 +1,24 @@
-from colored import debugInfo, detectedInfo, info, movementInfo
+from colored import commandInfo, debugInfo, detectedInfo, info
 
 
-class Decision(object):
+class Decider(object):
+    '''
+    Decider class
+    '''
     def __init__(self):
-        self.state = ''
         info('Decision initialed')
 
-    def run(self, sense_queue, move_queue):
+    def run(self, signal_queue, command_queue):
+        '''
+        `signal_queue`: queue for signals from sensor\n
+        `command_queue`: queue for commands to send to chassis
+        '''
         while True:
-            if not sense_queue.empty():
-                self.detected = sense_queue.get(True)
+            if not signal_queue.empty():
+                self.detected = signal_queue.get(True)
                 detectedInfo('time:' + str(self.detected))
-                move_queue.put('moving straight forward')
+                command_queue.put('move straight forward')
+
+
+if __name__ == "__main__":
+    pass

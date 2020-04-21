@@ -1,14 +1,20 @@
-from colored import debugInfo, detectedInfo, info, movementInfo
+from colored import commandInfo, debugInfo, detectedInfo, info
 
 
-class Chassis(object):
+class Controller(object):
+    '''
+    Controller class
+    '''
     def __init__(self):
-        self.state = 'ready'
         info('Chassis initialed')
 
-    def set_state(self, state):
+    def set_state(self, command):
         '''
-        set new movement state of the chassis
+        set state of the chassis by command, a commandInfo will output
         '''
-        self.state = state
-        movementInfo(self.state)
+        self.state = command
+        commandInfo(self.state)
+
+
+if __name__ == "__main__":
+    pass

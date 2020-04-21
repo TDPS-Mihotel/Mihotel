@@ -17,20 +17,20 @@ def debugInfo(item):
     print(Style.BRIGHT + Fore.RED + '[Debug] ' + item + Style.RESET_ALL)
 
 
-def movementInfo(item):
+def commandInfo(item):
     '''
-    Bright yellow output for movement information
+    Bright blue output for movement information
     '''
     item = str(item)
-    print(Style.BRIGHT + Fore.YELLOW + '[Movement] ' + item + Style.RESET_ALL)
+    print(Style.BRIGHT + Fore.BLUE + '[Command] ' + item + Style.RESET_ALL)
 
 
 def detectedInfo(item):
     '''
-    Bright blue output for detected object information
+    Bright yellow output for detected object information
     '''
     item = str(item)
-    print(Style.BRIGHT + Fore.BLUE + '[Detected] ' + item + Style.RESET_ALL)
+    print(Style.BRIGHT + Fore.YELLOW + '[Detected] ' + item + Style.RESET_ALL)
 
 
 init()  # enable ANSI escape sequences on Windows
