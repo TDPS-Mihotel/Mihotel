@@ -1,0 +1,64 @@
+#VRML_SIM R2020a utf8
+# A simple ramp made of two 20° slopes and a flat top.
+# The ramp is a static object (not physics-enabled) so it will not move when hit.
+
+PROTO Bridge [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 1 0 0
+  field SFString   name         "ramp 30 degrees"
+  field SFColor    color        0.5 0.5 0.5        # Defines the color of the ramp.
+]
+{
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    children [
+      DEF RAMP Group {
+        children [
+          Transform {
+            translation -0.95 0.171 0
+            rotation 0 0 1 0.3491
+            children [
+              Shape {
+                appearance DEF APPEARANCE PBRAppearance {
+                  baseColor IS color
+                  roughness 0.3
+                  metalness 0
+                }
+                geometry Box {
+                  size 1 0.1 1
+                }
+              }
+            ]
+          }
+          Transform {
+            translation 0 0.338 0
+            children [
+              Shape {
+                appearance USE APPEARANCE
+                geometry Box {
+                  size 1 0.1 1
+                }
+              }
+            ]
+          }
+          Transform {
+            translation 0.95 0.171 0
+            rotation 0 0 1 -0.3491
+            children [
+              Shape {
+                appearance USE APPEARANCE
+                geometry Box {
+                  size 1 0.1 1
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+    name IS name
+    model "ramp 30 degrees"
+    boundingObject USE RAMP
+  }
+}

@@ -7,12 +7,64 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.8533956070605593 0.481245728253093 0.20029599818241367 5.345796575742317
-  position -48.823590137839005 98.86232428069015 86.33193576214147
+  orientation 0.8765124590811153 0.4455350368578386 0.1822757252287328 5.376853978671888
+  position -42.05200609975908 89.20905535556058 80.51873865512948
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
+}
+DEF Trees Group {
+  children [
+    PalmTree {
+      translation 36.9932 2 -6.04257
+      rotation 0 1 0 -0.785395307179586
+      name "palm tree(10)"
+    }
+    PalmTree {
+      translation 32.7416 2 -4.68752
+      rotation 0 1 0 0.523598
+      name "palm tree(9)"
+    }
+    PalmTree {
+      translation 31.12 2 -8.97
+      name "palm tree(8)"
+    }
+    PalmTree {
+      translation 35.59 2 -9.32
+      name "palm tree(7)"
+    }
+    PalmTree {
+      translation 28.7056 2 -6.155
+      rotation 0 1 0 0.785398
+      name "palm tree(6)"
+    }
+    PalmTree {
+      translation 26.1 2 -7.26
+      name "palm tree(5)"
+    }
+    PalmTree {
+      translation 23.72 2 -9.32
+      name "palm tree(4)"
+    }
+    PalmTree {
+      translation 24.2875 2 -4.82082
+      rotation 0 1 0 0.261799
+      name "palm tree(3)"
+    }
+    PalmTree {
+      translation 22.44 2 -6.26
+      name "palm tree(2)"
+    }
+    PalmTree {
+      translation 18.47 2 -6.89
+      name "palm tree(1)"
+    }
+    PalmTree {
+      translation 19.61 2 -4.65
+      rotation 0 1 0 0.261799
+    }
+  ]
 }
 DEF SAND_GROUND Group {
   children [
@@ -186,4 +238,105 @@ RectangleArena {
       scale 3 3
     }
   }
+}
+DEF path1 Group {
+  children [
+    StraightRoadSegment {
+      translation -48 2.01 4.1
+      rotation 0 1 0 1.5708
+      name "road(8)"
+      width 0.2
+      numberOfLanes 1
+      rightBorder FALSE
+      leftBorder FALSE
+      length 68
+    }
+    CurvedRoadSegment {
+      translation -48 2.01 4.9
+      rotation 0 1 0 -1.5708
+      name "road(7)"
+      width 0.2
+      numberOfLanes 1
+      rightBorder FALSE
+      leftBorder FALSE
+      curvatureRadius 0.8
+      totalAngle 3.1415
+    }
+    StraightRoadSegment {
+      translation -48 2.01 5.7
+      rotation 0 1 0 1.5708
+      name "road(6)"
+      width 0.2
+      numberOfLanes 1
+      rightBorder FALSE
+      leftBorder FALSE
+      length 35
+    }
+    CurvedRoadSegment {
+      translation -13 2.01 6.5
+      rotation 0 1 0 1.5708
+      name "road(5)"
+      width 0.2
+      numberOfLanes 1
+      rightBorder FALSE
+      leftBorder FALSE
+      curvatureRadius 0.8
+      totalAngle 3.1415
+    }
+    StraightRoadSegment {
+      translation -48 2.01 7.3
+      rotation 0 1 0 1.5708
+      name "road(4)"
+      width 0.2
+      numberOfLanes 1
+      rightBorder FALSE
+      leftBorder FALSE
+      length 35
+    }
+    CurvedRoadSegment {
+      translation -48 2.01 8.1
+      rotation 0 1 0 -1.5708
+      name "road(3)"
+      width 0.2
+      numberOfLanes 1
+      rightBorder FALSE
+      leftBorder FALSE
+      curvatureRadius 0.8
+      totalAngle 3.1415
+    }
+    StraightRoadSegment {
+      translation -48 2.01 8.9
+      rotation 0 1 0 1.5708
+      name "road(2)"
+      width 0.2
+      numberOfLanes 1
+      rightBorder FALSE
+      leftBorder FALSE
+      length 23
+    }
+    CurvedRoadSegment {
+      translation -25 2.01 9.7
+      rotation 0 1 0 1.5708
+      name "road(1)"
+      width 0.2
+      numberOfLanes 1
+      rightBorder FALSE
+      leftBorder FALSE
+      curvatureRadius 0.8
+      totalAngle 3.1415
+    }
+    StraightRoadSegment {
+      translation -50 2.01 10.5
+      rotation 0 1 0 1.5708
+      width 0.2
+      numberOfLanes 1
+      rightBorder FALSE
+      leftBorder FALSE
+      length 25
+    }
+  ]
+}
+Bridge {
+  translation 20 2 0
+  rotation 0 1 0 1.5708
 }
