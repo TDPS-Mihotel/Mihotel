@@ -1,6 +1,6 @@
 # Mihotel
 
-Mi-hotel Project Document.
+Mihotel Project Document.
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/TDPS-Mihotel/Mihotel?style=for-the-badge) ![GitHub issues](https://img.shields.io/github/issues-raw/TDPS-Mihotel/Mihotel?style=for-the-badge) ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/TDPS-Mihotel/Mihotel?color=red&style=for-the-badge)
 

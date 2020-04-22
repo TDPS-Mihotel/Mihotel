@@ -1,0 +1,189 @@
+#VRML_SIM R2020a utf8
+WorldInfo {
+  title "Mihotel Patio"
+  contactProperties [
+    ContactProperties {
+    }
+  ]
+}
+Viewpoint {
+  orientation 0.8533956070605593 0.481245728253093 0.20029599818241367 5.345796575742317
+  position -48.823590137839005 98.86232428069015 86.33193576214147
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+DEF SAND_GROUND Group {
+  children [
+    Solid {
+      translation -42.5 1 13
+      children [
+        Shape {
+          appearance SandyGround {
+            textureTransform TextureTransform {
+              scale 0.3 0.08
+              translation 0 -2.237
+            }
+          }
+          geometry DEF sandground Box {
+            size 15 2 4
+          }
+        }
+      ]
+      boundingObject USE sandground
+    }
+    Solid {
+      translation 0 1 -8
+      children [
+        Shape {
+          appearance SandyGround {
+            textureTransform TextureTransform {
+              scale 2 0.28
+            }
+          }
+          geometry DEF sandground Box {
+            size 100 2 14
+          }
+        }
+      ]
+      name "solid(1)"
+      boundingObject USE sandground
+    }
+    Solid {
+      translation 0 1 3.5
+      children [
+        Shape {
+          appearance SandyGround {
+            textureTransform TextureTransform {
+              scale 2 0.1
+            }
+          }
+          geometry DEF sandground Box {
+            size 100 2 5
+          }
+        }
+      ]
+      name "solid(2)"
+      boundingObject USE sandground
+    }
+    Solid {
+      translation 35 1 10.5
+      children [
+        Shape {
+          appearance SandyGround {
+            textureTransform TextureTransform {
+              scale 0.6 0.18
+            }
+          }
+          geometry DEF sandground Box {
+            size 30 2 9
+          }
+        }
+      ]
+      name "solid(3)"
+      boundingObject USE sandground
+    }
+    Solid {
+      translation -36.25 1 9.5
+      children [
+        Shape {
+          appearance SandyGround {
+            textureTransform TextureTransform {
+              scale 0.55 0.06
+              translation 0 -1.65
+            }
+          }
+          geometry DEF sandground Box {
+            size 27.5 2 3
+          }
+        }
+      ]
+      name "solid(4)"
+      boundingObject USE sandground
+    }
+    Solid {
+      translation -30 1 7
+      children [
+        Shape {
+          appearance SandyGround {
+            textureTransform TextureTransform {
+              scale 0.8 0.04
+              translation 0 -1
+            }
+          }
+          geometry DEF sandground Box {
+            size 40 2 2
+          }
+        }
+      ]
+      name "solid(5)"
+      boundingObject USE sandground
+    }
+  ]
+}
+RubberDuck {
+  translation -3.56331e-16 2.27044 7.02193e-07
+  rotation 0.9999999999999998 2.6916945000513237e-08 1.0915634054343394e-09 1.6871810473485198e-07
+  immersionProperties [
+    ImmersionProperties {
+      fluidName "fluid"
+      dragForceCoefficients 0.1 0 0
+      dragTorqueCoefficients 0.05 0 0
+      viscousResistanceForceCoefficient 400
+      viscousResistanceTorqueCoefficient 0.5
+    }
+  ]
+}
+DEF ROVER Fluid {
+  translation 0 1 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.0627 0.552 0.723
+        transparency 0.7
+        roughness 1
+        metalness 0
+      }
+      geometry DEF water_box Box {
+        size 100 2 2
+      }
+    }
+  ]
+  boundingObject USE water_box
+  locked TRUE
+}
+DEF POND Fluid {
+  translation -7.5 0.995 10.5
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.0627 0.552 0.723
+        transparency 0.7
+        roughness 1
+        metalness 0
+      }
+      geometry DEF water_box Box {
+        size 55 1.99 9
+      }
+    }
+  ]
+  boundingObject USE water_box
+  locked TRUE
+}
+RectangleArena {
+  floorSize 100 30
+  floorTileSize 100 30
+  floorAppearance Soil {
+    textureTransform TextureTransform {
+      scale 20 6
+    }
+  }
+  wallThickness 0.5
+  wallHeight 2
+  wallAppearance FormedConcrete {
+    textureTransform TextureTransform {
+      scale 3 3
+    }
+  }
+}
