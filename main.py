@@ -4,7 +4,7 @@ import time
 import chassis
 import decision
 import detection
-from colored import commandInfo, debugInfo, detectedInfo, info
+from colored import commandInfo, debugInfo, detectedInfo, info, logoInfo
 
 # flags ########################################################################
 flag_patio_finished = 0
@@ -30,7 +30,7 @@ def decide(signal_queue, command_queue):
 
 # program starts ###############################################################
 start = time.time()
-info('Started')
+logoInfo()
 
 # create pipes
 command_queue = multiprocessing.Queue()

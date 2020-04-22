@@ -9,6 +9,21 @@ def info(item):
     print(Style.BRIGHT + Fore.GREEN + '[Info] ' + item + Style.RESET_ALL)
 
 
+def logoInfo():
+    '''
+    Bright green logo output
+    '''
+    print(Style.BRIGHT + Fore.GREEN + '''
+     /██      /██ /██ /██                   /██               /██
+    | ███    /███|__/| ██                  | ██              | ██
+    | ████  /████ /██| ███████   /██████  /██████    /██████ | ██
+    | ██ ██/██ ██| ██| ██__  ██ /██__  ██|_  ██_/   /██__  ██| ██
+    | ██  ███| ██| ██| ██  \ ██| ██  \ ██  | ██    | ████████| ██
+    | ██\  █ | ██| ██| ██  | ██| ██  | ██  | ██ /██| ██_____/| ██
+    | ██ \/  | ██| ██| ██  | ██|  ██████/  |  ████/|  ███████| ██
+    |__/     |__/|__/|__/  |__/ \______/    \___/   \_______/|__/
+''' + Style.RESET_ALL)
+
 def debugInfo(item):
     '''
     Bright red output for debug information

@@ -1,6 +1,14 @@
 # Mihotel
 
-Mihotel project document.
+Mi-hotel Project Document.
+
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/TDPS-Mihotel/Mihotel?style=for-the-badge) ![GitHub issues](https://img.shields.io/github/issues-raw/TDPS-Mihotel/Mihotel?style=for-the-badge) ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/TDPS-Mihotel/Mihotel?color=red&style=for-the-badge)
+
+### [📊 View our ZenHub Workspace](https://app.zenhub.com/workspaces/mihotel-5e5b3461c9cab6f18ca30973/board?repos=243200095)
+
+### [🌏 View our patio interactively](webots/world/patio.html)
+
+### [🎥 View our simulation interactively]() (TODO)
 
 ---
 Table of Contents
