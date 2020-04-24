@@ -7,12 +7,17 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.8765124590811153 0.4455350368578386 0.1822757252287328 5.376853978671888
-  position -42.05200609975908 89.20905535556058 80.51873865512948
+  orientation 0.8765129025649249 0.44553665748670485 0.1822696312411516 5.376906800007518
+  position -42.05200609975908 89.20905535556057 80.51873865512948
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
+}
+Moose {
+  translation -46.66 2.4 10.5001
+  rotation 0 1 0 0
+  controller "rover"
 }
 DEF Trees Group {
   children [
@@ -177,6 +182,7 @@ DEF SAND_GROUND Group {
 RubberDuck {
   translation -3.56331e-16 2.27044 7.02193e-07
   rotation 0.9999999999999998 2.6916945000513237e-08 1.0915634054343394e-09 1.6871810473485198e-07
+  scale 12
   immersionProperties [
     ImmersionProperties {
       fluidName "fluid"
@@ -187,7 +193,7 @@ RubberDuck {
     }
   ]
 }
-DEF ROVER Fluid {
+DEF RIVER Fluid {
   translation 0 1 0
   children [
     Shape {
