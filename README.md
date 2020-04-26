@@ -6,7 +6,7 @@ Mihotel Project Document.
 
 ### [📊 View our ZenHub Workspace](https://app.zenhub.com/workspaces/mihotel-5e5b3461c9cab6f18ca30973/board?repos=243200095)
 
-### [🌏 View our patio interactively](http://q96f032os.bkt.clouddn.com/patio.html)
+### [🌏 View our patio interactively](http://q98gml03z.bkt.clouddn.com/patio.html)
 
 ### [🎥 View our simulation interactively]() (TODO)
 
