@@ -1,4 +1,4 @@
-#VRML_SIM R2020a utf8
+#VRML_SIM R2020b utf8
 WorldInfo {
   title "Mihotel Patio"
   contactProperties [
@@ -8,7 +8,7 @@ WorldInfo {
 }
 Viewpoint {
   orientation 0.8765129025649249 0.44553665748670485 0.1822696312411516 5.376906800007518
-  position -42.05200609975908 89.20905535556057 80.51873865512948
+  position -50.1229499085169 109.3139227678281 98.06655521667372
 }
 TexturedBackground {
 }
