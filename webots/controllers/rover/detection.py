@@ -3,7 +3,8 @@ import time
 import cv2
 import numpy as np
 
-from colored import commandInfo, debugInfo, detectedInfo, info
+# TODO: fix colored
+# from colored import commandInfo, debugInfo, detectedInfo, info
 
 
 class Detector(object):
@@ -26,15 +27,6 @@ class Detector(object):
             ('blue', np.array([100, 43, 46]), np.array([124, 255, 255])),
             ('purple', np.array([125, 43, 46]), np.array([155, 255, 255]))
         ]
-
-    def run(self, signal_queue):
-        '''
-        `signal_queue`: queue for signals from sensor
-        '''
-        while True:
-            self.time = time.time()
-            signal_queue.put(self.time)
-            time.sleep(0.1)
 
     def get_color(self, frame):
         """

@@ -14,27 +14,27 @@ Mihotel Project Document.
 Table of Contents
 1. [✔️ Highlights](#️-Highlights)
 2. [⚠️ Precautions](#️-Precautions)
-3. [Configurations](#Configurations)
-4. [🔍 Output Description](#-Output-Description)
-5. [Solution (WIP)](#Solution-WIP)
+3. [Known Problems](#Known-Problems)
+4. [Configurations](#Configurations)
+5. [🔍 Output Description](#-Output-Description)
+6. [Solution (WIP)](#Solution-WIP)
    1. [System](#System)
       1. [Structure](#Structure)
-      2. [Communication](#Communication)
-      3. [How it ends](#How-it-ends)
+      2. [ANSI codes in webots console](#ANSI-codes-in-webots-console)
    2. [Chassis](#Chassis)
    3. [Visual & Sensor](#Visual--Sensor)
    4. [Decision](#Decision)
-6. [Development Strategy](#Development-Strategy)
-7. [Personnel Division](#Personnel-Division)
-8. [Project Specifications](#Project-Specifications)
-9. [Tasks](#Tasks)
+7. [Development Strategy](#Development-Strategy)
+8. [Personnel Division](#Personnel-Division)
+9. [Project Specifications](#Project-Specifications)
+10. [Tasks](#Tasks)
    1. [Task1](#Task1)
    2. [Task2](#Task2)
    3. [Task3](#Task3)
    4. [Task4](#Task4)
    5. [Task5](#Task5)
-10. [报销流程及要求](#报销流程及要求)
-11. [支出信息公开](#支出信息公开)
+11. [报销流程及要求](#报销流程及要求)
+12. [支出信息公开](#支出信息公开)
 
 ---
 
@@ -58,18 +58,20 @@ Table of Contents
 - be care of team communication and convergence
 - need more hang outs 🍻
 
+## Known Problems
+
+- It seems that webots does not support a multiprocessing controller, since I did not find a way to stop all child processes when simulation is paused.
+
 ## Configurations
 
 List of tools, modules with their version
 
 | Item                                            | Argument      | Notes                                   |
 | ----------------------------------------------- | ------------- | --------------------------------------- |
-| System                                          | Webots R2020a |                                         |
+| System                                          | Webots R2020b |                                         |
 | Python                                          | 3.7.3         |                                         |
 | opencv-contrib-python                           | 4.2.0.32      | OpenCV module for python                |
-| time                                            |               | python built-in module                  |
-| multiprocessing                                 |               | python built-in module                  |
-| [colorama](https://github.com/tartley/colorama) |               | python module for colored terminal text |
+| numpy                                           |               |                                         |
 
 ## 🔍 Output Description
 
@@ -86,21 +88,11 @@ List of tools, modules with their version
 
 #### Structure
 
-The **system** sets up **3 processes**, one for chassis controlling, one for decision, one for detection.
+Since it seems that webots does not support controller with multiple processes, we have  to make a one process controller.
 
-![](doc/processes.svg)
+#### ANSI codes in webots console
 
-#### Communication
-
-Two queues, **signal_queue**, **command_queue** are used for communications between processes. Although it seems when there is only two endpoints to communicate, [`Pipe()` is a faster choice](https://stackoverflow.com/a/8463046/10088906), but it seems the code could be prettier with `Queue()`.
-
-❗️ notice that once `Queue.get()` is used, one item in the queue is taken out and returned, which means **it is not in the queue anymore** and you could not get it again with `Queue.get()`.
-
-#### How it ends
-
-the main process ends when `flag_patio_finished` turns to **True**. Now all three child processes are set to **daemonic child process** by `Process.daemon = True`, therefore, [the child processes will be terminated as soon as the main process completes](https://stackoverflow.com/a/25391156/10088906).
-
-📚 [document for `multiprocessing.Queue()`](https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue)
+see [here](https://github.com/cyberbotics/webots/blob/develop/docs/guide/controller-programming.md#console-output) for document.
 
 ### Chassis
 

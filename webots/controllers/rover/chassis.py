@@ -1,4 +1,5 @@
-from colored import commandInfo, debugInfo, detectedInfo, info
+# TODO: fix colored
+# from colored import commandInfo, debugInfo, detectedInfo, info
 
 
 class Controller(object):
