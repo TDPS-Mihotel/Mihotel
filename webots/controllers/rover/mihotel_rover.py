@@ -1,1 +1,0 @@
-../../../mihotel_rover.py

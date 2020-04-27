@@ -1,4 +1,4 @@
-"""Mihotel rover (real rover)"""
+"""Mihotel rover (webots)"""
 
 import multiprocessing
 import time
@@ -9,7 +9,7 @@ import detection
 from colored import commandInfo, debugInfo, detectedInfo, info, logoInfo
 
 # flags ########################################################################
-flag_simulation = False  # turn to False to run for real rover
+flag_simulation = True  # turn to False to run for real rover
 flag_patio_finished = False
 flag_pause = multiprocessing.Value('i', True)
 

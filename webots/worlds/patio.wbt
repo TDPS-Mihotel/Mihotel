@@ -1,23 +1,249 @@
 #VRML_SIM R2020b utf8
 WorldInfo {
   title "Mihotel Patio"
+  basicTimeStep 16
+  defaultDamping Damping {
+  }
   contactProperties [
     ContactProperties {
+      softCFM 1e-05
     }
   ]
 }
 Viewpoint {
-  orientation 0.8765129025649249 0.44553665748670485 0.1822696312411516 5.376906800007518
-  position -50.1229499085169 109.3139227678281 98.06655521667372
+  orientation 0.8898695660603538 0.42274544199414266 0.17151806514981027 5.388909945120361
+  position -45.84667676508669 110.50459964685868 97.17129436053582
 }
 TexturedBackground {
+  texture "noon_sunny_empty"
+  luminosity 2
 }
 TexturedBackgroundLight {
+  texture "noon_sunny_empty"
+  luminosity 2
 }
-Moose {
-  translation -46.66 2.4 10.5001
-  rotation 0 1 0 0
-  controller "rover"
+Solid {
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColorMap ImageTexture {
+          url [
+            "textures/water.jpg"
+          ]
+        }
+        transparency 0.2
+        roughness 0.02
+        IBLStrength 0.3
+        emissiveColor 0 0.05 0.1
+        textureTransform TextureTransform {
+          scale 250 250
+        }
+      }
+      geometry Plane {
+        size 3000 3000
+      }
+    }
+  ]
+  name "solid(6)"
+}
+DEF ACKERMAN Robot {
+  translation -48.6725 2.1 10.4967
+  rotation 4.628502393797977e-05 0.9999999854879694 0.00016395657126976477 0
+  children [
+    DEF BODY_SHAPE Shape {
+      appearance PBRAppearance {
+        baseColorMap ImageTexture {
+          url [
+            "textures/webots_billboard.jpg"
+          ]
+        }
+        roughness 1
+        metalness 0.2
+      }
+      geometry Box {
+        size 0.4 0.1 0.2
+      }
+    }
+    DEF REAR_RIGHT_WHEEL HingeJoint {
+      jointParameters HingeJointParameters {
+        position 5.248061821413556
+        axis 0 0 1
+        anchor 0.15 0 -0.13
+      }
+      device [
+        RotationalMotor {
+          name "rear_right_wheel"
+        }
+      ]
+      endPoint Solid {
+        translation 0.15 0 -0.13
+        rotation 0 0 1 5.248061821413556
+        children [
+          DEF WHEEL_ROT Transform {
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance Rubber {
+                }
+                geometry DEF WHEEL_CYL Cylinder {
+                  height 0.04
+                  radius 0.08
+                }
+              }
+            ]
+          }
+        ]
+        name "rear right wheel"
+        boundingObject DEF WHEEL_ROT_BOUND Transform {
+          rotation 1 0 0 1.5708
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.8 0.8 0.8
+                roughness 1
+                metalness 0
+              }
+              geometry DEF WHEEL_CYL Cylinder {
+                height 0.04
+                radius 0.08
+              }
+            }
+          ]
+        }
+        physics Physics {
+        }
+      }
+    }
+    DEF REAR_LEFT_WHEEL HingeJoint {
+      jointParameters HingeJointParameters {
+        position 5.247951379215957
+        axis 0 0 1
+        anchor 0.15 0 0.13
+      }
+      device [
+        RotationalMotor {
+          name "rear_left_wheel"
+        }
+      ]
+      endPoint Solid {
+        translation 0.15 0 0.13
+        rotation 0 0 0.9999999999999999 5.247951379215957
+        children [
+          USE WHEEL_ROT
+        ]
+        name "rear left wheel"
+        boundingObject USE WHEEL_ROT_BOUND
+        physics Physics {
+        }
+      }
+    }
+    DEF RIGHT_STEER HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0.28822474130807213
+        axis 0 1 0
+        anchor -0.15 0 -0.13
+      }
+      device [
+        RotationalMotor {
+          name "right_steer"
+          minPosition -0.7
+          maxPosition 0.7
+        }
+      ]
+      endPoint Solid {
+        translation -0.15 0 -0.13
+        rotation 0 1 0 0.2882247413080726
+        children [
+          DEF FRONT_RIGHT_WHEEL HingeJoint {
+            jointParameters HingeJointParameters {
+              position 5.248013620670332
+              axis 0 0 1
+            }
+            device [
+              RotationalMotor {
+                name "front_right_wheel"
+              }
+            ]
+            endPoint Solid {
+              rotation 0 0 1 5.248013620670332
+              children [
+                USE WHEEL_ROT
+              ]
+              boundingObject USE WHEEL_ROT_BOUND
+              physics Physics {
+              }
+            }
+          }
+        ]
+        name "right steer"
+        boundingObject DEF DUMMY Sphere {
+          radius 0.01
+        }
+        physics Physics {
+        }
+      }
+    }
+    DEF LEFT_STEER HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0.2882246699595801
+        axis 0 1 0
+        anchor -0.15 0 0.13
+      }
+      device [
+        RotationalMotor {
+          name "left_steer"
+          minPosition -0.7
+          maxPosition 0.7
+        }
+      ]
+      endPoint Solid {
+        translation -0.15 0 0.13
+        rotation 0 1 0 0.2882246699595801
+        children [
+          DEF FRONT_LEFT_WHEEL HingeJoint {
+            jointParameters HingeJointParameters {
+              position 5.247929633286703
+              axis 0 0 1
+            }
+            device [
+              RotationalMotor {
+                name "front_left_wheel"
+              }
+            ]
+            endPoint Solid {
+              rotation 0 0 1 5.247929633286703
+              children [
+                USE WHEEL_ROT
+              ]
+              boundingObject USE WHEEL_ROT_BOUND
+              physics Physics {
+              }
+            }
+          }
+        ]
+        name "left steer"
+        boundingObject DEF DUMMY Sphere {
+          radius 0.01
+        }
+        physics Physics {
+        }
+      }
+    }
+  ]
+  name "ackerman"
+  boundingObject DEF BODY_SHAPE Shape {
+    appearance PBRAppearance {
+      baseColor 0.8 0.8 0.8
+      roughness 1
+      metalness 0
+    }
+    geometry Box {
+      size 0.4 0.1 0.2
+    }
+  }
+  physics Physics {
+  }
+  controller "mihotel_rover"
 }
 DEF Trees Group {
   children [
@@ -89,6 +315,7 @@ DEF SAND_GROUND Group {
         }
       ]
       boundingObject USE sandground
+      locked TRUE
     }
     Solid {
       translation 0 1 -8
@@ -106,6 +333,7 @@ DEF SAND_GROUND Group {
       ]
       name "solid(1)"
       boundingObject USE sandground
+      locked TRUE
     }
     Solid {
       translation 0 1 3.5
@@ -123,6 +351,7 @@ DEF SAND_GROUND Group {
       ]
       name "solid(2)"
       boundingObject USE sandground
+      locked TRUE
     }
     Solid {
       translation 35 1 10.5
@@ -140,6 +369,7 @@ DEF SAND_GROUND Group {
       ]
       name "solid(3)"
       boundingObject USE sandground
+      locked TRUE
     }
     Solid {
       translation -36.25 1 9.5
@@ -158,6 +388,7 @@ DEF SAND_GROUND Group {
       ]
       name "solid(4)"
       boundingObject USE sandground
+      locked TRUE
     }
     Solid {
       translation -30 1 7
@@ -176,6 +407,7 @@ DEF SAND_GROUND Group {
       ]
       name "solid(5)"
       boundingObject USE sandground
+      locked TRUE
     }
   ]
 }
