@@ -27,14 +27,18 @@ class Detector(object):
             ('purple', np.array([125, 43, 46]), np.array([155, 255, 255]))
         ]
 
-    def run(self, signal_queue):
+    def run(self, signal_queue, flag_pause):
         '''
-        `signal_queue`: queue for signals from sensor
+        `signal_queue`: queue for signals from sensor\n
+        `flag_pause`: the flag to pause this Detector running (actually skip all
+            code in this function)\n
         '''
         while True:
-            self.time = time.time()
-            signal_queue.put(self.time)
-            time.sleep(0.1)
+            if not flag_pause.value:
+                self.time = time.time()
+                signal_queue.put(self.time)
+                detectedInfo('time:' + str(self.time))
+                time.sleep(0.1)
 
     def get_color(self, frame):
         """

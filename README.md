@@ -62,14 +62,13 @@ Table of Contents
 
 List of tools, modules with their version
 
-| Item                                            | Argument      | Notes                                   |
-| ----------------------------------------------- | ------------- | --------------------------------------- |
-| System                                          | Webots R2020a |                                         |
-| Python                                          | 3.7.3         |                                         |
-| opencv-contrib-python                           | 4.2.0.32      | OpenCV module for python                |
-| time                                            |               | python built-in module                  |
-| multiprocessing                                 |               | python built-in module                  |
-| [colorama](https://github.com/tartley/colorama) |               | python module for colored terminal text |
+| Item                                            | Argument      | Notes                                                        |
+| ----------------------------------------------- | ------------- | ------------------------------------------------------------ |
+| Simulation                                      | Webots R2020b | we are using a **very new** version of [Webots Nightly Build (24-4-2020)](https://github.com/cyberbotics/webots/releases/tag/nightly_24_4_2020) |
+| Python                                          | 3.7.4         |                                                              |
+| numpy                                           | 4.2.0.32      | Numpy module for python                                      |
+| opencv-contrib-python                           | 4.2.0.32      | OpenCV module for python                                     |
+| [colorama](https://github.com/tartley/colorama) |               | python module for colored terminal text                      |
 
 ## 🔍 Output Description
 
