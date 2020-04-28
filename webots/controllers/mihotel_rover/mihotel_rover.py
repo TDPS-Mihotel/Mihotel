@@ -1,8 +1,12 @@
 """Mihotel rover (webots)"""
 
 import multiprocessing
+import os
+import sys
 import time
 
+os.chdir(sys.path[0])
+sys.path.append('../../../')
 import chassis
 import decision
 import detection
