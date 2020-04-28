@@ -3,7 +3,6 @@ import time
 import cv2
 import numpy as np
 
-# TODO: fix colored
 from colored import commandInfo, debugInfo, detectedInfo, info
 
 

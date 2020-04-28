@@ -24,6 +24,7 @@ def logoInfo():
     |__/     |__/|__/|__/  |__/ \______/    \___/   \_______/|__/
 ''' + Style.RESET_ALL)
 
+
 def debugInfo(item):
     '''
     Bright red output for debug information
@@ -48,4 +49,4 @@ def detectedInfo(item):
     print(Style.BRIGHT + Fore.YELLOW + '[Detected] ' + item + Style.RESET_ALL)
 
 
-init()  # enable ANSI escape sequences on Windows
+# init()  # enable ANSI escape sequences on Windows (not in webots)

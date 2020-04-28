@@ -1,4 +1,3 @@
-# TODO: fix colored
 from colored import commandInfo, debugInfo, detectedInfo, info
 
 
