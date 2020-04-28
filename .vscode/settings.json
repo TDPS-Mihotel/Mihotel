@@ -16,6 +16,7 @@
         "--max-line-length=120"
     ],
     "cSpell.words": [
+        "ACKERMAN",
         "Mihotel",
         "imgs",
         "imread",
