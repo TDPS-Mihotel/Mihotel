@@ -11,8 +11,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.8898695660603538 0.42274544199414266 0.17151806514981027 5.388909945120361
-  position -45.84667676508669 110.50459964685868 97.17129436053582
+  orientation 0.8676814779406695 0.4650292818811448 0.17571744316317178 5.423990290983491
+  position -41.326758667037886 83.88362311485993 85.39666575760323
 }
 TexturedBackground {
   texture "noon_sunny_empty"
@@ -22,7 +22,7 @@ TexturedBackgroundLight {
   texture "noon_sunny_empty"
   luminosity 2
 }
-Solid {
+DEF PLANE Solid {
   children [
     Shape {
       appearance PBRAppearance {
@@ -245,7 +245,7 @@ DEF ACKERMAN Robot {
   }
   controller "mihotel_rover"
 }
-DEF Trees Group {
+DEF TREES Group {
   children [
     PalmTree {
       translation 36.9932 2 -6.04257
@@ -430,10 +430,18 @@ DEF RIVER Fluid {
   children [
     Shape {
       appearance PBRAppearance {
-        baseColor 0.0627 0.552 0.723
-        transparency 0.7
-        roughness 1
+        baseColor 0.0627 0.552 0.8
+        baseColorMap ImageTexture {
+          url [
+            "textures/water.jpg"
+          ]
+        }
+        transparency 0.5
+        roughness 0.001
         metalness 0
+        textureTransform TextureTransform {
+          scale 20 0.4
+        }
       }
       geometry DEF water_box Box {
         size 100 2 2
@@ -448,10 +456,18 @@ DEF POND Fluid {
   children [
     Shape {
       appearance PBRAppearance {
-        baseColor 0.0627 0.552 0.723
-        transparency 0.7
-        roughness 1
+        baseColor 0.0627 0.552 0.8
+        baseColorMap ImageTexture {
+          url [
+            "textures/water.jpg"
+          ]
+        }
+        transparency 0.5
+        roughness 0.001
         metalness 0
+        textureTransform TextureTransform {
+          scale 11 1.8
+        }
       }
       geometry DEF water_box Box {
         size 55 1.99 9
