@@ -20,7 +20,9 @@ Table of Contents
 6. [Solution (WIP)](#Solution-WIP)
    1. [System](#System)
       1. [Structure](#Structure)
-      2. [ANSI codes in webots console](#ANSI-codes-in-webots-console)
+      2. [Communication](#Communication)
+      3. [How it ends](#How-it-ends)
+      4. [ANSI codes in webots console](#ANSI-codes-in-webots-console)
    2. [Chassis](#Chassis)
    3. [Visual & Sensor](#Visual--Sensor)
    4. [Decision](#Decision)
@@ -89,7 +91,21 @@ List of tools, modules with their version
 
 #### Structure
 
-Since it seems that webots does not support controller with multiple processes, we have  to make a one process controller.
+The **system** sets up **3 processes**, one for chassis controlling, one for decision, one for detection.
+
+![](doc/processes.svg)
+
+#### Communication
+
+Two queues, **signal_queue**, **command_queue** are used for communications between processes. Although it seems when there is only two endpoints to communicate, [`Pipe()` is a faster choice](https://stackoverflow.com/a/8463046/10088906), but it seems the code could be prettier with `Queue()`.
+
+❗️ notice that once `Queue.get()` is used, one item in the queue is taken out and returned, which means **it is not in the queue anymore** and you could not get it again with `Queue.get()`.
+
+#### How it ends
+
+the main process ends when `flag_patio_finished` turns to **True**. Now all three child processes are set to **daemonic child process** by `Process.daemon = True`, therefore, [the child processes will be terminated as soon as the main process completes](https://stackoverflow.com/a/25391156/10088906).
+
+📚 [document for `multiprocessing.Queue()`](https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue)
 
 #### ANSI codes in webots console
 
