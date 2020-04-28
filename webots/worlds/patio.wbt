@@ -11,16 +11,33 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.8676814779406695 0.4650292818811448 0.17571744316317178 5.423990290983491
-  position -41.326758667037886 83.88362311485993 85.39666575760323
+  orientation 0.8674805196751322 0.4654064856622322 0.17571098738466318 5.424110429224458
+  position -46.091026517654726 94.79569219191873 95.96327277223571
 }
-TexturedBackground {
-  texture "noon_sunny_empty"
+Background {
+  backUrl [
+    "textures/cubic/noon_sunny_empty_back.jpg"
+  ]
+  bottomUrl [
+    "textures/cubic/noon_sunny_empty_bottom.jpg"
+  ]
+  frontUrl [
+    "textures/cubic/noon_sunny_empty_front.jpg"
+  ]
+  leftUrl [
+    "textures/cubic/noon_sunny_empty_left.jpg"
+  ]
+  rightUrl [
+    "textures/cubic/noon_sunny_empty_right.jpg"
+  ]
+  topUrl [
+    "textures/cubic/noon_sunny_empty_top.jpg"
+  ]
   luminosity 2
 }
 TexturedBackgroundLight {
   texture "noon_sunny_empty"
-  luminosity 2
+  luminosity 3
 }
 DEF PLANE Solid {
   children [
