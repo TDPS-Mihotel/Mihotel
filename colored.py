@@ -1,4 +1,7 @@
-from colorama import init, Fore, Back, Style
+import os
+import platform
+
+from colorama import Back, Fore, Style, init
 
 
 def info(item):
@@ -49,4 +52,5 @@ def detectedInfo(item):
     print(Style.BRIGHT + Fore.YELLOW + '[Detected] ' + item + Style.RESET_ALL)
 
 
-# init()  # enable ANSI escape sequences on Windows (not in webots)
+if (platform.system() is 'Windows') and ('WEBOTS_SERVER' in os.environ):
+    init()  # enable ANSI escape sequences on Windows (not in webots)
