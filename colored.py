@@ -52,5 +52,6 @@ def detectedInfo(item):
     print(Style.BRIGHT + Fore.YELLOW + '[Detected] ' + item + Style.RESET_ALL)
 
 
+# FIXME: unknown bug... without this output seems stuck
 if (platform.system() is 'Windows') and ('WEBOTS_SERVER' in os.environ):
-    init()  # enable ANSI escape sequences on Windows (not in webots)
+    init()
