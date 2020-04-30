@@ -12,8 +12,9 @@ import psutil
 # flag_simulation = True  # turn to False to run for real rover
 # run simulation rover if webots software is running
 flag_simulation = len([p.name() for p in psutil.process_iter() if 'webots' in p.name()])
-flag_patio_finished = False
+flag_patio_finished = multiprocessing.Value('i', False)
 flag_pause = multiprocessing.Value('i', True)
+key = multiprocessing.Value('i', True)
 
 
 # define the processes #########################################################
@@ -24,14 +25,14 @@ def control(command_queue):
             controller.set_state(command_queue.get())
 
 
-def detect(signal_queue, flag_pause):
+def detect(signal_queue, flag_pause, key):
     detector = detection.Detector()
-    detector.run(signal_queue, flag_pause)
+    detector.run(signal_queue, flag_pause, key)
 
 
-def decide(signal_queue, command_queue, flag_pause, lock):
-    decider = decision.Decider()
-    decider.run(signal_queue, command_queue, flag_pause, lock)
+def decide(signal_queue, command_queue, flag_pause, key, lock, flag_patio_finished):
+    decider = decision.Decider(flag_patio_finished)
+    decider.run(signal_queue, command_queue, flag_pause, key, lock)
 
 
 # import depending on simulation or not ########################################
@@ -58,8 +59,9 @@ if __name__ == "__main__":
 
     # initial processes and set them as deamon process
     controller_process = multiprocessing.Process(target=control, args=(command_queue, ))
-    detector_process = multiprocessing.Process(target=detect, args=(signal_queue, flag_pause))
-    decider_process = multiprocessing.Process(target=decide, args=(signal_queue, command_queue, flag_pause, lock))
+    detector_process = multiprocessing.Process(target=detect, args=(signal_queue, flag_pause, key, ))
+    decider_process = multiprocessing.Process(target=decide, args=(
+        signal_queue, command_queue, flag_pause, key, lock, flag_patio_finished))
     controller_process.daemon = True
     detector_process.daemon = True
     decider_process.daemon = True
@@ -69,28 +71,30 @@ if __name__ == "__main__":
 
 # if run for webots rover
 if __name__ == "__main__" and flag_simulation:
-    from controller import AnsiCodes, Robot
+    from controller import AnsiCodes, Robot, Keyboard
     # create the Robot instance.
     robot = Robot()
     # get the time step of the current world.
     timestep = int(robot.getBasicTimeStep())
+    keyboard = Keyboard()
+    keyboard.enable(timestep)
     # Main loop:
     # - perform simulation steps until Webots is stopping the controller
-    while robot.step(timestep) != -1:
+    while (robot.step(timestep) != -1) and not flag_patio_finished.value:
         # resume decider process
         with lock:
             flag_pause.value = False
+            key.value = keyboard.getKey()  # character of the key press
 
 # if run for real rover
 if __name__ == "__main__" and not flag_simulation:
     # when flag_patio_finished becomes True, main process ends, and all child
     # processes end with it
-    while True:
+    key.value = 1000  # it is useless for real rover now
+    while not flag_patio_finished.value:
         # temporarily using time to be the finish flag signal
         if time.time() - start > 2:  # 2s
-            flag_patio_finished = True
-        if flag_patio_finished:
-            break
+            flag_patio_finished.value = True
         with lock:
             flag_pause.value = False
     info('Finished!')
