@@ -12,8 +12,7 @@ class Detector(object):
     """
 
     def __init__(self):
-        self.time = time.time()
-        info('Sensor initialed')
+        self.signals = {}
         self.color_list = [
             ('black', np.array([0, 0, 0]), np.array([180, 255, 46])),
             ('white', np.array([0, 0, 221]), np.array([180, 30, 255])),
@@ -26,27 +25,26 @@ class Detector(object):
             ('blue', np.array([100, 43, 46]), np.array([124, 255, 255])),
             ('purple', np.array([125, 43, 46]), np.array([155, 255, 255]))
         ]
+        info('Sensor initialed')
 
-    def run(self, signal_queue, flag_pause, key):
+    def set_queues(self, signal_queue):
         '''
         `signal_queue`: queue for signals from sensor\n
-        `flag_pause`: the flag to pause this Detector running (actually skip all
-            code in this function)\n
         '''
-        while True:
-            if not flag_pause.value:
-                self.time = time.time()
-                signal_queue.put(self.time)
-                detectedInfo('time:' + str(self.time))
-                # TODO: save image from camera for Haoran
-                if key.value == ord('S'):  # capture image when press S
-                    self.capture()
-                time.sleep(0.1)
+        self.signal_queue = signal_queue
+
+    def send_signals(self, signals):
+        '''
+        `signals`: a dictionary of signals\n
+        send out signals through signal_queue
+        '''
+        self.signal_queue.put(signals)
 
     def capture(self):
         '''
         capture images from camera to test/camera/
         '''
+        # TODO: for Haoran
         pass
 
     def get_color(self, frame):
@@ -70,6 +68,29 @@ class Detector(object):
                 maxsum = sum
                 color = item[0]
         return color
+
+    def run(self, flag_pause, key):
+        '''
+        `flag_pause`: the flag to pause this Detector running (actually skips code in this function)\n
+        run the detection
+        '''
+        while True:
+            time.sleep(0.1)  # set detection period to 0.1s
+            # skip all code inside if paused by webots
+            if not flag_pause.value:
+                # vision/sensor group's code goes under this ###################
+                # keyboard events
+                # TODO: save image from camera for Haoran
+                if key.value == ord('S'):  # capture image when press S
+                    self.capture()
+
+                # update signals
+                self.signals['time (min)'] = time.localtime(time.time()).tm_min
+                self.signals['time (sec)'] = time.localtime(time.time()).tm_sec
+
+                # send all signals to decider
+                self.send_signals(self.signals)
+                debugInfo('\n\t'.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
 
 
 if __name__ == "__main__":

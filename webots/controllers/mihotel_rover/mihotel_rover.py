@@ -16,25 +16,6 @@ flag_patio_finished = multiprocessing.Value('i', False)
 flag_pause = multiprocessing.Value('i', True)
 key = multiprocessing.Value('i', True)
 
-
-# define the processes #########################################################
-def control(command_queue):
-    controller = chassis.Controller()
-    while True:
-        if not command_queue.empty():
-            controller.set_state(command_queue.get())
-
-
-def detect(signal_queue, flag_pause, key):
-    detector = detection.Detector()
-    detector.run(signal_queue, flag_pause, key)
-
-
-def decide(signal_queue, command_queue, flag_pause, key, lock, flag_patio_finished):
-    decider = decision.Decider(flag_patio_finished)
-    decider.run(signal_queue, command_queue, flag_pause, key, lock)
-
-
 # import depending on simulation or not ########################################
 if flag_simulation:
     os.chdir(sys.path[0])
@@ -44,6 +25,26 @@ from colored import commandInfo, debugInfo, detectedInfo, info, logoInfo
 import chassis
 import decision
 import detection
+
+
+# define the processes #########################################################
+def control(command_queue):
+    controller = chassis.Controller()
+    controller.set_queue(command_queue)
+    controller.run(flag_pause)
+
+
+def detect(signal_queue, flag_pause, key):
+    detector = detection.Detector()
+    detector.set_queues(signal_queue)
+    detector.run(flag_pause, key)
+
+
+def decide(signal_queue, command_queue, flag_pause, key, lock, flag_patio_finished):
+    decider = decision.Decider(flag_patio_finished)
+    decider.set_queues(signal_queue, command_queue)
+    decider.run(flag_pause, key, lock)
+
 
 # program starts ###############################################################
 if __name__ == "__main__":
