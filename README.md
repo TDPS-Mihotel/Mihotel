@@ -12,33 +12,38 @@ Mihotel Project Document.
 
 ---
 Table of Contents
-1. [✔️ Highlights](#️-Highlights)
-2. [⚠️ Precautions](#️-Precautions)
-3. [Known Problems](#Known-Problems)
-4. [Configurations](#Configurations)
-5. [🔍 Output Description](#-Output-Description)
-6. [Solution (WIP)](#Solution-WIP)
-   1. [System](#System)
-      1. [Structure](#Structure)
-      2. [Communication](#Communication)
-      3. [How it ends](#How-it-ends)
-      4. [ANSI codes in webots console](#ANSI-codes-in-webots-console)
-   2. [Chassis](#Chassis)
-   3. [Visual & Sensor](#Visual--Sensor)
-   4. [Decision](#Decision)
-7. [Development Strategy](#Development-Strategy)
-8. [Personnel Division](#Personnel-Division)
-9. [Project Specifications](#Project-Specifications)
-10. [Tasks](#Tasks)
-   1. [Task1](#Task1)
-   2. [Task2](#Task2)
-   3. [Task3](#Task3)
-   4. [Task4](#Task4)
-   5. [Task5](#Task5)
-11. [报销流程及要求](#报销流程及要求)
-12. [支出信息公开](#支出信息公开)
+- [✔️ Highlights](#️-Highlights)
+- [⚠️ Precautions](#️-Precautions)
+- [Known Problems](#Known-Problems)
+- [Configurations](#Configurations)
+- [🔍 Output Description](#-Output-Description)
+- [Solution (WIP)](#Solution-WIP)
+  - [System](#System)
+    - [Structure](#Structure)
+    - [Communication](#Communication)
+      - [Queue](#Queue)
+      - [Shared variables](#Shared-variables)
+    - [How it ends](#How-it-ends)
+    - [ANSI codes in webots console](#ANSI-codes-in-webots-console)
+    - [Keyboard event](#Keyboard-event)
+  - [Chassis](#Chassis)
+  - [Visual & Sensor](#Visual--Sensor)
+  - [Decision](#Decision)
+- [Development Strategy](#Development-Strategy)
+- [Personnel Division](#Personnel-Division)
+- [Project Specifications](#Project-Specifications)
+- [Tasks](#Tasks)
+  - [Task1](#Task1)
+  - [Task2](#Task2)
+  - [Task3](#Task3)
+  - [Task4](#Task4)
+  - [Task5](#Task5)
+- [报销流程及要求](#报销流程及要求)
+- [支出信息公开](#支出信息公开)
 
 ---
+
+
 
 ## ✔️ Highlights
 
@@ -91,15 +96,27 @@ List of tools, modules with their version
 
 #### Structure
 
-The **system** sets up **3 processes**, one for chassis controlling, one for decision, one for detection.
+The **system** sets up **3 child processes**, one for chassis controlling, one for decision, one for detection.
 
-![](doc/processes.svg)
+> gray boxes are shared variables between processes
+
+![](doc/system.svg)
 
 #### Communication
 
+##### Queue
+
 Two queues, **signal_queue**, **command_queue** are used for communications between processes. Although it seems when there is only two endpoints to communicate, [`Pipe()` is a faster choice](https://stackoverflow.com/a/8463046/10088906), but it seems the code could be prettier with `Queue()`.
 
-❗️ notice that once `Queue.get()` is used, one item in the queue is taken out and returned, which means **it is not in the queue anymore** and you could not get it again with `Queue.get()`.
+❗️ notice that once `Queue.get()` is used, one item in the queue is taken out and returned, which means **it is not in the queue anymore** and you could not get it again with `Queue.get()`. `Queue.empty()` could be used to detect whether it is empty.
+
+##### Shared variables
+
+A few shared variables are created to share some flags and signals between processes. So far `flag_patio_finished`, `flag_pause`, `key` are used.
+
+📚 [document for `multiprocessing.Value()`](https://docs.python.org/2/library/multiprocessing.html#multiprocessing.Value)
+
+[Here](https://docs.python.org/2/library/array.html#module-array) is a list of one character typecode can be used in `multiprocessing.Value()` to determine type of the shared variable.
 
 #### How it ends
 
@@ -109,7 +126,11 @@ the main process ends when `flag_patio_finished` turns to **True**. Now all thre
 
 #### ANSI codes in webots console
 
-see [here](https://github.com/cyberbotics/webots/blob/develop/docs/guide/controller-programming.md#console-output) for document.
+📚 [document for `AnsiCodes`](https://github.com/cyberbotics/webots/blob/develop/docs/guide/controller-programming.md#console-output)
+
+#### Keyboard event
+
+📚 [document for `Keyboard()`](https://www.cyberbotics.com/doc/reference/keyboard)
 
 ### Chassis
 
@@ -120,6 +141,8 @@ The **chassis** of the rover is size of **15cm*45cm**, with wheels which diamete
 The **feeding device** acts like a garbage truck dumping trash, we dump the kiwi by raising one side of the kiwi holder to let the kiwi slides down.
 
 ### Visual & Sensor
+
+📑 [Basic usage of several sensors](doc/Sensor.md)
 
 Our **line detector** works like this:
 

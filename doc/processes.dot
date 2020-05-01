@@ -1,5 +1,0 @@
-digraph G{
-    rankdir=LR
-    detector_process:se -> decider_process:sw [label="signals\n(signal_queue)"]
-    decider_process:ne -> controller_process:nw [label="commands\n(command_queue)"]
-}

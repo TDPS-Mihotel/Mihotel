@@ -1,0 +1,20 @@
+digraph G{
+    node [shape=box]
+    splines=ortho
+    ranksep=1.5
+    "keyboard input" [shape=none]
+    "webots pause signal" [shape=none]
+    {rank=same detector_process decider_process controller_process}
+    detector_process -> decider_process [label="signals\n(signal_queue)"]
+    decider_process -> controller_process [label="commands\n(command_queue)"]
+    subgraph cluster{
+        label=main_process
+        node [shape=none; fillcolor=grey; style=filled]
+        flag_pause -> {detector_process controller_process} [style=dashed]
+        flag_pause -> decider_process [label="\l\llock" dir=both style=dashed]
+        flag_patio_finished -> decider_process [label="\l\llock" dir=both style=dashed]
+        key -> {detector_process, decider_process} [style=dashed]
+    }
+    "webots pause signal" -> flag_pause
+    "keyboard input" -> key
+}
