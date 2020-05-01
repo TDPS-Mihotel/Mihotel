@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
 # if run for webots rover
 if __name__ == "__main__" and flag_simulation:
-    from controller import AnsiCodes, Robot, Keyboard
+    from controller import  Robot, Keyboard
     # create the Robot instance.
     robot = Robot()
     # get the time step of the current world.
