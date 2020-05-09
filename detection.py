@@ -5,6 +5,7 @@ import numpy as np
 
 from colored import commandInfo, debugInfo, detectedInfo, info
 
+from controller import Robot,Camera,Compass,GPS,DistanceSensor
 
 class Detector(object):
     """
@@ -12,7 +13,17 @@ class Detector(object):
     """
 
     def __init__(self):
-        self.signals = {}
+        
+        #Path_Dirction is waiting for Wen Bo
+        #Later, various Object_Dectection could be added 
+        self.signals = {'Position':None,
+                        'Direction':None,
+                        'Speed':None,
+                        'Front_Distance':None,
+                        'Right_Distance':None,
+                        'Left_Distance':None,
+                        'Color':None,
+                        'Path_Direction':None,}
         self.color_list = [
             ('black', np.array([0, 0, 0]), np.array([180, 255, 46])),
             ('white', np.array([0, 0, 221]), np.array([180, 30, 255])),
@@ -26,6 +37,32 @@ class Detector(object):
             ('purple', np.array([125, 43, 46]), np.array([155, 255, 255]))
         ]
         info('Sensor initialed')
+
+        self.direction_list=['front','right','left']
+
+        #for each dirction, there are three distance sensors
+        self.distance_sensor=[[],[],[]]
+        for i in range(3):
+            for j in range(3):
+                self.distance_sensor[i].append(DistanceSensor(self.direction_list[i]+'_'+self.direction_list[j]))
+                self.distance_sensor[i][j].enable(1)
+
+
+        #one camera for each direction, one camera specific for path detection
+        self.camera = []
+        for i in range(3):
+            self.camera.append(Camera(self.direction_list[i]))
+            self.camera[i].enable(1)
+        self.camera.append(Camera('path'))
+        self.camera[3].enable(1)
+
+        #compass for moving direction
+        self.compass=Compass('compass')
+        self.compass.enable(1)
+
+        #GPS for position and speed
+        self.gps=GPS('gps')
+        self.gps.enable(1)
 
     def set_queues(self, signal_queue):
         '''
@@ -44,8 +81,36 @@ class Detector(object):
         '''
         capture images from camera to test/camera/
         '''
-        # TODO: for Haoran
-        pass
+       '''
+        capture images from camera to test/camera/
+        '''
+        self.signals['Position']=np.array(self.gps.getValues())
+        self.signals['Direction'] = np.array(self.compass.getValues())
+        self.signals['Speed']=np.array(self.gps.getSpeed())
+
+        #the minimum distance for each direction where the unit is m.
+        self.signals['Front_Distance']=np.min([self.distance_sensor[0][0].getValue(),
+                                               self.distance_sensor[0][1].getValue(),
+                                               self.distance_sensor[0][2].getValue()])/1000
+        self.signals['Right_Distance'] = np.min([self.distance_sensor[1][0].getValue(),
+                                                 self.distance_sensor[1][1].getValue(),
+                                                 self.distance_sensor[1][2].getValue()])/1000
+        self.signals['Left_Distance'] = np.min([self.distance_sensor[2][0].getValue(),
+                                                 self.distance_sensor[2][1].getValue(),
+                                                 self.distance_sensor[2][2].getValue()])/1000
+        self.signals['Color'] = self.get_color(self.get_image(3))
+
+        return self.signals
+    
+    def get_image(self, index):
+        """
+        Read the image from the camera\n
+        convert it to the cv2-dealing format
+        """
+        image = np.array(self.camera[index].getImageArray(), dtype="uint8")
+        r, g, b = cv2.split(image)
+        image = cv2.merge([b, g, r])
+        return image
 
     def get_color(self, frame):
         """
