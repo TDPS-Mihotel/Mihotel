@@ -1,5 +1,5 @@
 import time
-
+import queue
 import cv2
 import numpy as np
 
@@ -16,14 +16,9 @@ class Detector(object):
         
         #Path_Dirction is waiting for Wen Bo
         #Later, various Object_Dectection could be added 
-        self.signals = {'Position':None,
-                        'Direction':None,
-                        'Speed':None,
-                        'Front_Distance':None,
-                        'Right_Distance':None,
-                        'Left_Distance':None,
-                        'Color':None,
-                        'Path_Direction':None,}
+        self.signals = {}
+        self.signal_queue=queue.Queue()
+        
         self.color_list = [
             ('black', np.array([0, 0, 0]), np.array([180, 255, 46])),
             ('white', np.array([0, 0, 221]), np.array([180, 30, 255])),
@@ -46,7 +41,6 @@ class Detector(object):
             for j in range(3):
                 self.distance_sensor[i].append(DistanceSensor(self.direction_list[i]+'_'+self.direction_list[j]))
                 self.distance_sensor[i][j].enable(1)
-
 
         #one camera for each direction, one camera specific for path detection
         self.camera = []
@@ -77,36 +71,10 @@ class Detector(object):
         '''
         self.signal_queue.put(signals)
 
-    def capture(self):
+    def capture(self, index):
         '''
         capture images from camera to test/camera/
         '''
-       '''
-        capture images from camera to test/camera/
-        '''
-        self.signals['Position']=np.array(self.gps.getValues())
-        self.signals['Direction'] = np.array(self.compass.getValues())
-        self.signals['Speed']=np.array(self.gps.getSpeed())
-
-        #the minimum distance for each direction where the unit is m.
-        self.signals['Front_Distance']=np.min([self.distance_sensor[0][0].getValue(),
-                                               self.distance_sensor[0][1].getValue(),
-                                               self.distance_sensor[0][2].getValue()])/1000
-        self.signals['Right_Distance'] = np.min([self.distance_sensor[1][0].getValue(),
-                                                 self.distance_sensor[1][1].getValue(),
-                                                 self.distance_sensor[1][2].getValue()])/1000
-        self.signals['Left_Distance'] = np.min([self.distance_sensor[2][0].getValue(),
-                                                 self.distance_sensor[2][1].getValue(),
-                                                 self.distance_sensor[2][2].getValue()])/1000
-        self.signals['Color'] = self.get_color(self.get_image(3))
-
-        return self.signals
-    
-    def get_image(self, index):
-        """
-        Read the image from the camera\n
-        convert it to the cv2-dealing format
-        """
         image = np.array(self.camera[index].getImageArray(), dtype="uint8")
         r, g, b = cv2.split(image)
         image = cv2.merge([b, g, r])
@@ -147,10 +115,24 @@ class Detector(object):
                 # keyboard events
                 # TODO: save image from camera for Haoran
                 if key.value == ord('S'):  # capture image when press S
-                    self.capture()
+                    cv2.imwrite("D:\Image.PNG", self.capture(0))
 
                 # update signals
                 self.signals['time (min)'] = time.localtime(time.time()).tm_min
+                self.signals['Position'] = np.array(self.gps.getValues())
+                self.signals['Direction'] = np.array(self.compass.getValues())
+                self.signals['Speed'] = np.array(self.gps.getSpeed())
+                # the minimum distance for each direction where the unit is m.
+                self.signals['Front_Distance'] = np.min([self.distance_sensor[0][0].getValue(),
+                                                         self.distance_sensor[0][1].getValue(),
+                                                         self.distance_sensor[0][2].getValue()]) / 1000
+                self.signals['Right_Distance'] = np.min([self.distance_sensor[1][0].getValue(),
+                                                         self.distance_sensor[1][1].getValue(),
+                                                         self.distance_sensor[1][2].getValue()]) / 1000
+                self.signals['Left_Distance'] = np.min([self.distance_sensor[2][0].getValue(),
+                                                        self.distance_sensor[2][1].getValue(),
+                                                        self.distance_sensor[2][2].getValue()]) / 1000
+                self.signals['Color'] = self.get_color(self.capture(3))
                 self.signals['time (sec)'] = time.localtime(time.time()).tm_sec
 
                 # send all signals to decider
