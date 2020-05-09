@@ -1,5 +1,5 @@
 import time
-import queue
+import os
 import cv2
 import numpy as np
 
@@ -16,9 +16,7 @@ class Detector(object):
         
         #Path_Dirction is waiting for Wen Bo
         #Later, various Object_Dectection could be added 
-        self.signals = {}
-        self.signal_queue=queue.Queue()
-        
+        self.signals = {}   
         self.color_list = [
             ('black', np.array([0, 0, 0]), np.array([180, 255, 46])),
             ('white', np.array([0, 0, 221]), np.array([180, 30, 255])),
@@ -57,12 +55,14 @@ class Detector(object):
         #GPS for position and speed
         self.gps=GPS('gps')
         self.gps.enable(1)
+        
 
     def set_queues(self, signal_queue):
         '''
         `signal_queue`: queue for signals from sensor\n
         '''
         self.signal_queue = signal_queue
+        
 
     def send_signals(self, signals):
         '''
@@ -70,15 +70,27 @@ class Detector(object):
         send out signals through signal_queue
         '''
         self.signal_queue.put(signals)
+        
 
-    def capture(self, index):
+    def get_image(self, index):
         '''
-        capture images from camera to test/camera/
+        capture images from camera
         '''
         image = np.array(self.camera[index].getImageArray(), dtype="uint8")
         r, g, b = cv2.split(image)
         image = cv2.merge([b, g, r])
         return image
+    
+    
+     def capture(self, image):
+        '''
+        capture images from camera to test/camera/.
+        '''
+        capture_path = 'test/camera/'
+        if not os.path.exists(capture_path):
+            os.makedirs(capture_path)
+        cv2.imwrite(capture_path + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + '.png', image)
+        
 
     def get_color(self, frame):
         """
@@ -101,6 +113,7 @@ class Detector(object):
                 maxsum = sum
                 color = item[0]
         return color
+    
 
     def run(self, flag_pause, key):
         '''
@@ -115,7 +128,7 @@ class Detector(object):
                 # keyboard events
                 # TODO: save image from camera for Haoran
                 if key.value == ord('S'):  # capture image when press S
-                    cv2.imwrite("D:\Image.PNG", self.capture(0))
+                    self.capture(self.get_image(1))
 
                 # update signals
                 self.signals['time (min)'] = time.localtime(time.time()).tm_min
