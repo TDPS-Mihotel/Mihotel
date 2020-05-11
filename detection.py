@@ -1,11 +1,10 @@
 import time
-import os
 import cv2
+import os
 import numpy as np
-
 from colored import commandInfo, debugInfo, detectedInfo, info
-
 from controller import Robot,Camera,Compass,GPS,DistanceSensor
+
 
 class Detector(object):
     """
@@ -13,10 +12,19 @@ class Detector(object):
     """
 
     def __init__(self):
-        
+
         #Path_Dirction is waiting for Wen Bo
-        #Later, various Object_Dectection could be added 
-        self.signals = {}   
+        #Later, various Object_Dectection could be added
+        self.signals = {
+            'Position':[],
+            'Direction':[],
+            'Speed':[],
+            'Front_Distance':[],
+            'Right_Distance':[],
+            'Left_Distance':[],
+            'Color':[],
+            'Path_Direction':[]}
+
         self.color_list = [
             ('black', np.array([0, 0, 0]), np.array([180, 255, 46])),
             ('white', np.array([0, 0, 221]), np.array([180, 30, 255])),
@@ -31,7 +39,7 @@ class Detector(object):
         ]
         info('Sensor initialed')
 
-        self.direction_list=['front','right','left']
+        self.direction_list=['front','right','left','path']
 
         #for each dirction, there are three distance sensors
         self.distance_sensor=[[],[],[]]
@@ -42,11 +50,9 @@ class Detector(object):
 
         #one camera for each direction, one camera specific for path detection
         self.camera = []
-        for i in range(3):
+        for i in range(4):
             self.camera.append(Camera(self.direction_list[i]))
             self.camera[i].enable(1)
-        self.camera.append(Camera('path'))
-        self.camera[3].enable(1)
 
         #compass for moving direction
         self.compass=Compass('compass')
@@ -55,14 +61,12 @@ class Detector(object):
         #GPS for position and speed
         self.gps=GPS('gps')
         self.gps.enable(1)
-        
 
     def set_queues(self, signal_queue):
         '''
         `signal_queue`: queue for signals from sensor\n
         '''
         self.signal_queue = signal_queue
-        
 
     def send_signals(self, signals):
         '''
@@ -70,27 +74,24 @@ class Detector(object):
         send out signals through signal_queue
         '''
         self.signal_queue.put(signals)
-        
 
-    def get_image(self, index):
+    def get_image(self,index):
         '''
-        capture images from camera
+        capture images from camera to test/camera/
         '''
         image = np.array(self.camera[index].getImageArray(), dtype="uint8")
         r, g, b = cv2.split(image)
         image = cv2.merge([b, g, r])
         return image
-    
-    
-     def capture(self, image):
+
+    def capture(self, image):
         '''
         capture images from camera to test/camera/.
         '''
-        capture_path = 'test/camera/'
+        capture_path = 'test/camera/0/'
         if not os.path.exists(capture_path):
             os.makedirs(capture_path)
-        cv2.imwrite(capture_path + time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime()) + '.png', image)
-        
+        cv2.imwrite(capture_path  +time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())+'test.png', image)
 
     def get_color(self, frame):
         """
@@ -113,7 +114,6 @@ class Detector(object):
                 maxsum = sum
                 color = item[0]
         return color
-    
 
     def run(self, flag_pause, key):
         '''
@@ -123,15 +123,16 @@ class Detector(object):
         while True:
             time.sleep(0.1)  # set detection period to 0.1s
             # skip all code inside if paused by webots
-            if not flag_pause.value:
+            if not flag_pause:
                 # vision/sensor group's code goes under this ###################
                 # keyboard events
                 # TODO: save image from camera for Haoran
-                if key.value == ord('S'):  # capture image when press S
+                if key.value == ord('C'):  # capture image when press S
                     self.capture(self.get_image(1))
 
                 # update signals
                 self.signals['time (min)'] = time.localtime(time.time()).tm_min
+
                 self.signals['Position'] = np.array(self.gps.getValues())
                 self.signals['Direction'] = np.array(self.compass.getValues())
                 self.signals['Speed'] = np.array(self.gps.getSpeed())
@@ -145,7 +146,9 @@ class Detector(object):
                 self.signals['Left_Distance'] = np.min([self.distance_sensor[2][0].getValue(),
                                                         self.distance_sensor[2][1].getValue(),
                                                         self.distance_sensor[2][2].getValue()]) / 1000
-                self.signals['Color'] = self.get_color(self.capture(3))
+                self.signals['Color'] = self.get_color(self.get_image(3))
+
+
                 self.signals['time (sec)'] = time.localtime(time.time()).tm_sec
 
                 # send all signals to decider
@@ -153,13 +156,14 @@ class Detector(object):
                 debugInfo('\n\t'.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
 
 
-if __name__ == "__main__":
-    detector = Detector()
-    img1 = './test/imgs/lena.jpg'
-    img2 = './test/imgs/mihotel.jpg'
-    img3 = './test/imgs/bird.jpg'
-    frame1 = cv2.imread(img1)
-    frame2 = cv2.imread(img2)
-    frame3 = cv2.imread(img3)
-    print(detector.get_color(frame1), detector.get_color(frame2), detector.get_color(frame3))
-    # Expected output: red white cyan
+# if __name__ == "__main__":
+#     detector = Detector()
+#     img1 = './test/imgs/lena.jpg'
+#     img2 = './test/imgs/mihotel.jpg'
+#     img3 = './test/imgs/bird.jpg'
+#     frame1 = cv2.imread(img1)
+#     frame2 = cv2.imread(img2)
+#     frame3 = cv2.imread(img3)
+#     print(detector.get_color(frame1), detector.get_color(frame2), detector.get_color(frame3))
+#     # Expected output: red white cyan
+   
