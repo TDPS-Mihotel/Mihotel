@@ -156,14 +156,14 @@ class Detector(object):
                 debugInfo('\n\t'.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
 
 
-# if __name__ == "__main__":
-#     detector = Detector()
-#     img1 = './test/imgs/lena.jpg'
-#     img2 = './test/imgs/mihotel.jpg'
-#     img3 = './test/imgs/bird.jpg'
-#     frame1 = cv2.imread(img1)
-#     frame2 = cv2.imread(img2)
-#     frame3 = cv2.imread(img3)
-#     print(detector.get_color(frame1), detector.get_color(frame2), detector.get_color(frame3))
-#     # Expected output: red white cyan
+if __name__ == "__main__":
+    detector = Detector()
+    img1 = './test/imgs/lena.jpg'
+    img2 = './test/imgs/mihotel.jpg'
+    img3 = './test/imgs/bird.jpg'
+    frame1 = cv2.imread(img1)
+    frame2 = cv2.imread(img2)
+    frame3 = cv2.imread(img3)
+    print(detector.get_color(frame1), detector.get_color(frame2), detector.get_color(frame3))
+    # Expected output: red white cyan
    
