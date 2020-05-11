@@ -123,7 +123,7 @@ class Detector(object):
         while True:
             time.sleep(0.1)  # set detection period to 0.1s
             # skip all code inside if paused by webots
-            if not flag_pause:
+            if not flag_pause.value:
                 # vision/sensor group's code goes under this ###################
                 # keyboard events
                 # TODO: save image from camera for Haoran
