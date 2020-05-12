@@ -12,9 +12,10 @@ class Detector(object):
     """
     Detector class
     """
-
     def __init__(self, robot):
-
+        '''
+        `robot`: the Robot() instance
+        '''
         # Path_Direction is waiting for Wen Bo
         # Later, various Object_Detection could be added
         self.signals = {
