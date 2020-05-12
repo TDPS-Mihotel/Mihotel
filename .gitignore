@@ -3,3 +3,4 @@
 *.pyc
 *.wbproj
 rover.wbo
+test/camera/**

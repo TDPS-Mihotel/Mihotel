@@ -1,9 +1,11 @@
-import time
-import cv2
 import os
+import time
+
+import cv2
 import numpy as np
+
 from colored import commandInfo, debugInfo, detectedInfo, info
-from controller import Robot,Camera,Compass,GPS,DistanceSensor
+from controller import GPS, Camera, Compass, DistanceSensor, Robot
 
 
 class Detector(object):
@@ -13,17 +15,18 @@ class Detector(object):
 
     def __init__(self, robot):
 
-        #Path_Dirction is waiting for Wen Bo
-        #Later, various Object_Dectection could be added
+        # Path_Direction is waiting for Wen Bo
+        # Later, various Object_Detection could be added
         self.signals = {
-            'Position':[],
-            'Direction':[],
-            'Speed':[],
-            'Front_Distance':[],
-            'Right_Distance':[],
-            'Left_Distance':[],
-            'Color':[],
-            'Path_Direction':[]}
+            'Position': [],
+            'Direction': [],
+            'Speed': [],
+            'Front_Distance': [],
+            'Right_Distance': [],
+            'Left_Distance': [],
+            'Color': [],
+            'Path_Direction': []
+        }
 
         self.color_list = [
             ('black', np.array([0, 0, 0]), np.array([180, 255, 46])),
@@ -37,32 +40,33 @@ class Detector(object):
             ('blue', np.array([100, 43, 46]), np.array([124, 255, 255])),
             ('purple', np.array([125, 43, 46]), np.array([155, 255, 255]))
         ]
-        info('Sensor initialed')
 
         timestep = int(robot.getBasicTimeStep())
 
-        self.direction_list=['front','right','left','path']
-
-        #for each dirction, there are three distance sensors
-        self.distance_sensor=[[],[],[]]
+        # enable sensors #######################################################
+        self.direction_list = ['front', 'right', 'left', 'path']
+        # for each direction, there are three distance sensors
+        self.distance_sensor = [[], [], []]
         for i in range(3):
             for j in range(3):
-                self.distance_sensor[i].append(robot.getDistanceSensor(self.direction_list[i]+'_'+self.direction_list[j]))
+                self.distance_sensor[i].append(robot.getDistanceSensor(
+                    self.direction_list[i] + '_' + self.direction_list[j]))
                 self.distance_sensor[i][j].enable(timestep)
-
+        # camera frames are received from the main process, so set a default value here
         self.images = [np.zeros((1, 1, 3), np.uint8) for i in range(4)]
-
-        #compass for moving direction
-        self.compass=robot.getCompass('compass')
+        # compass for moving direction
+        self.compass = robot.getCompass('compass')
         self.compass.enable(timestep)
-
-        #GPS for position and speed
-        self.gps=robot.getGPS('gps')
+        # GPS for position and speed
+        self.gps = robot.getGPS('gps')
         self.gps.enable(timestep)
+
+        info('Sensor initialed')
 
     def set_queues(self, signal_queue, images_queue):
         '''
         `signal_queue`: queue for signals from sensor\n
+        `images_queue`: queue for camera frames from main process\n
         '''
         self.signal_queue = signal_queue
         self.images_queue = images_queue
@@ -74,7 +78,7 @@ class Detector(object):
         '''
         self.signal_queue.put(signals)
 
-    def get_image(self,index):
+    def get_image(self, index):
         '''
         capture images from camera to test/camera/
         '''
@@ -87,10 +91,11 @@ class Detector(object):
         '''
         capture images from camera to test/camera/.
         '''
-        capture_path = 'test/camera/0/'
+        capture_path = '../../../test/camera/0/'
         if not os.path.exists(capture_path):
             os.makedirs(capture_path)
-        cv2.imwrite(capture_path  +time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())+'test.png', image)
+        cv2.imwrite(capture_path + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + 'test.png', image)
+        info('Captured! 📸')
 
     def get_color(self, frame):
         """
@@ -125,9 +130,8 @@ class Detector(object):
             if not flag_pause.value:
                 # vision/sensor group's code goes under this ###################
                 # keyboard events
-                # TODO: save image from camera for Haoran
-                if key.value == ord('C'):  # capture image when press S
-                    self.capture(self.get_image(1))
+                if key.value == ord('C'):  # capture image when C is pressed
+                    self.capture(self.get_image(3))
 
                 # receive images from main process
                 if not self.images_queue.empty():
@@ -151,7 +155,6 @@ class Detector(object):
                                                         self.distance_sensor[2][2].getValue()]) / 1000
                 self.signals['Color'] = self.get_color(self.get_image(3))
 
-
                 self.signals['time (sec)'] = time.localtime(time.time()).tm_sec
 
                 # send all signals to decider
@@ -169,4 +172,3 @@ if __name__ == "__main__":
     frame3 = cv2.imread(img3)
     print(detector.get_color(frame1), detector.get_color(frame2), detector.get_color(frame3))
     # Expected output: red white cyan
-   
