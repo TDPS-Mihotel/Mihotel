@@ -119,14 +119,15 @@ class Detector(object):
         image = cv2.warpAffine(image, M, (w, h))
         return image
 
-    def capture(self, image):
+    def capture(self, index):
         '''
-        capture images from camera to test/camera/.
+        capture images from cameras to test/camera/[index]/
         '''
-        capture_path = '../../../test/camera/0/'
+        capture_path = '../../../test/camera/' + str(index) + '/'
         if not os.path.exists(capture_path):
             os.makedirs(capture_path)
-        cv2.imwrite(capture_path + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + 'test.png', image)
+        image = self.get_image(index)
+        cv2.imwrite(capture_path + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '.png', image)
         info('Captured! 📸')
 
     def get_color(self, frame):
@@ -163,7 +164,7 @@ class Detector(object):
                 # vision/sensor group's code goes under this ###################
                 # keyboard events
                 if key.value == ord('C'):  # capture image when C is pressed
-                    self.capture(self.get_image(3))
+                    self.capture(3)
 
                 # update sensors data
                 self.update()
