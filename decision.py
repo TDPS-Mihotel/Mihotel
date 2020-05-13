@@ -47,7 +47,7 @@ class Decider(object):
                         self.flag_patio_finished.value = True
 
                 self.update_signals()
-                self.send_command('move straight forward')
+                self.send_command('Rotate arm')
                 # decision group's code ends ###################################
                 # keep this at the end of run()
                 with lock:

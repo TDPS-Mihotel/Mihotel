@@ -28,9 +28,9 @@ import detection
 
 
 # define the processes #########################################################
-def control(command_queue):
+def control(command_queue, motors_queue):
     controller = chassis.Controller()
-    controller.set_queue(command_queue)
+    controller.set_queue(command_queue, motors_queue)
     controller.run(flag_pause)
 
 
@@ -55,12 +55,13 @@ if __name__ == "__main__":
     command_queue = multiprocessing.Queue()
     signal_queue = multiprocessing.Queue()
     sensors_queue = multiprocessing.Queue()
+    motors_queue = multiprocessing.Queue()
 
     # create process lock
     lock = multiprocessing.Lock()
 
     # initial processes and set them as deamon process
-    controller_process = multiprocessing.Process(target=control, args=(command_queue, ))
+    controller_process = multiprocessing.Process(target=control, args=(command_queue, motors_queue))
     detector_process = multiprocessing.Process(target=detect, args=(signal_queue, flag_pause, key, sensors_queue))
     decider_process = multiprocessing.Process(target=decide, args=(
         signal_queue, command_queue, flag_pause, key, lock, flag_patio_finished))
@@ -83,12 +84,17 @@ if __name__ == "__main__" and flag_simulation:
     keyboard.enable(timestep)
     # enable sensors
     sensors = detection.Sensors(robot)
+    # enable motors
+    motors = chassis.Motor(robot)
 
     # Main loop:
     # - perform simulation steps until Webots is stopping the controller
     while (robot.step(timestep) != -1) and not flag_patio_finished.value:
         # update sensors data
         sensors_queue.put(sensors.update())
+        # update motors speed
+        if not motors_queue.empty():
+            motors.update(motors_queue.get())
         # resume decider process
         with lock:
             flag_pause.value = False
