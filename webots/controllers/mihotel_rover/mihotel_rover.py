@@ -59,6 +59,18 @@ if __name__ == "__main__":
     # create process lock
     lock = multiprocessing.Lock()
 
+    # initial processes and set them as deamon process
+    controller_process = multiprocessing.Process(target=control, args=(command_queue, ))
+    detector_process = multiprocessing.Process(target=detect, args=(signal_queue, flag_pause, key, sensors_queue))
+    decider_process = multiprocessing.Process(target=decide, args=(
+        signal_queue, command_queue, flag_pause, key, lock, flag_patio_finished))
+    controller_process.daemon = True
+    detector_process.daemon = True
+    decider_process.daemon = True
+    controller_process.start()
+    detector_process.start()
+    decider_process.start()
+
 # if run for webots rover
 if __name__ == "__main__" and flag_simulation:
     from controller import Robot, Keyboard
@@ -72,21 +84,6 @@ if __name__ == "__main__" and flag_simulation:
     # enable sensors
     sensors = detection.Sensors(robot)
 
-# for both real rover and webots rover
-if __name__ == "__main__":
-    # initial processes and set them as deamon process
-    controller_process = multiprocessing.Process(target=control, args=(command_queue, ))
-    detector_process = multiprocessing.Process(target=detect, args=(signal_queue, flag_pause, key, sensors_queue))
-    decider_process = multiprocessing.Process(target=decide, args=(
-        signal_queue, command_queue, flag_pause, key, lock, flag_patio_finished))
-    controller_process.daemon = True
-    detector_process.daemon = True
-    decider_process.daemon = True
-    controller_process.start()
-    detector_process.start()
-    decider_process.start()
-
-if __name__ == "__main__" and flag_simulation:
     # Main loop:
     # - perform simulation steps until Webots is stopping the controller
     while (robot.step(timestep) != -1) and not flag_patio_finished.value:
