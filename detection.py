@@ -85,7 +85,11 @@ class Detector(object):
         '''
         image = np.array(self.images[index], dtype="uint8")
         r, g, b = cv2.split(image)
-        image = cv2.merge([b, g, r])
+        image = cv2.merge([b, g, r]) 
+        (h, w) = image.shape[:2]
+        center = (w // 2, h // 2)
+        M = cv2.getRotationMatrix2D(center, -90, 1.0)
+        image = cv2.warpAffine(image, M, (w, h))
         return image
 
     def capture(self, image):
