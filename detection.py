@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 
 from colored import commandInfo, debugInfo, detectedInfo, info
-from controller import GPS, Camera, Compass, DistanceSensor, Robot
 
 
 class Sensors(object):
@@ -13,6 +12,11 @@ class Sensors(object):
     Sensors interface
     '''
     def __init__(self, robot):
+        '''
+        `robot`: the Robot() instance from main process
+        '''
+        # TODO: refactor to use dict after the solution is decided
+        from controller import GPS, Camera, Compass, DistanceSensor
         timestep = int(robot.getBasicTimeStep())
 
         # enable sensors #######################################################
@@ -37,6 +41,9 @@ class Sensors(object):
         self.gps.enable(timestep)
 
     def update(self):
+        '''
+        get and return `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `distancesRaw`, `camerasRaw`
+        '''
         gpsRaw_position = self.gps.getValues()
         gpsRaw_speed = self.gps.getSpeed()
         compassRaw = self.compass.getValues()
@@ -50,10 +57,7 @@ class Detector(object):
     Detector class
     """
     def __init__(self):
-        '''
-        `robot`: the Robot() instance
-        '''
-        # Path_Direction is waiting for Wen Bo
+        # TODO: Path_Direction is waiting for Wen Bo
         # Later, various Object_Detection could be added
         self.signals = {
             'Position': [],
@@ -90,12 +94,15 @@ class Detector(object):
     def set_queues(self, signal_queue, sensors_queue):
         '''
         `signal_queue`: queue for signals from sensor\n
-        `images_queue`: queue for camera frames from main process\n
+        `sensors_queue`: queue for sensors raw data from main process\n
         '''
         self.signal_queue = signal_queue
         self.sensors_queue = sensors_queue
 
     def update(self):
+        '''
+        update `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `distancesRaw`, `camerasRaw` received from main process
+        '''
         if not self.sensors_queue.empty():
             self.gpsRaw_position, self.gpsRaw_speed, self.compassRaw, self.distancesRaw, self.camerasRaw = self.sensors_queue.get()
 
@@ -108,7 +115,8 @@ class Detector(object):
 
     def get_image(self, index):
         '''
-        capture images from camera to test/camera/
+        convert format and direction of image from webots camera\n
+        `index`: index of the camera
         '''
         image = np.array(self.camerasRaw[index], dtype="uint8")
         r, g, b = cv2.split(image)
@@ -154,14 +162,14 @@ class Detector(object):
 
     def run(self, flag_pause, key):
         '''
-        `flag_pause`: the flag to pause this Detector running (actually skips code in this function)\n
         run the detection
+        `flag_pause`: the flag to pause this Detector running (actually skips code in this function)\n
+        `key`: ascii number of pressed key on keyboard, is -1 when no key pressed
         '''
         while True:
             time.sleep(0.1)  # set detection period to 0.1s
             # skip all code inside if paused by webots
             if not flag_pause.value:
-                # vision/sensor group's code goes under this ###################
                 # keyboard events
                 if key.value == ord('C'):  # capture image when C is pressed
                     self.capture(3)
@@ -169,7 +177,7 @@ class Detector(object):
                 # update sensors data
                 self.update()
                 # update signals
-                self.signals['time (min)'] = time.localtime(time.time()).tm_min
+                self.signals['time'] = time.strftime("%H:%M:%S", time.localtime())
 
                 self.signals['Position'] = np.array(self.gpsRaw_position)
                 self.signals['Direction'] = np.array(self.compassRaw)
@@ -180,18 +188,16 @@ class Detector(object):
                 self.signals['Left_Distance'] = np.min(self.distancesRaw[2]) / 1000
                 self.signals['Color'] = self.get_color(self.get_image(3))
 
-                self.signals['time (sec)'] = time.localtime(time.time()).tm_sec
-
                 # send all signals to decider
                 self.send_signals(self.signals)
-                debugInfo('\n\t'.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
+                debugInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
 
 
 if __name__ == "__main__":
     detector = Detector()
-    img1 = './test/imgs/lena.jpg'
-    img2 = './test/imgs/mihotel.jpg'
-    img3 = './test/imgs/bird.jpg'
+    img1 = './test/img/lena.jpg'
+    img2 = './test/img/mihotel.jpg'
+    img3 = './test/img/bird.jpg'
     frame1 = cv2.imread(img1)
     frame2 = cv2.imread(img2)
     frame3 = cv2.imread(img3)
