@@ -8,11 +8,48 @@ from colored import commandInfo, debugInfo, detectedInfo, info
 from controller import GPS, Camera, Compass, DistanceSensor, Robot
 
 
+class Sensors(object):
+    '''
+    Sensors interface
+    '''
+    def __init__(self, robot):
+        timestep = int(robot.getBasicTimeStep())
+
+        # enable sensors #######################################################
+        self.direction_list = ['front', 'right', 'left', 'path']
+        # for each direction, there are three distance sensors
+        self.distance_sensors = [[], [], []]
+        for i in range(3):
+            for j in range(3):
+                self.distance_sensors[i].append(robot.getDistanceSensor(
+                    self.direction_list[i] + '_' + self.direction_list[j]))
+                self.distance_sensors[i][j].enable(timestep)
+        # camera frames are received from the main process, so set a default value here
+        self.cameras = []
+        for i in range(4):
+            self.cameras.append(robot.getCamera(self.direction_list[i]))
+            self.cameras[i].enable(timestep)
+        # compass for moving direction
+        self.compass = robot.getCompass('compass')
+        self.compass.enable(timestep)
+        # GPS for position and speed
+        self.gps = robot.getGPS('gps')
+        self.gps.enable(timestep)
+
+    def update(self):
+        gpsRaw_position = self.gps.getValues()
+        gpsRaw_speed = self.gps.getSpeed()
+        compassRaw = self.compass.getValues()
+        distancesRaw = [self.distance_sensors[i][j].getValue() for i in range(3) for j in range(3)]
+        camerasRaw = [item.getImageArray() for item in self.cameras]
+        return gpsRaw_position, gpsRaw_speed, compassRaw, distancesRaw, camerasRaw
+
+
 class Detector(object):
     """
     Detector class
     """
-    def __init__(self, robot):
+    def __init__(self):
         '''
         `robot`: the Robot() instance
         '''
@@ -29,6 +66,12 @@ class Detector(object):
             'Path_Direction': []
         }
 
+        self.gpsRaw_position = [0, 0, 0]
+        self.gpsRaw_speed = [0, 0, 0]
+        self.compassRaw = [0, 0, 0]
+        self.distancesRaw = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        self.camerasRaw = [np.zeros((1, 1, 3), np.uint8) for i in range(4)]
+
         self.color_list = [
             ('black', np.array([0, 0, 0]), np.array([180, 255, 46])),
             ('white', np.array([0, 0, 221]), np.array([180, 30, 255])),
@@ -42,35 +85,19 @@ class Detector(object):
             ('purple', np.array([125, 43, 46]), np.array([155, 255, 255]))
         ]
 
-        timestep = int(robot.getBasicTimeStep())
-
-        # enable sensors #######################################################
-        self.direction_list = ['front', 'right', 'left', 'path']
-        # for each direction, there are three distance sensors
-        self.distance_sensor = [[], [], []]
-        for i in range(3):
-            for j in range(3):
-                self.distance_sensor[i].append(robot.getDistanceSensor(
-                    self.direction_list[i] + '_' + self.direction_list[j]))
-                self.distance_sensor[i][j].enable(timestep)
-        # camera frames are received from the main process, so set a default value here
-        self.images = [np.zeros((1, 1, 3), np.uint8) for i in range(4)]
-        # compass for moving direction
-        self.compass = robot.getCompass('compass')
-        self.compass.enable(timestep)
-        # GPS for position and speed
-        self.gps = robot.getGPS('gps')
-        self.gps.enable(timestep)
-
         info('Sensor initialed')
 
-    def set_queues(self, signal_queue, images_queue):
+    def set_queues(self, signal_queue, sensors_queue):
         '''
         `signal_queue`: queue for signals from sensor\n
         `images_queue`: queue for camera frames from main process\n
         '''
         self.signal_queue = signal_queue
-        self.images_queue = images_queue
+        self.sensors_queue = sensors_queue
+
+    def update(self):
+        if not self.sensors_queue.empty():
+            self.gpsRaw_position, self.gpsRaw_speed, self.compassRaw, self.distancesRaw, self.camerasRaw = self.sensors_queue.get()
 
     def send_signals(self, signals):
         '''
@@ -83,9 +110,9 @@ class Detector(object):
         '''
         capture images from camera to test/camera/
         '''
-        image = np.array(self.images[index], dtype="uint8")
+        image = np.array(self.camerasRaw[index], dtype="uint8")
         r, g, b = cv2.split(image)
-        image = cv2.merge([b, g, r]) 
+        image = cv2.merge([b, g, r])
         (h, w) = image.shape[:2]
         center = (w // 2, h // 2)
         M = cv2.getRotationMatrix2D(center, -90, 1.0)
@@ -138,26 +165,18 @@ class Detector(object):
                 if key.value == ord('C'):  # capture image when C is pressed
                     self.capture(self.get_image(3))
 
-                # receive images from main process
-                if not self.images_queue.empty():
-                    self.images = self.images_queue.get()
-
+                # update sensors data
+                self.update()
                 # update signals
                 self.signals['time (min)'] = time.localtime(time.time()).tm_min
 
-                self.signals['Position'] = np.array(self.gps.getValues())
-                self.signals['Direction'] = np.array(self.compass.getValues())
-                self.signals['Speed'] = np.array(self.gps.getSpeed())
+                self.signals['Position'] = np.array(self.gpsRaw_position)
+                self.signals['Direction'] = np.array(self.compassRaw)
+                self.signals['Speed'] = np.array(self.gpsRaw_speed)
                 # the minimum distance for each direction where the unit is m.
-                self.signals['Front_Distance'] = np.min([self.distance_sensor[0][0].getValue(),
-                                                         self.distance_sensor[0][1].getValue(),
-                                                         self.distance_sensor[0][2].getValue()]) / 1000
-                self.signals['Right_Distance'] = np.min([self.distance_sensor[1][0].getValue(),
-                                                         self.distance_sensor[1][1].getValue(),
-                                                         self.distance_sensor[1][2].getValue()]) / 1000
-                self.signals['Left_Distance'] = np.min([self.distance_sensor[2][0].getValue(),
-                                                        self.distance_sensor[2][1].getValue(),
-                                                        self.distance_sensor[2][2].getValue()]) / 1000
+                self.signals['Front_Distance'] = np.min(self.distancesRaw[0]) / 1000
+                self.signals['Right_Distance'] = np.min(self.distancesRaw[1]) / 1000
+                self.signals['Left_Distance'] = np.min(self.distancesRaw[2]) / 1000
                 self.signals['Color'] = self.get_color(self.get_image(3))
 
                 self.signals['time (sec)'] = time.localtime(time.time()).tm_sec

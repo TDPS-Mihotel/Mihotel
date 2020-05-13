@@ -34,9 +34,9 @@ def control(command_queue):
     controller.run(flag_pause)
 
 
-def detect(signal_queue, flag_pause, key, robot, images_queue):
-    detector = detection.Detector(robot)
-    detector.set_queues(signal_queue, images_queue)
+def detect(signal_queue, flag_pause, key, sensors_queue):
+    detector = detection.Detector()
+    detector.set_queues(signal_queue, sensors_queue)
     detector.run(flag_pause, key)
 
 
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     # create pipes
     command_queue = multiprocessing.Queue()
     signal_queue = multiprocessing.Queue()
-    images_queue = multiprocessing.Queue()
+    sensors_queue = multiprocessing.Queue()
 
     # create process lock
     lock = multiprocessing.Lock()
@@ -66,21 +66,17 @@ if __name__ == "__main__" and flag_simulation:
     robot = Robot()
     # get the time step of the current world.
     timestep = int(robot.getBasicTimeStep())
+    # enable keyboard listening
     keyboard = Keyboard()
     keyboard.enable(timestep)
-    direction_list = ['front', 'right', 'left', 'path']
-    camera = []
-    for i in range(4):
-        camera.append(robot.getCamera(direction_list[i]))
-        camera[i].enable(timestep)
-    detection.Detector(robot)
-    robot.step(timestep)
+    # enable sensors
+    sensors = detection.Sensors(robot)
 
 # for both real rover and webots rover
 if __name__ == "__main__":
     # initial processes and set them as deamon process
     controller_process = multiprocessing.Process(target=control, args=(command_queue, ))
-    detector_process = multiprocessing.Process(target=detect, args=(signal_queue, flag_pause, key, robot, images_queue))
+    detector_process = multiprocessing.Process(target=detect, args=(signal_queue, flag_pause, key, sensors_queue))
     decider_process = multiprocessing.Process(target=decide, args=(
         signal_queue, command_queue, flag_pause, key, lock, flag_patio_finished))
     controller_process.daemon = True
@@ -94,7 +90,8 @@ if __name__ == "__main__" and flag_simulation:
     # Main loop:
     # - perform simulation steps until Webots is stopping the controller
     while (robot.step(timestep) != -1) and not flag_patio_finished.value:
-        images_queue.put([item.getImageArray() for item in camera])
+        # update sensors data
+        sensors_queue.put(sensors.update())
         # resume decider process
         with lock:
             flag_pause.value = False
