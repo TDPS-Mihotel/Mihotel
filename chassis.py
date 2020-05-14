@@ -24,7 +24,7 @@ class Motor(object):
         for motor in velocityDict:
             self.motors[motor].setVelocity(velocityDict[motor])
 
-//WHERRERER SO MY 
+# WHERRERER SO MY 
 class Controller(object):
     '''
     Controller class
