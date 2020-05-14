@@ -13,6 +13,12 @@ class Motor(object):
         # enable motors
         self.motors = {}
         self.motors['arm'] = robot.getMotor('arm')
+        # wheel
+        self.motors['wheel1'] = robot.getMotor('wheel1')
+        self.motors['wheel2'] = robot.getMotor('wheel2')
+        self.motors['wheel3'] = robot.getMotor('wheel3')
+        self.motors['wheel3'] = robot.getMotor('wheel3')
+        # wheel
         for motor in self.motors:
             self.motors[motor].setPosition(float('inf'))
             self.motors[motor].setVelocity(0.0)
@@ -59,6 +65,43 @@ class Controller(object):
             if command == 'Rotate arm':
                 self.state = 'Arm rotating'
                 self.velocityDict['arm'] = 10
+            # wheel
+            if command == 'Move forward':
+                self.state = 'Moving forward'
+                self.velocityDict['wheel1'] = -10
+                self.velocityDict['wheel2'] = -10
+                self.velocityDict['wheel3'] = -10
+                self.velocityDict['wheel4'] = -10
+            
+            if command == 'Move backward':
+                self.state = 'Moving backward'
+                self.velocityDict['wheel1'] = 10
+                self.velocityDict['wheel2'] = 10
+                self.velocityDict['wheel3'] = 10
+                self.velocityDict['wheel4'] = 10
+            
+            if command == 'Turn right':
+                self.state = 'Turning right'
+                self.velocityDict['wheel1'] = -10
+                self.velocityDict['wheel2'] = -10
+                self.velocityDict['wheel3'] = 10
+                self.velocityDict['wheel4'] = 10
+            
+            if command == 'Turn left':
+                self.state = 'Turning left'
+                self.velocityDict['wheel1'] = 10
+                self.velocityDict['wheel2'] = 10
+                self.velocityDict['wheel3'] = -10
+                self.velocityDict['wheel4'] = -10
+            
+            if command == 'Stop':
+                self.state = 'Stopped'
+                self.velocityDict['wheel1'] = -10
+                self.velocityDict['wheel2'] = -10
+                self.velocityDict['wheel3'] = -10
+                self.velocityDict['wheel4'] = -10
+            
+            #wheel
             self.motors_queue.put(self.velocityDict)
             commandInfo(self.state)
 
