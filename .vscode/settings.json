@@ -5,6 +5,7 @@
     "markdown.extension.toc.githubCompatibility": true,
     "markdown.extension.toc.orderedList": false,
     "git.postCommitCommand": "none",
+    "git.autofetch": true,
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": false,
     "python.linting.pycodestyleEnabled": true,
