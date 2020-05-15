@@ -76,10 +76,9 @@ List of tools, modules with their version
 | Item                  | Version       | Notes                                                        |
 | --------------------- | ------------- | ------------------------------------------------------------ |
 | Simulation            | Webots R2020b | we are using a **very new** version of [Webots Nightly Build (24-4-2020)](https://github.com/cyberbotics/webots/releases/tag/nightly_24_4_2020) |
-| Python                | 3.7.4         |                                                              |
-| numpy                 | 4.2.0.32      | Numpy module for python                                      |
+| Python                | >3.6          |                                                              |
+| numpy                 | 1.17          | Numpy module for python                                      |
 | opencv-contrib-python | 4.2.0.32      | OpenCV module for python                                     |
-| colorama              |               | python module for colored terminal text                      |
 
 ## 🔍 Output Description
 
@@ -106,7 +105,7 @@ The **system** sets up **3 child processes**, one for chassis controlling, one f
 
 ##### Queue
 
-Two queues, **signal_queue**, **command_queue** are used for communications between processes. Although it seems when there is only two endpoints to communicate, [`Pipe()` is a faster choice](https://stackoverflow.com/a/8463046/10088906), but it seems the code could be prettier with `Queue()`.
+Four queues, **signal_queue**, **command_queue**, **sensors_queue**, **motors_queue** are used for communications between processes. Although it seems when there is only two endpoints to communicate, [`Pipe()` is a faster choice](https://stackoverflow.com/a/8463046/10088906), but it seems the code could be prettier with `Queue()`.
 
 ❗️ notice that once `Queue.get()` is used, one item in the queue is taken out and returned, which means **it is not in the queue anymore** and you could not get it again with `Queue.get()`. `Queue.empty()` could be used to detect whether it is empty.
 
@@ -154,7 +153,20 @@ Our **line detector** works like this:
 
 ### Decision
 
-The **decision making** is still working in progress at [#46](https://github.com/TDPS-Mihotel/Mihotel/issues/46)
+The **decision making** is still working in progress at [#46](https://github.com/TDPS-Mihotel/Mihotel/issues/#55) and [#56](https://github.com/TDPS-Mihotel/Mihotel/issues/#55)
+
+### Environment
+
+#### Specifications
+
+| Item        | Measurement (x, y, z) (m) | Note                                            |
+| ----------- | ------------------------- | ----------------------------------------------- |
+| patio       | 100, 2, 30                | with wall of height , thickness of 2m, 0.5m     |
+| pond        | 55, 1.9, 9                |                                                 |
+| river       | 100, 2, 2                 |                                                 |
+| road        | width: 0.2                | at height of 2.002                              |
+| curved road | radius: 0.8               |                                                 |
+| bridge      | 0.1, 0.338, 2.8           | slope is 20 degree, made of three 1, 0.1, 1 box |
 
 ## Development Strategy
 

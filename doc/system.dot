@@ -1,20 +1,25 @@
 digraph G{
+    compound=true
     node [shape=box]
-    splines=ortho
     ranksep=1.5
     "keyboard input" [shape=none]
     "webots pause signal" [shape=none]
     {rank=same detector_process decider_process controller_process}
-    detector_process -> decider_process [label="signals\n(signal_queue)"]
-    decider_process -> controller_process [label="commands\n(command_queue)"]
-    subgraph cluster{
+    detector_process -> decider_process [label="signal_queue" color=blue fontcolor=blue]
+    decider_process -> controller_process [label="command_queue" color=blue fontcolor=blue]
+    subgraph cluster0 {
         label=main_process
         node [shape=none; fillcolor=grey; style=filled]
-        flag_pause -> {detector_process controller_process} [style=dashed]
-        flag_pause -> decider_process [label="\l\llock" dir=both style=dashed]
-        flag_patio_finished -> decider_process [label="\l\llock" dir=both style=dashed]
-        key -> {detector_process, decider_process} [style=dashed]
+        flag_pause
+        flag_patio_finished
+        key
     }
+    flag_pause -> {detector_process controller_process} [style=dashed]
+    flag_pause -> decider_process [label="lock" dir=both style=dashed color=green fontcolor=green]
+    flag_patio_finished -> decider_process [label="lock" dir=both style=dashed color=green fontcolor=green]
+    key -> {detector_process, decider_process} [style=dashed]
     "webots pause signal" -> flag_pause
     "keyboard input" -> key
+    detector_process -> flag_patio_finished [label="sensors_queue" lhead=cluster0 color=blue fontcolor=blue]
+    controller_process -> flag_patio_finished [label="motors_queue" lhead=cluster0 color=blue fontcolor=blue]
 }
