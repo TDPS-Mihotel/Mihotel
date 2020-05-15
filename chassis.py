@@ -3,6 +3,25 @@ import time
 from colored import commandInfo, debugInfo, detectedInfo, info
 
 
+class Motor(object):
+    import gpiozero
+    '''
+    pwm motor class for omni rover, using same method names with ones of webots motor
+    '''
+
+    def __init__(self, pwmPin, in1Pin, in2Pin):
+        pass
+
+    def setEncoder(self, encoderPin):
+        pass
+
+    def setVelocity(self, velocity):
+        pass
+
+    def getVelocity(self):
+        pass
+
+
 class MotorsGroup(object):
     '''
     rover motor interface
@@ -17,6 +36,28 @@ class MotorsGroup(object):
         '''
         for motor in velocityDict:
             self.motors[motor].setVelocity(velocityDict[motor])
+
+
+class omniMotorsGroup(MotorsGroup):
+    '''
+    Omni real rover motor interface
+    '''
+
+    def __init__(self):
+        super().__init__()
+
+        self.motors = {}
+        self.motors['LeftFront'] = Motor(17, 22, 27)
+        self.motors['RightFront'] = Motor(18, 24, 23)
+        self.motors['LeftRear'] = Motor(13, 26, 19)
+        self.motors['RightRear'] = Motor(16, 21, 20)
+        self.motors['LeftFront'].setEncoder(4)
+        self.motors['RightFront'].setEncoder(25)
+        self.motors['LeftRear'].setEncoder(6)
+        self.motors['RightRear'].setEncoder(12)
+
+    def update(self, velocityDict):
+        return super().update(velocityDict)
 
 
 class WebotsMotorsGroup(MotorsGroup):
