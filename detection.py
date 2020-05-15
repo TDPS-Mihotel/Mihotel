@@ -11,6 +11,7 @@ class Sensors(object):
     '''
     Sensors interface
     '''
+
     def __init__(self, robot):
         '''
         `robot`: the Robot() instance from main process
@@ -56,6 +57,7 @@ class Detector(object):
     """
     Detector class
     """
+
     def __init__(self):
         # TODO: Path_Direction is waiting for Wen Bo
         # Later, various Object_Detection could be added

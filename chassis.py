@@ -7,6 +7,7 @@ class Motor(object):
     '''
     motor interface
     '''
+
     def __init__(self, robot):
         timestep = int(robot.getBasicTimeStep())
 
@@ -24,11 +25,12 @@ class Motor(object):
         for motor in velocityDict:
             self.motors[motor].setVelocity(velocityDict[motor])
 
-# WHERRERER SO MY 
+
 class Controller(object):
     '''
     Controller class
     '''
+
     def __init__(self):
         self.velocityDict = {}
         info('Chassis initialed')
