@@ -18,7 +18,6 @@ class Motor(object):
         self.motors['wheel2'] = robot.getMotor('wheel2')
         self.motors['wheel3'] = robot.getMotor('wheel3')
         self.motors['wheel3'] = robot.getMotor('wheel3')
-        # wheel
         for motor in self.motors:
             self.motors[motor].setPosition(float('inf'))
             self.motors[motor].setVelocity(0.0)
