@@ -100,7 +100,6 @@ class Controller(object):
                 self.velocityDict['wheel3'] = -10
                 self.velocityDict['wheel4'] = -10
             
-            #wheel
             self.motors_queue.put(self.velocityDict)
             commandInfo(self.state)
 
