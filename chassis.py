@@ -3,12 +3,30 @@ import time
 from colored import commandInfo, debugInfo, detectedInfo, info
 
 
-class Motor(object):
+class MotorsGroup(object):
     '''
-    motor interface
+    rover motor interface
+    '''
+
+    def __init__(self):
+        pass
+
+    def update(self, velocityDict):
+        '''
+        `velocityList`: list of velocity to set to motors
+        '''
+        for motor in velocityDict:
+            self.motors[motor].setVelocity(velocityDict[motor])
+
+
+class WebotsMotorsGroup(MotorsGroup):
+    '''
+    webots rover motor interface
     '''
 
     def __init__(self, robot):
+        super().__init__()
+
         timestep = int(robot.getBasicTimeStep())
 
         # enable motors
@@ -24,16 +42,12 @@ class Motor(object):
             self.motors[motor].setVelocity(0.0)
 
     def update(self, velocityDict):
-        '''
-        `velocityList`: list of velocity to set to motors
-        '''
-        for motor in velocityDict:
-            self.motors[motor].setVelocity(velocityDict[motor])
+        return super().update(velocityDict)
 
 
 class Controller(object):
     '''
-    Controller class
+    chassis controller
     '''
 
     def __init__(self):
@@ -73,35 +87,35 @@ class Controller(object):
                 self.velocityDict['wheel2'] = -10
                 self.velocityDict['wheel3'] = -10
                 self.velocityDict['wheel4'] = -10
-            
+
             if command == 'Move backward':
                 self.state = 'Moving backward'
                 self.velocityDict['wheel1'] = 10
                 self.velocityDict['wheel2'] = 10
                 self.velocityDict['wheel3'] = 10
                 self.velocityDict['wheel4'] = 10
-            
+
             if command == 'Turn right':
                 self.state = 'Turning right'
                 self.velocityDict['wheel1'] = -10
                 self.velocityDict['wheel2'] = -10
                 self.velocityDict['wheel3'] = 10
                 self.velocityDict['wheel4'] = 10
-            
+
             if command == 'Turn left':
                 self.state = 'Turning left'
                 self.velocityDict['wheel1'] = 10
                 self.velocityDict['wheel2'] = 10
                 self.velocityDict['wheel3'] = -10
                 self.velocityDict['wheel4'] = -10
-            
+
             if command == 'Stop':
                 self.state = 'Stopped'
                 self.velocityDict['wheel1'] = -10
                 self.velocityDict['wheel2'] = -10
                 self.velocityDict['wheel3'] = -10
                 self.velocityDict['wheel4'] = -10
-            
+
             self.motors_queue.put(self.velocityDict)
             commandInfo(self.state)
 

@@ -85,7 +85,7 @@ if __name__ == "__main__" and flag_simulation:
     # enable sensors
     sensors = detection.Sensors(robot)
     # enable motors
-    motors = chassis.Motor(robot)
+    motors = chassis.WebotsMotorsGroup(robot)
 
     # Main loop:
     # - perform simulation steps until Webots is stopping the controller
