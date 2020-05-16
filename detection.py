@@ -153,10 +153,7 @@ class Detector(object):
             mask = cv2.inRange(hsv, item[1], item[2])  # set regions of other colors to black
             binary = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)[1]  # threshold images into binary type
             binary = cv2.dilate(binary, None, iterations=2)
-            contours, hierarchy = cv2.findContours(binary.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            sum = 0
-            for c in contours:
-                sum += cv2.contourArea(c)
+            sum = np.sum(binary)
             if sum > maxsum:
                 maxsum = sum
                 color = item[0]
