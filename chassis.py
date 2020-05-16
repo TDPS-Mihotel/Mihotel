@@ -4,22 +4,40 @@ from colored import commandInfo, debugInfo, detectedInfo, info
 
 
 class Motor(object):
-    import gpiozero
     '''
     pwm motor class for omni rover, using same method names with ones of webots motor
     '''
+    import gpiozero
 
-    def __init__(self, pwmPin, in1Pin, in2Pin):
-        pass
+    def __init__(self, pwmPin, forwardPin, backwardPin):
+        '''
+        `forwardPin`: the motor rotate forward when this pin is on\n
+        `backwardPin`: the motor rotate backward when this pin is on\n
+        '''
+        self.pwmPin = gpiozero.OutputDevice(pwmPin)
+        self.pwmPin.on()
+        self.motor = gpiozero.Motor(forwardPin, backwardPin)
 
     def setEncoder(self, encoderPin):
-        pass
+        '''
+        `encoderPin`: pin of motor's encoder phase A
+        '''
+        self.encoderPin = gpiozero.InputDevice(encoderPin)
 
     def setVelocity(self, velocity):
-        pass
+        '''
+        `velocity`: normalized motor speed, should be between -1 and 1
+        '''
+        if velocity >= 0:
+            self.motor.forward(velocity)
+        else:
+            self.motor.backward(velocity)
 
     def getVelocity(self):
-        pass
+        '''
+        return a float between -1 and 1
+        '''
+        return self.motor.value
 
 
 class MotorsGroup(object):
@@ -47,8 +65,8 @@ class omniMotorsGroup(MotorsGroup):
         super().__init__()
 
         self.motors = {}
-        self.motors['LeftFront'] = Motor(17, 22, 27)
-        self.motors['RightFront'] = Motor(18, 24, 23)
+        self.motors['LeftFront'] = Motor(17, 27, 22)
+        self.motors['RightFront'] = Motor(18, 23, 24)
         self.motors['LeftRear'] = Motor(13, 26, 19)
         self.motors['RightRear'] = Motor(16, 21, 20)
         self.motors['LeftFront'].setEncoder(4)
