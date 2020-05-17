@@ -105,10 +105,16 @@ if __name__ == "__main__" and not flag_simulation:
     # when flag_patio_finished becomes True, main process ends, and all child
     # processes end with it
     key.value = 1000  # it is useless for real rover now
+    motors = chassis.omniMotorsGroup()
+
     while not flag_patio_finished.value:
         # temporarily using time to be the finish flag signal
         if time.time() - start > 2:  # 2s
             flag_patio_finished.value = True
+        # update motor speed
+        if not motors_queue.empty():
+            motors.update(motors_queue.get())
+        # resume decider process
         with lock:
             flag_pause.value = False
     info('Finished!')

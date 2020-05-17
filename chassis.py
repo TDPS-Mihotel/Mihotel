@@ -1,5 +1,7 @@
 import time
 
+import gpiozero
+
 from colored import commandInfo, debugInfo, detectedInfo, info
 
 
@@ -7,7 +9,6 @@ class Motor(object):
     '''
     pwm motor class for omni rover, using same method names with ones of webots motor
     '''
-    import gpiozero
 
     def __init__(self, pwmPin, forwardPin, backwardPin):
         '''
