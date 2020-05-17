@@ -99,6 +99,7 @@ if __name__ == "__main__" and flag_simulation:
         with lock:
             flag_pause.value = False
             key.value = keyboard.getKey()  # character of the key press
+    info('Finished!')
 
 # if run for real rover
 if __name__ == "__main__" and not flag_simulation:
