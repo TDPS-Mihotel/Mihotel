@@ -32,8 +32,8 @@ echo '\e[32mpip source changed\e[0m'
 # install OpenCV and its dependencies
 # sudo apt-get install -y libhdf5-dev libhdf5-103
 # sudo apt-get install -y libqtgui4 libqtwebkit4 libqt4-test python3-pyqt5
-# sudo apt-get install -y libatlas-base-dev
-# sudo apt-get install -y libjasper-dev
+sudo apt-get install -y libatlas-base-dev
+sudo apt-get install -y libjasper-dev
 pip install ~/Desktop/opencv_contrib_python-4.1.0.25-cp37-cp37m-linux_armv7l.whl  # ❗this wheel file has to be there first
 echo '\e[32mopencv-contrib-python installed\e[0m'
 
