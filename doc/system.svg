@@ -11,42 +11,42 @@
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-345.8 544.7329,-345.8 544.7329,4 -4,4"/>
 <g id="clust2" class="cluster">
 <title>cluster0</title>
-<polygon fill="none" stroke="#000000" points="114.0323,-152.8 114.0323,-229.6 421.0323,-229.6 421.0323,-152.8 114.0323,-152.8"/>
-<text text-anchor="middle" x="267.5323" y="-213" font-family="Times,serif" font-size="14.00" fill="#000000">main_process</text>
+<polygon fill="none" stroke="#000000" points="99.0323,-152.8 99.0323,-229.6 406.0323,-229.6 406.0323,-152.8 99.0323,-152.8"/>
+<text text-anchor="middle" x="252.5323" y="-213" font-family="Times,serif" font-size="14.00" fill="#000000">main_process</text>
 </g>
 <!-- keyboard input -->
 <g id="node1" class="node">
 <title>keyboard input</title>
-<text text-anchor="middle" x="149.0323" y="-319.6" font-family="Times,serif" font-size="14.00" fill="#000000">keyboard input</text>
+<text text-anchor="middle" x="109.0323" y="-319.6" font-family="Times,serif" font-size="14.00" fill="#000000">keyboard input</text>
 </g>
 <!-- key -->
 <g id="node8" class="node">
 <title>key</title>
-<polygon fill="#c0c0c0" stroke="transparent" points="176.0323,-196.8 122.0323,-196.8 122.0323,-160.8 176.0323,-160.8 176.0323,-196.8"/>
-<text text-anchor="middle" x="149.0323" y="-174.6" font-family="Times,serif" font-size="14.00" fill="#000000">key</text>
+<polygon fill="#c0c0c0" stroke="transparent" points="161.0323,-196.8 107.0323,-196.8 107.0323,-160.8 161.0323,-160.8 161.0323,-196.8"/>
+<text text-anchor="middle" x="134.0323" y="-174.6" font-family="Times,serif" font-size="14.00" fill="#000000">key</text>
 </g>
 <!-- keyboard input&#45;&gt;key -->
 <g id="edge10" class="edge">
 <title>keyboard input&#45;&gt;key</title>
-<path fill="none" stroke="#000000" d="M149.0323,-305.7288C149.0323,-281.0906 149.0323,-236.6889 149.0323,-207.4777"/>
-<polygon fill="#000000" stroke="#000000" points="152.5324,-207.0989 149.0323,-197.0989 145.5324,-207.0989 152.5324,-207.0989"/>
+<path fill="none" stroke="#000000" d="M112.148,-305.7288C116.4147,-280.9821 124.119,-236.2973 129.1543,-207.0926"/>
+<polygon fill="#000000" stroke="#000000" points="132.6273,-207.5482 130.8773,-197.0989 125.7291,-206.3588 132.6273,-207.5482"/>
 </g>
 <!-- webots pause signal -->
 <g id="node2" class="node">
 <title>webots pause signal</title>
-<text text-anchor="middle" x="375.0323" y="-319.6" font-family="Times,serif" font-size="14.00" fill="#000000">webots pause signal</text>
+<text text-anchor="middle" x="241.0323" y="-319.6" font-family="Times,serif" font-size="14.00" fill="#000000">webots pause signal</text>
 </g>
 <!-- flag_pause -->
 <g id="node6" class="node">
 <title>flag_pause</title>
-<polygon fill="#c0c0c0" stroke="transparent" points="413.1727,-196.8 336.8919,-196.8 336.8919,-160.8 413.1727,-160.8 413.1727,-196.8"/>
-<text text-anchor="middle" x="375.0323" y="-174.6" font-family="Times,serif" font-size="14.00" fill="#000000">flag_pause</text>
+<polygon fill="#c0c0c0" stroke="transparent" points="255.1727,-196.8 178.8919,-196.8 178.8919,-160.8 255.1727,-160.8 255.1727,-196.8"/>
+<text text-anchor="middle" x="217.0323" y="-174.6" font-family="Times,serif" font-size="14.00" fill="#000000">flag_pause</text>
 </g>
 <!-- webots pause signal&#45;&gt;flag_pause -->
 <g id="edge9" class="edge">
 <title>webots pause signal&#45;&gt;flag_pause</title>
-<path fill="none" stroke="#000000" d="M375.0323,-305.7288C375.0323,-281.0906 375.0323,-236.6889 375.0323,-207.4777"/>
-<polygon fill="#000000" stroke="#000000" points="378.5324,-207.0989 375.0323,-197.0989 371.5324,-207.0989 378.5324,-207.0989"/>
+<path fill="none" stroke="#000000" d="M238.0412,-305.7288C233.9452,-280.9821 226.5491,-236.2973 221.7152,-207.0926"/>
+<polygon fill="#000000" stroke="#000000" points="225.1471,-206.3931 220.0611,-197.0989 218.2411,-207.5362 225.1471,-206.3931"/>
 </g>
 <!-- detector_process -->
 <g id="node3" class="node">
@@ -67,19 +67,6 @@
 <polygon fill="#0000ff" stroke="#0000ff" points="191.7572,-21.5001 201.7571,-18 191.7571,-14.5001 191.7572,-21.5001"/>
 <text text-anchor="middle" x="156.005" y="-25.2" font-family="Times,serif" font-size="14.00" fill="#0000ff">signal_queue</text>
 </g>
-<!-- flag_patio_finished -->
-<g id="node7" class="node">
-<title>flag_patio_finished</title>
-<polygon fill="#c0c0c0" stroke="transparent" points="318.395,-196.8 193.6696,-196.8 193.6696,-160.8 318.395,-160.8 318.395,-196.8"/>
-<text text-anchor="middle" x="256.0323" y="-174.6" font-family="Times,serif" font-size="14.00" fill="#000000">flag_patio_finished</text>
-</g>
-<!-- detector_process&#45;&gt;flag_patio_finished -->
-<g id="edge11" class="edge">
-<title>detector_process&#45;&gt;flag_patio_finished</title>
-<path fill="none" stroke="#0000ff" d="M75.493,-36.0915C96.2989,-54.3252 129.6222,-83.0837 159.3941,-106.8 176.1702,-120.1639 195.0074,-134.3707 211.5646,-146.6021"/>
-<polygon fill="#0000ff" stroke="#0000ff" points="209.8633,-149.6957 219.9921,-152.8034 214.012,-144.0576 209.8633,-149.6957"/>
-<text text-anchor="middle" x="200.8514" y="-94.2" font-family="Times,serif" font-size="14.00" fill="#0000ff">sensors_queue</text>
-</g>
 <!-- controller_process -->
 <g id="node5" class="node">
 <title>controller_process</title>
@@ -93,52 +80,61 @@
 <polygon fill="#0000ff" stroke="#0000ff" points="410.9455,-21.5001 420.9455,-18 410.9454,-14.5001 410.9455,-21.5001"/>
 <text text-anchor="middle" x="364.7255" y="-25.2" font-family="Times,serif" font-size="14.00" fill="#0000ff">command_queue</text>
 </g>
+<!-- flag_patio_finished -->
+<g id="node7" class="node">
+<title>flag_patio_finished</title>
+<polygon fill="#c0c0c0" stroke="transparent" points="398.395,-196.8 273.6696,-196.8 273.6696,-160.8 398.395,-160.8 398.395,-196.8"/>
+<text text-anchor="middle" x="336.0323" y="-174.6" font-family="Times,serif" font-size="14.00" fill="#000000">flag_patio_finished</text>
+</g>
 <!-- controller_process&#45;&gt;flag_patio_finished -->
 <g id="edge12" class="edge">
 <title>controller_process&#45;&gt;flag_patio_finished</title>
-<path fill="none" stroke="#0000ff" d="M420.9824,-34.296C386.8176,-45.7664 344.7826,-63.805 313.7167,-90 293.8786,-106.7276 278.38,-132.0054 268.4667,-151.3192"/>
-<polygon fill="#0000ff" stroke="#0000ff" points="271.7098,-143.3463 266.9264,-152.8 276.5612,-148.3926 271.7098,-143.3463"/>
-<text text-anchor="middle" x="352.6901" y="-94.2" font-family="Times,serif" font-size="14.00" fill="#0000ff">motors_queue</text>
+<path fill="none" stroke="#0000ff" d="M464.5181,-36.3137C440.6754,-62.7544 396.2025,-112.0733 366.3539,-145.1744"/>
+<polygon fill="#0000ff" stroke="#0000ff" points="363.5728,-143.0322 359.4753,-152.8026 368.7714,-147.7199 363.5728,-143.0322"/>
+<text text-anchor="middle" x="451.6901" y="-94.2" font-family="Times,serif" font-size="14.00" fill="#0000ff">motors_queue</text>
 </g>
 <!-- flag_pause&#45;&gt;detector_process -->
 <g id="edge3" class="edge">
 <title>flag_pause&#45;&gt;detector_process</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M380.3106,-160.5527C384.8051,-140.8378 388.2455,-109.6198 372.0323,-90 355.9789,-70.5736 208.0075,-43.205 120.0166,-28.4341"/>
-<polygon fill="#000000" stroke="#000000" points="120.561,-24.9767 110.1214,-26.7837 119.4093,-31.8813 120.561,-24.9767"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M219.311,-160.6318C220.7428,-141.2738 220.0385,-110.6334 205.0323,-90 182.5203,-59.0462 143.1287,-40.8466 110.3612,-30.4906"/>
+</g>
+<!-- flag_pause&#45;&gt;detector_process -->
+<g id="edge11" class="edge">
+<title>flag_pause&#45;&gt;detector_process</title>
+<path fill="none" stroke="#0000ff" d="M176.0595,-152.8027C157.6809,-140.1174 136.3687,-123.9148 119.3941,-106.8 100.7277,-87.9794 83.3291,-63.3669 71.3399,-44.8281"/>
+<polygon fill="#0000ff" stroke="#0000ff" points="74.2204,-42.8351 65.907,-36.2672 68.3101,-46.5859 74.2204,-42.8351"/>
+<text text-anchor="middle" x="160.8514" y="-94.2" font-family="Times,serif" font-size="14.00" fill="#0000ff">sensors_queue</text>
 </g>
 <!-- flag_pause&#45;&gt;decider_process -->
 <g id="edge5" class="edge">
 <title>flag_pause&#45;&gt;decider_process</title>
-<path fill="none" stroke="#00ff00" stroke-dasharray="5,2" d="M391.9404,-151.7321C401.1516,-133.229 408.5517,-108.7563 397.0323,-90 379.6822,-61.7498 347.4192,-44.1664 318.0258,-33.4557"/>
-<polygon fill="#00ff00" stroke="#00ff00" points="388.8558,-150.0783 387.1991,-160.5429 395.02,-153.3955 388.8558,-150.0783"/>
-<polygon fill="#00ff00" stroke="#00ff00" points="318.788,-30.017 308.1933,-30.0814 316.5157,-36.638 318.788,-30.017"/>
-<text text-anchor="middle" x="414.0849" y="-94.2" font-family="Times,serif" font-size="14.00" fill="#00ff00">lock</text>
+<path fill="none" stroke="#00ff00" stroke-dasharray="5,2" d="M223.6553,-150.7742C230.5778,-121.4811 241.3809,-75.7669 248.3321,-46.3525"/>
+<polygon fill="#00ff00" stroke="#00ff00" points="220.2112,-150.1299 221.3175,-160.6668 227.0236,-151.7398 220.2112,-150.1299"/>
+<polygon fill="#00ff00" stroke="#00ff00" points="251.8107,-46.8506 250.7044,-36.3137 244.9983,-45.2407 251.8107,-46.8506"/>
+<text text-anchor="middle" x="249.0849" y="-94.2" font-family="Times,serif" font-size="14.00" fill="#00ff00">lock</text>
 </g>
 <!-- flag_pause&#45;&gt;controller_process -->
 <g id="edge4" class="edge">
 <title>flag_pause&#45;&gt;controller_process</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M397.6874,-160.6362C413.2917,-147.1486 433.5621,-127.5618 447.0323,-106.8 459.2568,-87.9582 468.091,-64.062 473.6857,-45.8058"/>
-<polygon fill="#000000" stroke="#000000" points="477.0907,-46.6312 476.5339,-36.051 470.3713,-44.6691 477.0907,-46.6312"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M233.0003,-160.4656C250.7438,-140.9654 281.0056,-110.2044 312.0323,-90 347.4431,-66.9408 391.4711,-48.4636 425.71,-36.0026"/>
 </g>
 <!-- flag_patio_finished&#45;&gt;decider_process -->
 <g id="edge6" class="edge">
 <title>flag_patio_finished&#45;&gt;decider_process</title>
-<path fill="none" stroke="#00ff00" stroke-dasharray="5,2" d="M251.1438,-150.5831C249.0878,-137.3373 246.9401,-121.3062 245.9271,-106.8 244.5145,-86.5718 246.9245,-63.8238 249.6185,-46.416"/>
-<polygon fill="#00ff00" stroke="#00ff00" points="247.7,-151.2125 252.7496,-160.5265 254.6105,-150.0964 247.7,-151.2125"/>
-<polygon fill="#00ff00" stroke="#00ff00" points="253.1065,-46.7775 251.301,-36.3376 246.2021,-45.6248 253.1065,-46.7775"/>
-<text text-anchor="middle" x="257.0849" y="-94.2" font-family="Times,serif" font-size="14.00" fill="#00ff00">lock</text>
+<path fill="none" stroke="#00ff00" stroke-dasharray="5,2" d="M322.3428,-151.6238C307.4293,-122.0178 283.7099,-74.9303 268.7754,-45.2825"/>
+<polygon fill="#00ff00" stroke="#00ff00" points="319.2734,-153.3104 326.898,-160.6668 325.525,-150.1613 319.2734,-153.3104"/>
+<polygon fill="#00ff00" stroke="#00ff00" points="271.8821,-43.67 264.2575,-36.3137 265.6305,-46.8192 271.8821,-43.67"/>
+<text text-anchor="middle" x="309.0849" y="-94.2" font-family="Times,serif" font-size="14.00" fill="#00ff00">lock</text>
 </g>
 <!-- key&#45;&gt;detector_process -->
 <g id="edge7" class="edge">
 <title>key&#45;&gt;detector_process</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M132.9049,-160.7947C120.8844,-146.7696 104.6132,-126.4439 93.0323,-106.8 81.5171,-87.2676 71.565,-63.5954 64.7373,-45.6056"/>
-<polygon fill="#000000" stroke="#000000" points="67.9364,-44.1653 61.1829,-36.0018 61.3715,-46.595 67.9364,-44.1653"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M115.061,-160.6629C101.9091,-147.0404 85.0259,-127.2783 75.0323,-106.8 63.8739,-83.9348 58.8402,-54.7073 56.6409,-36.1638"/>
 </g>
 <!-- key&#45;&gt;decider_process -->
 <g id="edge8" class="edge">
 <title>key&#45;&gt;decider_process</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M135.0437,-160.7657C122.3761,-142.066 107.5939,-112.4761 121.0323,-90 136.6711,-63.8436 165.438,-46.6385 192.3201,-35.6294"/>
-<polygon fill="#000000" stroke="#000000" points="193.6628,-38.8628 201.7254,-31.9892 191.1362,-32.3346 193.6628,-38.8628"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M118.8411,-160.716C105.058,-141.9757 88.8865,-112.3532 103.0323,-90 124.5803,-55.9498 167.0663,-37.6876 201.6549,-28.0866"/>
 </g>
 </g>
 </svg>

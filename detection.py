@@ -29,7 +29,6 @@ class Sensors(object):
                 self.distance_sensors[i].append(robot.getDistanceSensor(
                     self.direction_list[i] + '_' + self.direction_list[j]))
                 self.distance_sensors[i][j].enable(timestep)
-        # camera frames are received from the main process, so set a default value here
         self.cameras = []
         for i in range(4):
             self.cameras.append(robot.getCamera(self.direction_list[i]))
@@ -50,7 +49,13 @@ class Sensors(object):
         compassRaw = self.compass.getValues()
         distancesRaw = [self.distance_sensors[i][j].getValue() for i in range(3) for j in range(3)]
         camerasRaw = [item.getImageArray() for item in self.cameras]
-        return gpsRaw_position, gpsRaw_speed, compassRaw, distancesRaw, camerasRaw
+        return (
+            gpsRaw_position,
+            gpsRaw_speed,
+            compassRaw,
+            distancesRaw,
+            camerasRaw
+        )
 
 
 class Detector(object):
@@ -71,11 +76,12 @@ class Detector(object):
             'Color': [],
             'Path_Direction': []
         }
-
+        # set default value for sensor raw data
         self.gpsRaw_position = [0, 0, 0]
         self.gpsRaw_speed = [0, 0, 0]
         self.compassRaw = [0, 0, 0]
         self.distancesRaw = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        # camera frames are received from Sensors() in the main process, so set a default value here
         self.camerasRaw = [np.zeros((1, 1, 3), np.uint8) for i in range(4)]
 
         self.color_list = [
@@ -106,7 +112,13 @@ class Detector(object):
         update `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `distancesRaw`, `camerasRaw` received from main process
         '''
         if not self.sensors_queue.empty():
-            self.gpsRaw_position, self.gpsRaw_speed, self.compassRaw, self.distancesRaw, self.camerasRaw = self.sensors_queue.get()
+            (
+                self.gpsRaw_position,
+                self.gpsRaw_speed,
+                self.compassRaw,
+                self.distancesRaw,
+                self.camerasRaw
+            ) = self.sensors_queue.get()
 
     def send_signals(self, signals):
         '''
