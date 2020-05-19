@@ -43,7 +43,7 @@ def detect(signal_queue, flag_pause, key, sensors_queue):
 def decide(signal_queue, command_queue, flag_pause, key, lock, flag_patio_finished):
     decider = decision.Decider(flag_patio_finished)
     decider.set_queues(signal_queue, command_queue)
-    decider.run(flag_pause, key, lock)
+    decider.state_machine(flag_pause, key, lock)
 
 
 # program starts ###############################################################
