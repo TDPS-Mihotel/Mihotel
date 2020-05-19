@@ -138,6 +138,7 @@ The **chassis** of the rover is size of **15cm*45cm**, with wheels which diamete
 ![](doc/rover.jpg)
 
 The **feeding device** acts like a garbage truck dumping trash, we dump the kiwi by raising one side of the kiwi holder to let the kiwi slides down.
+the control of the three-freedom arm is lanched by a function which controls three motors in the arm, we recorded the initial and final position of each motor then chosee a proper piecewise function to enpower each motor, as in webots we don't need to care about PID of motor control, the control processes become much easier.
 
 ### Visual & Sensor
 
