@@ -162,7 +162,7 @@ class Detector(object):
         Convert the dirction which is originaly in the Cartesian system to the angle.
         return: the dirction that the head deviate from the x-axis, whose range is [-180 180]
         '''
-        x=np.array([x[0],x[1]])
+        x=np.array(x)
         angle=180*np.arctan(x[1]/x[0])/np.pi
         if x[0]<0:
             if x[1]>0:
