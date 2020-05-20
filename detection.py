@@ -70,9 +70,9 @@ class Detector(object):
 
         self.gpsRaw_position = [0, 0, 0]
         self.gpsRaw_speed = [0, 0, 0]
-        self.compassRaw = [0, 0, 0]
+        self.compassRaw = [1, 0, 0]
         self.distancesRaw = [[0, 0, 0]]
-        self.camerasRaw = [np.zeros((1, 1, 3), np.uint8) for i in range(4)]
+        self.camerasRaw = [np.zeros((128, 128, 3), np.uint8) for i in range(4)]
 
         self.color_list = [
             ('black', np.array([0, 0, 0]), np.array([180, 255, 46])),
