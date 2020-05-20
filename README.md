@@ -6,9 +6,9 @@ Mihotel Project Document.
 
 ### [📊 View our ZenHub Workspace](https://app.zenhub.com/workspaces/mihotel-5e5b3461c9cab6f18ca30973/board?repos=243200095)
 
-### [🌏 View our patio interactively](http://q98gml03z.bkt.clouddn.com/patio.html)
+### [🌏 View our patio interactively](http://qanb2ovrg.bkt.clouddn.com/patio.html) (it may take seconds to load the model)
 
-### [🎥 View our simulation interactively]() (TODO)
+### [🎥 View our simulations](doc/simulation_list.md)
 
 ---
 Table of Contents
@@ -29,6 +29,8 @@ Table of Contents
   - [Chassis](#Chassis)
   - [Visual & Sensor](#Visual--Sensor)
   - [Decision](#Decision)
+  - [Environment](#Environment)
+    - [Specifications](#Specifications)
 - [Development Strategy](#Development-Strategy)
 - [Personnel Division](#Personnel-Division)
 - [Project Specifications](#Project-Specifications)
