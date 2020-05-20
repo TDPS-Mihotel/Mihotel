@@ -123,6 +123,8 @@ class Detector(object):
         center = (w // 2, h // 2)
         M = cv2.getRotationMatrix2D(center, -90, 1.0)
         image = cv2.warpAffine(image, M, (w, h))
+        image = image[5:133,5:133]
+        image = cv2.flip(image,1)
         return image
 
     def capture(self, index):
