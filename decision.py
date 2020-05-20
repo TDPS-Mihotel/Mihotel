@@ -2,6 +2,23 @@ import time
 from colored import commandInfo, debugInfo, detectedInfo, info
 
 
+def runLoop(state_machine):
+    '''
+    decorator for state_machine(), make it a loop, update signals for it
+    '''
+
+    def run(self, flag_pause, key, lock):
+        while True:
+            time.sleep(0.1)  # set decision period to 0.1s
+            # skip all code inside if paused by webots
+            if not flag_pause.value:
+                self.update_signals()
+                state_machine(self, flag_pause, key, lock)
+                with lock:
+                    flag_pause.value = True
+    return run
+
+
 class Decider(object):
     '''
     Decider class
@@ -29,21 +46,6 @@ class Decider(object):
         '''
         if not self.signal_queue.empty():
             self.signals = self.signal_queue.get()
-
-    def runLoop(state_machine):
-        '''
-        decorator for state_machine(), make it a loop, update signals for it
-        '''
-        def run(self, flag_pause, key, lock):
-            while True:
-                time.sleep(0.1)  # set decision period to 0.1s
-                # skip all code inside if paused by webots
-                if not flag_pause.value:
-                    self.update_signals()
-                    state_machine(self, flag_pause, key, lock)
-                    with lock:
-                        flag_pause.value = True
-        return run
 
     @runLoop
     def state_machine(self, flag_pause, key, lock):
