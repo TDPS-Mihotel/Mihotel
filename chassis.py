@@ -31,7 +31,7 @@ class WebotsMotorsGroup(MotorsGroup):
 
         # enable motors
         self.motors = {}
-        self.motors['arm'] = robot.getMotor('arm')
+        # self.motors['arm'] = robot.getMotor('arm')
         # wheel
         self.motors['wheel1'] = robot.getMotor('wheel1')
         self.motors['wheel2'] = robot.getMotor('wheel2')
@@ -77,9 +77,9 @@ class Controller(object):
             self.velocityDict[motor] = 0
 
         if command:
-            if command == 'Rotate arm':
-                self.state = 'Arm rotating'
-                self.velocityDict['arm'] = 10
+            # if command == 'Rotate arm':
+            #    self.state = 'Arm rotating'
+            #   self.velocityDict['arm'] = 10
             # wheel
             if command == 'Move forward':
                 self.state = 'Moving forward'
