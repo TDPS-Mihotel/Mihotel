@@ -31,7 +31,7 @@ class WebotsMotorsGroup(MotorsGroup):
 
         # enable motors
         self.motors = {}
-        #self.motors['arm'] = robot.getMotor('arm')
+        # self.motors['arm'] = robot.getMotor('arm')
         # wheel
         self.motors['wheel1'] = robot.getMotor('wheel1')
         self.motors['wheel2'] = robot.getMotor('wheel2')

@@ -25,12 +25,12 @@ class Sensors(object):
         # for each direction, there are three distance sensors
         self.distance_sensors = []
         for i in range(3):
-            self.distance_sensors.append(robot.getDistanceSensor(self.direction_list[i]+'_ds'))
+            self.distance_sensors.append(robot.getDistanceSensor(self.direction_list[i] + '_ds'))
             self.distance_sensors[i].enable(timestep)
         # camera frames are received from the main process, so set a default value here
         self.cameras = []
         for i in range(4):
-            self.cameras.append(robot.getCamera(self.direction_list[i]+'_cam'))
+            self.cameras.append(robot.getCamera(self.direction_list[i] + '_cam'))
             self.cameras[i].enable(timestep)
         # compass for moving direction
         self.compass = robot.getCompass('compass')
@@ -48,7 +48,13 @@ class Sensors(object):
         compassRaw = self.compass.getValues()
         distancesRaw = [self.distance_sensors[i].getValue() for i in range(3)]
         camerasRaw = [item.getImageArray() for item in self.cameras]
-        return gpsRaw_position, gpsRaw_speed, compassRaw, distancesRaw, camerasRaw
+        return (
+            gpsRaw_position,
+            gpsRaw_speed,
+            compassRaw,
+            distancesRaw,
+            camerasRaw
+        )
 
 
 class Detector(object):
@@ -89,9 +95,9 @@ class Detector(object):
 
         info('Sensor initialed')
 
-        self.car_location=np.array([120,64])
-        self.car_leftedge=42
-        self.car_rightedge=87
+        self.car_location = np.array([120, 64])
+        self.car_leftedge = 42
+        self.car_rightedge = 87
 
     def set_queues(self, signal_queue, sensors_queue):
         '''
@@ -106,7 +112,13 @@ class Detector(object):
         update `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `distancesRaw`, `camerasRaw` received from main process
         '''
         if not self.sensors_queue.empty():
-            self.gpsRaw_position, self.gpsRaw_speed, self.compassRaw, self.distancesRaw, self.camerasRaw = self.sensors_queue.get()
+            (
+                self.gpsRaw_position,
+                self.gpsRaw_speed,
+                self.compassRaw,
+                self.distancesRaw,
+                self.camerasRaw
+            ) = self.sensors_queue.get()
 
     def send_signals(self, signals):
         '''
@@ -127,8 +139,8 @@ class Detector(object):
         center = (w // 2, h // 2)
         M = cv2.getRotationMatrix2D(center, -90, 1.0)
         image = cv2.warpAffine(image, M, (w, h))
-        image = image[5:133,5:133]
-        image = cv2.flip(image,1)
+        image = image[5:133, 5:133]
+        image = cv2.flip(image, 1)
         return image
 
     def capture(self, index):
@@ -161,82 +173,84 @@ class Detector(object):
                 color = item[0]
         return color
 
-    def rec2angle(self,x):
+    def rec2angle(self, x):
         '''
-        Convert the dirction which is originaly in the Cartesian system to the angle.
-        return: the dirction that the head deviate from the x-axis, whose range is [-180 180]
+        Convert the direction which is originally in the Cartesian system to the angle.
+        return: the direction that the head deviate from the x-axis, whose range is [-180 180]
         '''
-        x=np.array(x)
-        angle=180*np.arctan(x[1]/x[0])/np.pi
-        if x[0]<0:
-            if x[1]>0:
-                angle=angle+180
-            else: angle=angle-180
+        x = np.array(x)
+        angle = 180 * np.arctan(x[1] / x[0]) / np.pi
+        if x[0] < 0:
+            if x[1] > 0:
+                angle = angle + 180
+            else:
+                angle = angle - 180
         return angle
 
     def path_detection(self):
         '''
-        This algorithim gives the angle of the direction of the path
+        This algorithm gives the angle of the direction of the path
         Written by Wen Bo
         '''
-        image=self.get_image(3)
+        image = self.get_image(3)
         image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
-        piece=8
-        cutted=image_gray.shape[0]-image_gray.shape[0]%piece
-        new_size=int(cutted/piece)
-        threshold_gray=70
+        piece = 8
+        cutted = image_gray.shape[0] - image_gray.shape[0] % piece
+        new_size = int(cutted / piece)
+        threshold_gray = 70
 
-        f_x=np.empty(shape=[piece])
-        f_y=np.empty(shape=[piece])
+        f_x = np.empty(shape=[piece])
+        f_y = np.empty(shape=[piece])
         for i in range(piece):
-            location=np.argwhere((image_gray[new_size*i:new_size*(i+1),0:128])<= threshold_gray)
-            (f_y[i], f_x[i])= np.mean(a=location, axis=0)+(i*new_size,0)
-        (f_y[piece-1], f_x[piece-1])=[None, None]
-    
-        start_element=np.min(np.argwhere(np.isnan(f_x)))
-        if start_element==0:
-            path_start=np.array([None,None])
-            start_seg=0
-        else:
-            path_start=[f_y[start_element-1],f_x[start_element-1]]
-            start_seg=start_element-1
+            location = np.argwhere((image_gray[new_size * i:new_size * (i + 1), 0:128]) <= threshold_gray)
+            (f_y[i], f_x[i]) = np.mean(a=location, axis=0) + (i * new_size, 0)
+        (f_y[piece - 1], f_x[piece - 1]) = [None, None]
 
-        if (f_x[0:start_seg+1]>self.car_rightedge).all() and f_x[0]>path_start[1]:
-            degree=self.rec2angle([self.car_location[0]-path_start[0], path_start[1]-self.car_location[1]])
-        elif (f_x[0:start_seg+1]<self.car_leftedge).all() and  f_x[0]<path_start[1]:
-            degree=self.rec2angle([self.car_location[0]-path_start[0], path_start[1]-self.car_location[1]])
-        else: degree=self.rec2angle([self.car_location[0]-f_y[0], f_x[0]-self.car_location[1]])
+        start_element = np.min(np.argwhere(np.isnan(f_x)))
+        if start_element == 0:
+            path_start = np.array([None, None])
+            start_seg = 0
+        else:
+            path_start = [f_y[start_element - 1], f_x[start_element - 1]]
+            start_seg = start_element - 1
+
+        if (f_x[0:start_seg + 1] > self.car_rightedge).all() and f_x[0] > path_start[1]:
+            degree = self.rec2angle([self.car_location[0] - path_start[0], path_start[1] - self.car_location[1]])
+        elif (f_x[0:start_seg + 1] < self.car_leftedge).all() and f_x[0] < path_start[1]:
+            degree = self.rec2angle([self.car_location[0] - path_start[0], path_start[1] - self.car_location[1]])
+        else:
+            degree = self.rec2angle([self.car_location[0] - f_y[0], f_x[0] - self.car_location[1]])
 
         return degree
 
     def path_detection_Han(self):
         '''
-        This algorithim gives the angle of the direction of the path
-        Modified by Han Haoran
+        This algorithm gives the angle of the direction of the path
         '''
-        image=self.get_image(3)
+        image = self.get_image(3)
         image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
-        piece=8
-        cutted=image_gray.shape[0]-image_gray.shape[0]%piece
-        new_size=int(cutted/piece)
-        threshold_gray=70
+        piece = 8
+        cutted = image_gray.shape[0] - image_gray.shape[0] % piece
+        new_size = int(cutted / piece)
+        threshold_gray = 70
 
-        guard=piece
-        f_x=np.empty(shape=[piece])
-        f_y=np.empty(shape=[piece])
+        guard = piece
+        f_x = np.empty(shape=[piece])
+        f_y = np.empty(shape=[piece])
         for i in range(piece):
-            location=np.argwhere((image_gray[new_size*i:new_size*(i+1),0:128])<= threshold_gray)
-            (f_y[i], f_x[i])= np.mean(a=location, axis=0)+(i*new_size,0)
+            location = np.argwhere((image_gray[new_size * i:new_size * (i + 1), 0:128]) <= threshold_gray)
+            (f_y[i], f_x[i]) = np.mean(a=location, axis=0) + (i * new_size, 0)
             if not np.isnan(f_x[i]):
-                guard=i
+                guard = i
                 break
-        
-        if guard>=piece:
-            degree=np.nan
-        else: degree=self.rec2angle([self.car_location[0]-f_y[guard], f_x[guard]-self.car_location[1]])
-        
+
+        if guard >= piece:
+            degree = np.nan
+        else:
+            degree = self.rec2angle([self.car_location[0] - f_y[guard], f_x[guard] - self.car_location[1]])
+
         return degree
 
     def run(self, flag_pause, key):
@@ -252,7 +266,7 @@ class Detector(object):
                 # keyboard events
                 if key.value == ord('C'):  # capture image when C is pressed
                     self.capture(3)
-                
+
                 # update sensors data
                 self.update()
                 # update signals
@@ -264,7 +278,7 @@ class Detector(object):
                 # the minimum distance for each direction where the unit is m.
                 self.signals['Distance'] = np.min(self.distancesRaw) / 1000
                 self.signals['Color'] = self.get_color(self.get_image(3))
-                self.signals['Path_Direction']=self.path_detection_Han()
+                self.signals['Path_Direction'] = self.path_detection_Han()
 
                 self.path_detection()
                 # send all signals to decider
