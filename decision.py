@@ -9,7 +9,7 @@ def runLoop(state_machine):
 
     def run(self, flag_pause, key, lock):
         while True:
-            time.sleep(0.1)  # set decision period to 0.1s
+            # time.sleep(0.1)  # set decision period to 0.1s
             # skip all code inside if paused by webots
             if not flag_pause.value:
                 self.update_signals()
@@ -44,7 +44,7 @@ class Decider(object):
         '''
         update self.signals if signal_queue is not empty
         '''
-        if not self.signal_queue.empty():
+        while not self.signal_queue.empty():
             self.signals = self.signal_queue.get()
 
     @runLoop
