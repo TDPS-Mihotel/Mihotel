@@ -111,7 +111,7 @@ class Detector(object):
         '''
         update `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `distancesRaw`, `camerasRaw` received from main process
         '''
-        if not self.sensors_queue.empty():
+        while not self.sensors_queue.empty():
             (
                 self.gpsRaw_position,
                 self.gpsRaw_speed,
@@ -260,7 +260,7 @@ class Detector(object):
         `key`: ascii number of pressed key on keyboard, is -1 when no key pressed
         '''
         while True:
-            time.sleep(0.1)  # set detection period to 0.1s
+            # time.sleep(0.1)  # set detection period to 0.1s
             # skip all code inside if paused by webots
             if not flag_pause.value:
                 # keyboard events
