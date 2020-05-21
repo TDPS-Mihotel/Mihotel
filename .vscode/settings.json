@@ -23,6 +23,7 @@
         "imgs",
         "imread",
         "imwrite",
+        "isnan",
         "numpy",
         "psutil",
         "webots"
