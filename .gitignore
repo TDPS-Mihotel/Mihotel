@@ -4,3 +4,7 @@
 *.wbproj
 rover.wbo
 test/camera/**
+README.md
+mihotel_rover.py
+doc/simulation_list.md
+*.py

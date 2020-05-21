@@ -59,7 +59,7 @@ class Decider(object):
             with lock:
                 self.flag_patio_finished.value = True
 
-        self.send_command('Move forward')
+        self.send_command('Rotate arm')
 
 
 if __name__ == "__main__":

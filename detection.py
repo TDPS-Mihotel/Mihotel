@@ -66,12 +66,13 @@ class Detector(object):
         # TODO: Path_Direction is waiting for Wen Bo
         # Later, various Object_Detection could be added
         self.signals = {
-            'Position': [],
-            'Direction': [],
-            'Speed': [],
-            'Distance': [],
-            'Color': [],
-            'Path_Direction': []
+            'Position': [],               #:  The coordinate in the Cartesian system, eg: [-49.41999862   2.05299215  10.50000002] represent the x, y, z respectively 
+            'Direction_x': [],         #:  The angle that the head deviate for the x-axis. To left, angle is positive, To right, angle is negtive,  eg:-0.00015306633526777642
+            'Direction_-z': [],        #:  The angle that the head deviate for the -z-axis. To left, angle is positive, To right, angle is negtive, eg:89.99984693366474
+            'Speed': [],                  #:  The magnitude of the speed in m/s, eg: 1.4184145466195442e-05 
+            'Distance': [],               #: The distance that between the front body to the robot in m, eg: 1.0.
+            'Color': [],                   #: The string shown in the color_list
+            'Path_Direction': []     #: The angle that the car should rotate, ,right is positive, left is negative, eg: 26.216717328251008
         }
 
         self.gpsRaw_position = [0, 0, 0]
@@ -139,7 +140,7 @@ class Detector(object):
         center = (w // 2, h // 2)
         M = cv2.getRotationMatrix2D(center, -90, 1.0)
         image = cv2.warpAffine(image, M, (w, h))
-        image = image[5:133, 5:133]
+        image = image[2:130, 2:130]
         image = cv2.flip(image, 1)
         return image
 
@@ -273,7 +274,8 @@ class Detector(object):
                 self.signals['time'] = time.strftime("%H:%M:%S", time.localtime())
 
                 self.signals['Position'] = np.array(self.gpsRaw_position)
-                self.signals['Direction'] = self.rec2angle(self.compassRaw)
+                self.signals['Direction_x'] = self.rec2angle(self.compassRaw)
+                self.signals['Direction_-z']=self.rec2angle([-self.compassRaw[1],self.compassRaw[0]])
                 self.signals['Speed'] = np.array(self.gpsRaw_speed)
                 # the minimum distance for each direction where the unit is m.
                 self.signals['Distance'] = np.min(self.distancesRaw) / 1000
