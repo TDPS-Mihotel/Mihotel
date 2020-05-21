@@ -2,6 +2,23 @@ import time
 from colored import commandInfo, debugInfo, detectedInfo, info
 
 
+def runLoop(state_machine):
+    '''
+    decorator for state_machine(), make it a loop, update signals for it
+    '''
+
+    def run(self, flag_pause, key, lock):
+        while True:
+            time.sleep(0.1)  # set decision period to 0.1s
+            # skip all code inside if paused by webots
+            if not flag_pause.value:
+                self.update_signals()
+                state_machine(self, flag_pause, key, lock)
+                with lock:
+                    flag_pause.value = True
+    return run
+
+
 class Decider(object):
     '''
     Decider class
@@ -30,28 +47,19 @@ class Decider(object):
         if not self.signal_queue.empty():
             self.signals = self.signal_queue.get()
 
-    def run(self, flag_pause, key, lock):
+    @runLoop
+    def state_machine(self, flag_pause, key, lock):
         '''
         `flag_pause`: the flag to pause this Decider running (actually skips all code in this function)\n
         'key': a dict containing character of keyboard key press\n
         `lock`: a process lock, used for `flag_pause`\n
         '''
-        while True:
-            time.sleep(0.1)  # set decision period to 0.1s
-            # skip all code inside if paused by webots
-            if not flag_pause.value:
-                # decision group's code goes under this ########################
-                if key.value == ord('Q'):
-                    debugInfo('Quit')
-                    with lock:
-                        self.flag_patio_finished.value = True
+        if key.value == ord('Q'):
+            debugInfo('Quit')
+            with lock:
+                self.flag_patio_finished.value = True
 
-                self.update_signals()
-                self.send_command('Rotate arm')
-                # decision group's code ends ###################################
-                # keep this at the end of run()
-                with lock:
-                    flag_pause.value = True
+        self.send_command('Move forward')
 
 
 if __name__ == "__main__":
