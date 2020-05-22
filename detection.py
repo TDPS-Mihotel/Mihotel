@@ -67,7 +67,8 @@ class Detector(object):
         # Later, various Object_Detection could be added
         self.signals = {
             'Position': [],
-            'Direction': [],
+            'Direction_x': [],
+            'Direction_-z':[],
             'Speed': [],
             'Distance': [],
             'Color': [],
@@ -194,63 +195,13 @@ class Detector(object):
         '''
         image = self.get_image(3)
         image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-
-        piece = 8
-        cutted = image_gray.shape[0] - image_gray.shape[0] % piece
-        new_size = int(cutted / piece)
+        new_size = 16
         threshold_gray = 70
 
-        f_x = np.empty(shape=[piece])
-        f_y = np.empty(shape=[piece])
-        for i in range(piece):
-            location = np.argwhere((image_gray[new_size * i:new_size * (i + 1), 0:128]) <= threshold_gray)
-            (f_y[i], f_x[i]) = np.mean(a=location, axis=0) + (i * new_size, 0)
-        (f_y[piece - 1], f_x[piece - 1]) = [None, None]
+        location = np.argwhere((image_gray[0:new_size , 0:128]) <= threshold_gray)
+        (f_y, f_x) = np.mean(a=location, axis=0) 
 
-        start_element = np.min(np.argwhere(np.isnan(f_x)))
-        if start_element == 0:
-            path_start = np.array([None, None])
-            start_seg = 0
-        else:
-            path_start = [f_y[start_element - 1], f_x[start_element - 1]]
-            start_seg = start_element - 1
-
-        if (f_x[0:start_seg + 1] > self.car_rightedge).all() and f_x[0] > path_start[1]:
-            degree = self.rec2angle([self.car_location[0] - path_start[0], path_start[1] - self.car_location[1]])
-        elif (f_x[0:start_seg + 1] < self.car_leftedge).all() and f_x[0] < path_start[1]:
-            degree = self.rec2angle([self.car_location[0] - path_start[0], path_start[1] - self.car_location[1]])
-        else:
-            degree = self.rec2angle([self.car_location[0] - f_y[0], f_x[0] - self.car_location[1]])
-
-        return degree
-
-    def path_detection_Han(self):
-        '''
-        This algorithm gives the angle of the direction of the path
-        '''
-        image = self.get_image(3)
-        image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-
-        piece = 8
-        cutted = image_gray.shape[0] - image_gray.shape[0] % piece
-        new_size = int(cutted / piece)
-        threshold_gray = 70
-
-        guard = piece
-        f_x = np.empty(shape=[piece])
-        f_y = np.empty(shape=[piece])
-        for i in range(piece):
-            location = np.argwhere((image_gray[new_size * i:new_size * (i + 1), 0:128]) <= threshold_gray)
-            (f_y[i], f_x[i]) = np.mean(a=location, axis=0) + (i * new_size, 0)
-            if not np.isnan(f_x[i]):
-                guard = i
-                break
-
-        if guard >= piece:
-            degree = np.nan
-        else:
-            degree = self.rec2angle([self.car_location[0] - f_y[guard], f_x[guard] - self.car_location[1]])
-
+        degree=self.rec2angle([102-f_y, f_x-64])
         return degree
 
     def run(self, flag_pause, key):
@@ -273,12 +224,13 @@ class Detector(object):
                 self.signals['time'] = time.strftime("%H:%M:%S", time.localtime())
 
                 self.signals['Position'] = np.array(self.gpsRaw_position)
-                self.signals['Direction'] = self.rec2angle(self.compassRaw)
+                self.signals['Direction_x'] = self.rec2angle(self.compassRaw)
+                self.signals['Direction_-z'] = self.rec2angle([-self.compassRaw[1],self.compassRaw[0]])
                 self.signals['Speed'] = np.array(self.gpsRaw_speed)
                 # the minimum distance for each direction where the unit is m.
                 self.signals['Distance'] = np.min(self.distancesRaw) / 1000
                 self.signals['Color'] = self.get_color(self.get_image(3))
-                self.signals['Path_Direction'] = self.path_detection_Han()
+                self.signals['Path_Direction'] = self.path_detection()
 
                 self.path_detection()
                 # send all signals to decider
