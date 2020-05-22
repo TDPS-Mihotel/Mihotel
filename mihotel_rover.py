@@ -100,9 +100,6 @@ if __name__ == "__main__" and flag_simulation:
         with lock:
             flag_pause.value = False
             key.value = keyboard.getKey()  # character of the key press
-    for queue in queueList:
-        queue.close()
-    info('Finished!')
 
 # if run for real rover
 if __name__ == "__main__" and not flag_simulation:
@@ -115,6 +112,10 @@ if __name__ == "__main__" and not flag_simulation:
             flag_patio_finished.value = True
         with lock:
             flag_pause.value = False
+
+if __name__ == "__main__":
+    # clean up
     for queue in queueList:
         queue.close()
+        queue.join_thread()
     info('Finished!')
