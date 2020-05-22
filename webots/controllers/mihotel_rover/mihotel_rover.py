@@ -56,6 +56,7 @@ if __name__ == "__main__":
     signal_queue = multiprocessing.Queue()
     sensors_queue = multiprocessing.Queue()
     motors_queue = multiprocessing.Queue()
+    queueList = [command_queue, signal_queue, sensors_queue, motors_queue]
 
     # create process lock
     lock = multiprocessing.Lock()
@@ -99,6 +100,8 @@ if __name__ == "__main__" and flag_simulation:
         with lock:
             flag_pause.value = False
             key.value = keyboard.getKey()  # character of the key press
+    for queue in queueList:
+        queue.close()
     info('Finished!')
 
 # if run for real rover
@@ -112,4 +115,6 @@ if __name__ == "__main__" and not flag_simulation:
             flag_patio_finished.value = True
         with lock:
             flag_pause.value = False
+    for queue in queueList:
+        queue.close()
     info('Finished!')
