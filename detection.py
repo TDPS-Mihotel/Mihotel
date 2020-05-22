@@ -224,7 +224,7 @@ class Detector(object):
                 self.signals['time'] = time.strftime("%H:%M:%S", time.localtime())
 
                 self.signals['Position'] = np.array(self.gpsRaw_position)
-                self.signals['Direction_x'] = self.rec2angle(self.compassRaw)
+                self.signals['Direction_x'] = self.rec2angle(self.compassRaw[:2])
                 self.signals['Direction_-z'] = self.rec2angle([-self.compassRaw[1],self.compassRaw[0]])
                 self.signals['Speed'] = np.array(self.gpsRaw_speed)
                 # the minimum distance for each direction where the unit is m.
