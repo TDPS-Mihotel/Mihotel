@@ -93,7 +93,7 @@ if __name__ == "__main__" and flag_simulation:
         # update sensors data
         sensors_queue.put(sensors.update())
         # update motors speed
-        if not motors_queue.empty():
+        while not motors_queue.empty():
             motors.update(motors_queue.get())
         # resume decider process
         with lock:
