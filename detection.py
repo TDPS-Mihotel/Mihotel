@@ -68,7 +68,7 @@ class Detector(object):
         self.signals = {
             'Position': [],
             'Direction_x': [],
-            'Direction_-z':[],
+            'Direction_-z': [],
             'Speed': [],
             'Distance': [],
             'Color': [],
@@ -198,10 +198,10 @@ class Detector(object):
         new_size = 16
         threshold_gray = 70
 
-        location = np.argwhere((image_gray[0:new_size , 0:128]) <= threshold_gray)
-        (f_y, f_x) = np.mean(a=location, axis=0) 
+        location = np.argwhere((image_gray[0:new_size, 0:128]) <= threshold_gray)
+        (f_y, f_x) = np.mean(a=location, axis=0)
 
-        degree=self.rec2angle([102-f_y, f_x-64])
+        degree = self.rec2angle([102 - f_y, f_x - 64])
         return degree
 
     def run(self, flag_pause, key):
@@ -225,7 +225,7 @@ class Detector(object):
 
                 self.signals['Position'] = np.array(self.gpsRaw_position)
                 self.signals['Direction_x'] = self.rec2angle(self.compassRaw[:2])
-                self.signals['Direction_-z'] = self.rec2angle([-self.compassRaw[1],self.compassRaw[0]])
+                self.signals['Direction_-z'] = self.rec2angle([-self.compassRaw[1], self.compassRaw[0]])
                 self.signals['Speed'] = np.array(self.gpsRaw_speed)
                 # the minimum distance for each direction where the unit is m.
                 self.signals['Distance'] = np.min(self.distancesRaw) / 1000
