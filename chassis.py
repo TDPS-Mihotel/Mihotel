@@ -132,10 +132,9 @@ class Controller(object):
         `flag_pause`: the flag to pause this Decider running (actually skips all code in this function)\n
         '''
         while True:
-            # time.sleep(0.1)  # set chassis period to 0.1s
+            time.sleep(0.1)  # set chassis period to 0.1s
             # skip all code inside if paused by webots
-            if not flag_pause.value:
-                self.set_state(self.recv_command())
+            self.set_state(self.recv_command())
 
 
 if __name__ == "__main__":
