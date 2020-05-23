@@ -1,3 +1,4 @@
+import queue
 import time
 
 from colored import commandInfo, debugInfo, detectedInfo, info
@@ -63,10 +64,13 @@ class Controller(object):
         return the received command from command_queue\n
         the return value will be `''` if command_queue is empty
         '''
-        while not self.command_queue.empty():
-            return self.command_queue.get()
-        else:
-            return ''
+        command = ''
+        while True:
+            try:
+                command = self.command_queue.get(block=True, timeout=0.05)
+            except queue.Empty:
+                break
+        return command
 
     def set_state(self, command):
         '''

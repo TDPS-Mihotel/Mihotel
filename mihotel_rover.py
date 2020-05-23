@@ -2,9 +2,9 @@
 
 import multiprocessing
 import os
+import queue
 import sys
 import time
-
 import psutil
 
 # flags ########################################################################
@@ -93,8 +93,11 @@ if __name__ == "__main__" and flag_simulation:
         # update sensors data
         sensors_queue.put(sensors.update())
         # update motors speed
-        while not motors_queue.empty():
-            motors.update(motors_queue.get())
+        while True:
+            try:
+                motors.update(motors_queue.get(block=True, timeout=0.05))
+            except queue.Empty:
+                break
         # resume decider process
         with lock:
             flag_pause.value = False

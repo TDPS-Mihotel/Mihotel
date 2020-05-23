@@ -1,4 +1,5 @@
 import os
+import queue
 import time
 
 import cv2
@@ -112,14 +113,17 @@ class Detector(object):
         '''
         update `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `distancesRaw`, `camerasRaw` received from main process
         '''
-        while not self.sensors_queue.empty():
-            (
-                self.gpsRaw_position,
-                self.gpsRaw_speed,
-                self.compassRaw,
-                self.distancesRaw,
-                self.camerasRaw
-            ) = self.sensors_queue.get()
+        while True:
+            try:
+                (
+                    self.gpsRaw_position,
+                    self.gpsRaw_speed,
+                    self.compassRaw,
+                    self.distancesRaw,
+                    self.camerasRaw
+                ) = self.sensors_queue.get(block=True, timeout=0.05)
+            except queue.Empty:
+                break
 
     def send_signals(self, signals):
         '''
