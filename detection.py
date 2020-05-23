@@ -207,7 +207,7 @@ class Detector(object):
 
         location = np.argwhere((image_gray[0:new_size, 0:128]) <= threshold_gray)
         if location.size==0:
-            degree=np.nan
+            degree=None
         else:
             (f_y, f_x) = np.mean(a=location, axis=0)
             degree = self.rec2angle([102 - f_y, f_x - 64])
@@ -239,7 +239,7 @@ class Detector(object):
                 # the minimum distance for each direction where the unit is m.
                 self.signals['Distance'] = np.min(self.distancesRaw) / 1000
                 self.signals['Color'] = self.get_color(self.get_image(3))
-                # if np.isnan(signals['Path_Direction']): the path is end
+                # if signals['Path_Direction']==None: the path is end
                 self.signals['Path_Direction'] = self.path_detection()
 
                 self.path_detection()
