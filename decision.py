@@ -47,7 +47,7 @@ class Decider(object):
         '''
         while True:
             try:
-                self.signals = self.signal_queue.get(block=True, timeout=0.05)
+                self.signals = self.signal_queue.get(block=False)
             except queue.Empty:
                 break
 
