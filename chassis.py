@@ -84,9 +84,9 @@ class Controller(object):
             self.velocityDict[motor] = 0
 
         if command:
-            if command == 'Rotate arm':
-                self.state = 'Arm rotating'
-                self.velocityDict['arm'] = 10
+            # if command == 'Rotate arm':
+            #     self.state = 'Arm rotating'
+            #     self.velocityDict['arm'] = 10
             # wheel
             if command[:4] == 'Turn' and command[:5] != 'Turn ':
                 steer = float(command[4:]) * self.steer_coefficient
