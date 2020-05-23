@@ -1,3 +1,4 @@
+import queue
 import time
 from colored import commandInfo, debugInfo, detectedInfo, info
 
@@ -44,8 +45,11 @@ class Decider(object):
         '''
         update self.signals if signal_queue is not empty
         '''
-        while not self.signal_queue.empty():
-            self.signals = self.signal_queue.get()
+        while True:
+            try:
+                self.signals = self.signal_queue.get(block=True, timeout=0.05)
+            except queue.Empty:
+                break
 
     @runLoop
     def state_machine(self, flag_pause, key, lock):
