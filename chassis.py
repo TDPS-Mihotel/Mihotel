@@ -54,6 +54,7 @@ class Controller(object):
         self.velocityDict = {}
         self.defaultVelocity = 30
         self.maxVelocity = 50
+        self.steer_coefficient = 10
         info('Chassis initialed')
 
     def set_queue(self, command_queue, motors_queue):
@@ -90,6 +91,7 @@ class Controller(object):
                 self.velocityDict['wheel2'] = self.defaultVelocity + steer
                 self.velocityDict['wheel3'] = self.defaultVelocity - steer
                 self.velocityDict['wheel4'] = self.defaultVelocity - steer
+                
             if command == 'Move forward':
                 self.state = 'Moving forward'
                 self.velocityDict['wheel1'] = self.defaultVelocity
@@ -103,20 +105,6 @@ class Controller(object):
                 self.velocityDict['wheel2'] = -self.defaultVelocity
                 self.velocityDict['wheel3'] = -self.defaultVelocity
                 self.velocityDict['wheel4'] = -self.defaultVelocity
-
-            if command == 'Turn right':
-                self.state = 'Turning right'
-                self.velocityDict['wheel1'] = self.defaultVelocity
-                self.velocityDict['wheel2'] = self.defaultVelocity
-                self.velocityDict['wheel3'] = -self.defaultVelocity
-                self.velocityDict['wheel4'] = -self.defaultVelocity
-
-            if command == 'Turn left':
-                self.state = 'Turning left'
-                self.velocityDict['wheel1'] = -self.defaultVelocity
-                self.velocityDict['wheel2'] = -self.defaultVelocity
-                self.velocityDict['wheel3'] = self.defaultVelocity
-                self.velocityDict['wheel4'] = self.defaultVelocity
 
             if command == 'Stop':
                 self.state = 'Stopped'
