@@ -84,13 +84,12 @@ class Controller(object):
                 self.velocityDict['arm'] = 10
             # wheel
             if command[:4] == 'Turn' and command[:5] != 'Turn ':
-                shift = float(command[4:]) * 10
-                self.state = command
-                self.velocityDict['wheel1'] = self.defaultVelocity + shift
-                self.velocityDict['wheel2'] = self.defaultVelocity + shift
-                self.velocityDict['wheel3'] = self.defaultVelocity - shift
-                self.velocityDict['wheel4'] = self.defaultVelocity - shift
-
+                steer = float(command[4:]) * self.steer_coefficient
+                self.state = 'Steering speed: ' + str(steer)
+                self.velocityDict['wheel1'] = self.defaultVelocity + steer
+                self.velocityDict['wheel2'] = self.defaultVelocity + steer
+                self.velocityDict['wheel3'] = self.defaultVelocity - steer
+                self.velocityDict['wheel4'] = self.defaultVelocity - steer
             if command == 'Move forward':
                 self.state = 'Moving forward'
                 self.velocityDict['wheel1'] = self.defaultVelocity
