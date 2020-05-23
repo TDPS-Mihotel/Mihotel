@@ -184,12 +184,15 @@ class Detector(object):
         return: the direction that the head deviate from the x-axis, whose range is [-180 180]
         '''
         x = np.array(x)
-        angle = 180 * np.arctan(x[1] / x[0]) / np.pi
-        if x[0] < 0:
-            if x[1] > 0:
-                angle = angle + 180
-            else:
-                angle = angle - 180
+        if x[0]==0.0:
+            angle=np.sign(x[1])*90
+        else:
+            angle = 180 * np.arctan(x[1] / x[0]) / np.pi
+            if x[0] < 0:
+                if x[1] > 0:
+                    angle = angle + 180
+                else:
+                    angle = angle - 180
         return angle
 
     def path_detection(self):
@@ -203,9 +206,11 @@ class Detector(object):
         threshold_gray = 70
 
         location = np.argwhere((image_gray[0:new_size, 0:128]) <= threshold_gray)
-        (f_y, f_x) = np.mean(a=location, axis=0)
-
-        degree = self.rec2angle([102 - f_y, f_x - 64])
+        if location.size==0:
+            degree=None
+        else:
+            (f_y, f_x) = np.mean(a=location, axis=0)
+            degree = self.rec2angle([102 - f_y, f_x - 64])
         return degree
 
     def run(self, flag_pause, key):
@@ -234,6 +239,7 @@ class Detector(object):
                 # the minimum distance for each direction where the unit is m.
                 self.signals['Distance'] = np.min(self.distancesRaw) / 1000
                 self.signals['Color'] = self.get_color(self.get_image(3))
+                # if signals['Path_Direction']==None: the path is end
                 self.signals['Path_Direction'] = self.path_detection()
 
                 self.path_detection()
