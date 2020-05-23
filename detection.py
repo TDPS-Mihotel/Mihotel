@@ -64,8 +64,6 @@ class Detector(object):
     """
 
     def __init__(self):
-        # TODO: Path_Direction is waiting for Wen Bo
-        # Later, various Object_Detection could be added
         self.signals = {
             'Position': [],
             'Direction_x': [],
@@ -206,7 +204,7 @@ class Detector(object):
         cv2.waitKey(1)
         image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         roi = image_gray[self.chassis_front - self.foresight_up:self.chassis_front - self.foresight_down]
-        cv2.imshow('gray', roi)
+        # cv2.imshow('gray', roi)
         threshold = 70
         location = np.argwhere((roi) <= threshold)
         if location.size == 0:
