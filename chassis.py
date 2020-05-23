@@ -70,7 +70,7 @@ class Controller(object):
         command = ''
         while True:
             try:
-                command = self.command_queue.get(block=True, timeout=0.05)
+                command = self.command_queue.get(block=False)
             except queue.Empty:
                 break
         return command
@@ -125,7 +125,7 @@ class Controller(object):
                 self.velocityDict[item] = -self.velocityDict[item]
 
             self.motors_queue.put(self.velocityDict)
-            commandInfo(self.state)
+            # commandInfo(self.state)
 
     def run(self, flag_pause):
         '''

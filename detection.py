@@ -120,7 +120,7 @@ class Detector(object):
                     self.compassRaw,
                     self.distancesRaw,
                     self.camerasRaw
-                ) = self.sensors_queue.get(block=True, timeout=0.05)
+                ) = self.sensors_queue.get(block=False)
             except queue.Empty:
                 break
 
@@ -245,7 +245,7 @@ class Detector(object):
 
                 # send all signals to decider
                 self.send_signals(self.signals)
-                detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
+                # detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
 
 
 if __name__ == "__main__":
