@@ -43,7 +43,7 @@ def detect(signal_queue, flag_pause, key, sensors_queue):
 def decide(signal_queue, command_queue, flag_pause, key, lock, flag_patio_finished):
     decider = decision.Decider(flag_patio_finished)
     decider.set_queues(signal_queue, command_queue)
-    decider.run(flag_pause, key, lock)
+    decider.state_machine(flag_pause, key, lock)
 
 
 # program starts ###############################################################
@@ -56,6 +56,7 @@ if __name__ == "__main__":
     signal_queue = multiprocessing.Queue()
     sensors_queue = multiprocessing.Queue()
     motors_queue = multiprocessing.Queue()
+    queueList = [command_queue, signal_queue, sensors_queue, motors_queue]
 
     # create process lock
     lock = multiprocessing.Lock()
@@ -93,7 +94,7 @@ if __name__ == "__main__" and flag_simulation:
         # update sensors data
         sensors_queue.put(sensors.update())
         # update motors speed
-        if not motors_queue.empty():
+        while not motors_queue.empty():
             motors.update(motors_queue.get())
         # resume decider process
         with lock:
@@ -111,4 +112,10 @@ if __name__ == "__main__" and not flag_simulation:
             flag_patio_finished.value = True
         with lock:
             flag_pause.value = False
+
+if __name__ == "__main__":
+    # clean up
+    for queue in queueList:
+        queue.close()
+        queue.join_thread()
     info('Finished!')

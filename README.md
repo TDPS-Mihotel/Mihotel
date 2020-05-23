@@ -6,9 +6,9 @@ Mihotel Project Document.
 
 ### [📊 View our ZenHub Workspace](https://app.zenhub.com/workspaces/mihotel-5e5b3461c9cab6f18ca30973/board?repos=243200095)
 
-### [🌏 View our patio interactively](http://q98gml03z.bkt.clouddn.com/patio.html)
+### [🌏 View our patio interactively](http://qanb2ovrg.bkt.clouddn.com/patio.html) (it may take seconds to load the model)
 
-### [🎥 View our simulation interactively]() (TODO)
+### [🎥 View our simulations](doc/simulation_list.md)
 
 ---
 Table of Contents
@@ -29,6 +29,8 @@ Table of Contents
   - [Chassis](#Chassis)
   - [Visual & Sensor](#Visual--Sensor)
   - [Decision](#Decision)
+  - [Environment](#Environment)
+    - [Specifications](#Specifications)
 - [Development Strategy](#Development-Strategy)
 - [Personnel Division](#Personnel-Division)
 - [Project Specifications](#Project-Specifications)
@@ -121,7 +123,11 @@ A few shared variables are created to share some flags and signals between proce
 
 the main process ends when `flag_patio_finished` turns to **True**. Now all three child processes are set to **daemonic child process** by `Process.daemon = True`, therefore, [the child processes will be terminated as soon as the main process completes](https://stackoverflow.com/a/25391156/10088906).
 
+❗️Note that the main process could NOT exit until all queues are closed.
+
 📚 [document for `multiprocessing.Queue()`](https://docs.python.org/3/library/multiprocessing.html#multiprocessing.Queue)
+
+📚 [Things I Wish They Told Me About Multiprocessing in Python](https://www.cloudcity.io/blog/2019/02/27/things-i-wish-they-told-me-about-multiprocessing-in-python/)
 
 #### ANSI codes in webots console
 
@@ -138,6 +144,7 @@ The **chassis** of the rover is size of **15cm*45cm**, with wheels which diamete
 ![](doc/rover.jpg)
 
 The **feeding device** acts like a garbage truck dumping trash, we dump the kiwi by raising one side of the kiwi holder to let the kiwi slides down.
+the control of the three-freedom arm is lanched by a function which controls three motors in the arm, we recorded the initial and final position of each motor then chosee a proper piecewise function to enpower each motor, as in webots we don't need to care about PID of motor control, the control processes become much easier.
 
 ### Visual & Sensor
 

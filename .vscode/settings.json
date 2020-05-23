@@ -23,9 +23,9 @@
         "imgs",
         "imread",
         "imwrite",
+        "isnan",
         "numpy",
         "psutil",
         "webots"
     ],
-    "python.pythonPath": "C:\\Users\\wetrwer\\AppData\\Local\\Programs\\Python\\Python38\\python.exe",
 }

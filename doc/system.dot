@@ -14,12 +14,12 @@ digraph G{
         flag_patio_finished
         key
     }
-    flag_pause -> {detector_process controller_process} [style=dashed]
+    flag_pause -> {detector_process controller_process} [style=dashed arrowhead=none]
     flag_pause -> decider_process [label="lock" dir=both style=dashed color=green fontcolor=green]
     flag_patio_finished -> decider_process [label="lock" dir=both style=dashed color=green fontcolor=green]
-    key -> {detector_process, decider_process} [style=dashed]
+    key -> {detector_process, decider_process} [style=dashed arrowhead=none]
     "webots pause signal" -> flag_pause
     "keyboard input" -> key
-    detector_process -> flag_patio_finished [label="sensors_queue" lhead=cluster0 color=blue fontcolor=blue]
+    flag_pause -> detector_process [label="sensors_queue" ltail=cluster0 color=blue fontcolor=blue]
     controller_process -> flag_patio_finished [label="motors_queue" lhead=cluster0 color=blue fontcolor=blue]
 }
