@@ -7,7 +7,6 @@ import time
 
 import psutil
 
-
 # flags ########################################################################
 # flag_simulation = True  # turn to False to run for real rover
 # run simulation rover if webots software is running
@@ -21,10 +20,10 @@ if flag_simulation:
     os.chdir(sys.path[0])
     sys.path.append('../../../')
 
-from colored import commandInfo, debugInfo, detectedInfo, info, logoInfo
 import chassis
 import decision
 import detection
+from colored import commandInfo, debugInfo, detectedInfo, info, logoInfo
 
 
 # define the processes #########################################################
@@ -117,5 +116,4 @@ if __name__ == "__main__":
     # clean up
     for queue in queueList:
         queue.close()
-        queue.join_thread()
     info('Finished!')
