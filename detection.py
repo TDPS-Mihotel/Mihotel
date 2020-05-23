@@ -97,9 +97,10 @@ class Detector(object):
 
         info('Sensor initialed')
 
-        self.car_location = np.array([120, 64])
-        self.car_leftedge = 42
-        self.car_rightedge = 87
+        self.foresight_up = 40
+        self.foresight_down = 30
+        self.chassis_front = 50
+        self.front_wheels_y = 75
 
     def set_queues(self, signal_queue, sensors_queue):
         '''
@@ -178,40 +179,42 @@ class Detector(object):
                 color = item[0]
         return color
 
-    def rec2angle(self, x):
+    def tri2angle(self, opposite, adjacent):
         '''
-        Convert the direction which is originally in the Cartesian system to the angle.
-        return: the direction that the head deviate from the x-axis, whose range is [-180 180]
+        return an angle (in degrees) based on the given opposite edge and adjacent edge of
+        a triangle, in range of (-180, 180]\n
+        `opposite`: opposite edge of the angle\n
+        `adjacent`: adjacent edge of the angle\n
         '''
-        x = np.array(x)
-        if x[0]==0.0:
-            angle=np.sign(x[1])*90
+        if adjacent == 0.0:
+            angle = np.sign(opposite) * 90
         else:
-            angle = 180 * np.arctan(x[1] / x[0]) / np.pi
-            if x[0] < 0:
-                if x[1] > 0:
+            angle = 180 * np.arctan(opposite / adjacent) / np.pi
+            if adjacent < 0:
+                if opposite > 0:
                     angle = angle + 180
                 else:
                     angle = angle - 180
         return angle
 
-    def path_detection(self):
+    def path_detection(self, image):
         '''
-        This algorithm gives the angle of the direction of the path
+        This algorithm gives the angle (in degrees) of the direction of the path
+        if no path is detected, `None` is returned\n
         Written by Wen Bo
         '''
-        image = self.get_image(3)
+        cv2.waitKey(1)
         image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-        new_size = 16
-        threshold_gray = 70
-
-        location = np.argwhere((image_gray[0:new_size, 0:128]) <= threshold_gray)
-        if location.size==0:
-            degree=None
+        roi = image_gray[self.chassis_front - self.foresight_up:self.chassis_front - self.foresight_down]
+        cv2.imshow('gray', roi)
+        threshold = 70
+        location = np.argwhere((roi) <= threshold)
+        if location.size == 0:
+            return None
         else:
-            (f_y, f_x) = np.mean(a=location, axis=0)
-            degree = self.rec2angle([102 - f_y, f_x - 64])
-        return degree
+            # get center of road in roi
+            f_y, f_x = np.mean(a=location, axis=0)
+            return self.tri2angle(f_x - int(image.shape[1] / 2), 102 - self.front_wheels_y)
 
     def run(self, flag_pause, key):
         '''
@@ -233,19 +236,18 @@ class Detector(object):
                 self.signals['time'] = time.strftime("%H:%M:%S", time.localtime())
 
                 self.signals['Position'] = np.array(self.gpsRaw_position)
-                self.signals['Direction_x'] = self.rec2angle(self.compassRaw[:2])
-                self.signals['Direction_-z'] = self.rec2angle([-self.compassRaw[1], self.compassRaw[0]])
+                self.signals['Direction_x'] = self.tri2angle(self.compassRaw[1], self.compassRaw[0])
+                self.signals['Direction_-z'] = self.tri2angle(self.compassRaw[0], -self.compassRaw[1])
                 self.signals['Speed'] = np.array(self.gpsRaw_speed)
                 # the minimum distance for each direction where the unit is m.
                 self.signals['Distance'] = np.min(self.distancesRaw) / 1000
                 self.signals['Color'] = self.get_color(self.get_image(3))
                 # if signals['Path_Direction']==None: the path is end
-                self.signals['Path_Direction'] = self.path_detection()
+                self.signals['Path_Direction'] = self.path_detection(self.get_image(3))
 
-                self.path_detection()
                 # send all signals to decider
                 self.send_signals(self.signals)
-                debugInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
+                detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
 
 
 if __name__ == "__main__":

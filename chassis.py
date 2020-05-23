@@ -32,7 +32,7 @@ class WebotsMotorsGroup(MotorsGroup):
 
         # enable motors
         self.motors = {}
-        self.motors['arm'] = robot.getMotor('arm')
+        # self.motors['arm'] = robot.getMotor('arm')
         # wheel
         self.motors['wheel1'] = robot.getMotor('wheel1')
         self.motors['wheel2'] = robot.getMotor('wheel2')
@@ -53,9 +53,9 @@ class Controller(object):
 
     def __init__(self):
         self.velocityDict = {}
-        self.defaultVelocity = 30
-        self.maxVelocity = 50
-        self.steer_coefficient = 10
+        self.defaultVelocity = 8
+        self.maxVelocity = 10
+        self.steer_coefficient = 0.5
         info('Chassis initialed')
 
     def set_queue(self, command_queue, motors_queue):
@@ -88,7 +88,7 @@ class Controller(object):
             #     self.state = 'Arm rotating'
             #     self.velocityDict['arm'] = 10
             # wheel
-            if command[:4] == 'Turn' and command[:5] != 'Turn ':
+            if command[:4] == 'Turn':
                 steer = float(command[4:]) * self.steer_coefficient
                 self.state = 'Steering speed: ' + str(steer)
                 self.velocityDict['wheel1'] = self.defaultVelocity + steer
