@@ -184,12 +184,15 @@ class Detector(object):
         return: the direction that the head deviate from the x-axis, whose range is [-180 180]
         '''
         x = np.array(x)
-        angle = 180 * np.arctan(x[1] / x[0]) / np.pi
-        if x[0] < 0:
-            if x[1] > 0:
-                angle = angle + 180
-            else:
-                angle = angle - 180
+        if x[0]==0.0:
+            angle=np.sign(x[1])*90
+        else:
+            angle = 180 * np.arctan(x[1] / x[0]) / np.pi
+            if x[0] < 0:
+                if x[1] > 0:
+                    angle = angle + 180
+                else:
+                    angle = angle - 180
         return angle
 
     def path_detection(self):
