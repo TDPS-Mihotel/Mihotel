@@ -2,11 +2,10 @@
 
 import multiprocessing
 import os
+import queue
 import sys
 import time
-
 import psutil
-
 
 # flags ########################################################################
 # flag_simulation = True  # turn to False to run for real rover
@@ -21,10 +20,10 @@ if flag_simulation:
     os.chdir(sys.path[0])
     sys.path.append('../../../')
 
-from colored import commandInfo, debugInfo, detectedInfo, info, logoInfo
 import chassis
 import decision
 import detection
+from colored import commandInfo, debugInfo, detectedInfo, info, logoInfo
 
 
 # define the processes #########################################################
@@ -56,6 +55,7 @@ if __name__ == "__main__":
     signal_queue = multiprocessing.Queue()
     sensors_queue = multiprocessing.Queue()
     motors_queue = multiprocessing.Queue()
+    queueList = [command_queue, signal_queue, sensors_queue, motors_queue]
 
     # create process lock
     lock = multiprocessing.Lock()
@@ -93,13 +93,15 @@ if __name__ == "__main__" and flag_simulation:
         # update sensors data
         sensors_queue.put(sensors.update())
         # update motors speed
-        while not motors_queue.empty():
-            motors.update(motors_queue.get())
+        while True:
+            try:
+                motors.update(motors_queue.get(block=True, timeout=0.05))
+            except queue.Empty:
+                break
         # resume decider process
         with lock:
             flag_pause.value = False
             key.value = keyboard.getKey()  # character of the key press
-    info('Finished!')
 
 # if run for real rover
 if __name__ == "__main__" and not flag_simulation:
@@ -112,4 +114,9 @@ if __name__ == "__main__" and not flag_simulation:
             flag_patio_finished.value = True
         with lock:
             flag_pause.value = False
+
+if __name__ == "__main__":
+    # clean up
+    for queue in queueList:
+        queue.close()
     info('Finished!')
