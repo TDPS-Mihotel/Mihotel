@@ -70,7 +70,7 @@ class Controller(object):
         command = ''
         while True:
             try:
-                command = self.command_queue.get(block=False)
+                command = self.command_queue.get(block=True, timeout=0.05)
             except queue.Empty:
                 break
         return command

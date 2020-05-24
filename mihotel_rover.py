@@ -95,7 +95,7 @@ if __name__ == "__main__" and flag_simulation:
         # update motors speed
         while True:
             try:
-                motors.update(motors_queue.get(block=False))
+                motors.update(motors_queue.get(block=True, timeout=0.05))
             except queue.Empty:
                 break
         # resume decider process

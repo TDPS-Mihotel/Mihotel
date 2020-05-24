@@ -110,7 +110,7 @@ class Detector(object):
                     self.gpsRaw_speed,
                     self.compassRaw,
                     self.camerasRaw
-                ) = self.sensors_queue.get(block=False)
+                ) = self.sensors_queue.get(block=True, timeout=0.05)
             except queue.Empty:
                 break
 
