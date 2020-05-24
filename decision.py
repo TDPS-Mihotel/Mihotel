@@ -28,7 +28,60 @@ class Decider(object):
     def __init__(self, flag_patio_finished):
         self.flag_patio_finished = flag_patio_finished
         self.signals = {}
+        self.states = {
+            'line patrol': self.line_patrol,
+            'stop': self.stop,
+        }
+        self.current_state = 'line patrol'
         info('Decision initialed')
+
+# ############################# state functions ################################
+    def line_patrol(self):
+        '''
+        巡线
+        '''
+        # 在程序刚开始时可能这个量还没有传过来, 所以先判断下有没有
+        if 'Path_direction' in self.signals:
+            if self.signals['Path_direction'] is None:
+                return 'stop'
+            self.send_command('Turn' + str(self.signals['Path_direction']))
+            self.send_command('Move_Forward')
+        return 'line patrol'
+
+    def lineless_x_axis(self):
+        '''
+        无线直行x轴
+        '''
+        self.send_command('Turn' + str(self.signals['Direction_x']))
+
+    def lineless_z_axis(self):
+        '''
+        无线直行-z轴
+        '''
+        self.send_command('Turn' + str(self.signals['Direction_-z']))
+
+    def cross_bridge(self):
+        '''
+        过桥逻辑
+        无线直行 (结束:左侧摄像头中心线对准桥)
+        转弯, (应该判定是:前摄像头与桥中心线对齐) (但是如没有对齐, 应考虑补救措施）
+        无线直行 (结束: 检测到信标结束)
+        右转 (start: 检测到信标)
+        无线直行 (结束: 左摄像头与门的中心线对齐)
+        '''
+        self.lineless_x_axis()
+        # 此处缺个转弯，明天与视觉组商定
+        self.lineless_z_axis()
+        self.send_command(self.command['2'] + ' Angle:' + self.signals['Path_Direction'])
+
+    def stop(self):
+        '''
+        测试用
+        '''
+        self.send_command('Stop')
+        return 'stop'
+
+# ############################ state functions end #############################
 
     def set_queues(self, signal_queue, command_queue):
         '''
@@ -63,7 +116,7 @@ class Decider(object):
             with lock:
                 self.flag_patio_finished.value = True
 
-        self.send_command('Move forward')
+        self.current_state = self.states[self.current_state]()
 
 
 if __name__ == "__main__":
