@@ -133,7 +133,6 @@ class Controller(object):
         '''
         while True:
             time.sleep(0.1)  # set chassis period to 0.1s
-            # skip all code inside if paused by webots
             self.set_state(self.recv_command())
 
 
