@@ -63,7 +63,8 @@ class Detector(object):
             'Direction_-z': [],
             'Speed': [],
             'Color': [],
-            'Path_Direction': []
+            'Path_Direction': [],
+            'Bridge_Detection':[]
         }
 
         self.gpsRaw_position = [0, 0, 0]
@@ -90,6 +91,10 @@ class Detector(object):
         self.foresight_down = 30
         self.chassis_front = 50
         self.front_wheels_y = 75
+
+        self.windowedge=9
+        self.windowhsize=int((self.windowedge-1)/2)
+        self.adjacentznum=30
 
     def set_queues(self, signal_queue, sensors_queue):
         '''
@@ -192,7 +197,7 @@ class Detector(object):
         Written by Wen Bo
         '''
         cv2.waitKey(1)
-        image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         roi = image_gray[self.chassis_front - self.foresight_up:self.chassis_front - self.foresight_down]
         # cv2.imshow('gray', roi)
         threshold = 70
@@ -203,6 +208,45 @@ class Detector(object):
             # get center of road in roi
             f_y, f_x = np.mean(a=location, axis=0)
             return self.tri2angle(f_x - int(image.shape[1] / 2), 102 - self.front_wheels_y)
+
+    def bridge_detetcion(self, image):
+        '''
+        This algorithm gives the angle (in degrees) of the direction of the path
+        if no path is detected, `None` is returned\n
+        Written by Wen Bo
+        '''
+        cv2.waitKey(1)
+        image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        #Binarization
+        A = np.zeros(shape=[128,128])
+        A[image_gray<149] = 1
+        A[image_gray>153] = 1
+        #Delete the noise
+        for i in range(128):
+            for j in range(128):
+                #eage of the pictiure is noise
+                if i<self.windowhsize or j<self.windowhsize or i>127-self.windowhsize:
+                    A[i, j] = 1
+                #without enough neighborhood is noise
+                elif j > 127-self.windowhsize:
+                    if A[i,j] == 0:
+                        if np.sum(A[ i-self.windowhsize :i+self.windowhsize , j-self.windowhsize : j]==0)>=self.adjacentznum-2:
+                            A[i,j] =1
+                elif A[i,j] == 0: 
+                    if np.sum(A[i-self.windowhsize:i+self.windowhsize,j-self.windowhsize:j+self.windowhsize]==0)>=self.adjacentznum:
+                        A[i,j] = 1
+        
+        instruction=False
+        counter=np.sum(A==0)
+        #if the x index of the bridge is in [63,65], the the bridge is in the center
+        if counter>100:
+            location = np.argwhere(A==0)
+            f_x = np.mean(a=location, axis=0)[1]
+            mid=64
+            if np.abs(f_x-mid)<=1:
+                instruction=True
+
+        return instruction
 
     def run(self, flag_pause, key):
         '''
@@ -230,10 +274,11 @@ class Detector(object):
                 self.signals['Color'] = self.get_color(self.get_image(2))
                 # if signals['Path_Direction']==None: the path is end
                 self.signals['Path_Direction'] = self.path_detection(self.get_image(2))
+                self.signals['Bridge_Detetcion']=self.bridge_detetcion(self.get_image(1))
 
                 # send all signals to decider
                 self.send_signals(self.signals)
-                # detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
+                #detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
 
 
 if __name__ == "__main__":
