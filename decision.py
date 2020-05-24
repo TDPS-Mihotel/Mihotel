@@ -31,6 +31,7 @@ class Decider(object):
         self.states = {
             'line patrol': self.line_patrol,
             'feed': self.feed,
+            'stop': self.stop,
         }
         self.current_state = 'line patrol'
         info('Decision initialed')
@@ -43,8 +44,9 @@ class Decider(object):
         # 在程序刚开始时可能这个量还没有传过来, 所以先判断下有没有
         if 'Path_direction' in self.signals:
             if self.signals['Path_direction'] is None:
-                return 'feed'
+                return 'stop'
             self.send_command('Turn' + str(self.signals['Path_direction']))
+            self.send_command('Move_Forward')
         return 'line patrol'
 
     def feed(self):
@@ -78,6 +80,13 @@ class Decider(object):
         # 此处缺个转弯，明天与视觉组商定
         self.lineless_z_axis()
         self.send_command(self.command['2'] + ' Angle:' + self.signals['Path_Direction'])
+
+    def stop(self):
+        '''
+        测试用
+        '''
+        self.send_command('Stop')
+        return 'stop'
 
 # ############################ state functions end #############################
 
