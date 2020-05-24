@@ -41,11 +41,10 @@ class Decider(object):
         巡线
         '''
         # 在程序刚开始时可能这个量还没有传过来, 所以先判断下有没有
-        if 'Path_direction' in self.signals:
-            if self.signals['Path_direction'] is None:
+        if 'Path_Direction' in self.signals:
+            if self.signals['Path_Direction'] is None:
                 return 'stop'
-            self.send_command('Turn' + str(self.signals['Path_direction']))
-            self.send_command('Move_Forward')
+            self.send_command('Turn' + str(self.signals['Path_Direction']))
         return 'line patrol'
 
     def lineless_x_axis(self):
