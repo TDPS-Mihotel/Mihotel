@@ -30,7 +30,6 @@ class Decider(object):
         self.signals = {}
         self.states = {
             'line patrol': self.line_patrol,
-            'feed': self.feed,
             'stop': self.stop,
         }
         self.current_state = 'line patrol'
@@ -48,12 +47,6 @@ class Decider(object):
             self.send_command('Turn' + str(self.signals['Path_direction']))
             self.send_command('Move_Forward')
         return 'line patrol'
-
-    def feed(self):
-        '''
-        投食
-        '''
-        pass
 
     def lineless_x_axis(self):
         '''
