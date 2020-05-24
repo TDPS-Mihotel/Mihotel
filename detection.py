@@ -22,15 +22,10 @@ class Sensors(object):
         timestep = int(robot.getBasicTimeStep())
 
         # enable sensors #######################################################
-        self.direction_list = ['front', 'right', 'left', 'path']
-        # for each direction, there are three distance sensors
-        self.distance_sensors = []
-        for i in range(3):
-            self.distance_sensors.append(robot.getDistanceSensor(self.direction_list[i] + '_ds'))
-            self.distance_sensors[i].enable(timestep)
+        self.direction_list = ['right', 'left', 'path']
         # camera frames are received from the main process, so set a default value here
         self.cameras = []
-        for i in range(4):
+        for i in range(3):
             self.cameras.append(robot.getCamera(self.direction_list[i] + '_cam'))
             self.cameras[i].enable(timestep)
         # compass for moving direction
@@ -42,18 +37,16 @@ class Sensors(object):
 
     def update(self):
         '''
-        get and return `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `distancesRaw`, `camerasRaw`
+        get and return `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `camerasRaw`
         '''
         gpsRaw_position = self.gps.getValues()
         gpsRaw_speed = self.gps.getSpeed()
         compassRaw = self.compass.getValues()
-        distancesRaw = [self.distance_sensors[i].getValue() for i in range(3)]
         camerasRaw = [item.getImageArray() for item in self.cameras]
         return (
             gpsRaw_position,
             gpsRaw_speed,
             compassRaw,
-            distancesRaw,
             camerasRaw
         )
 
@@ -69,7 +62,6 @@ class Detector(object):
             'Direction_x': [],
             'Direction_-z': [],
             'Speed': [],
-            'Distance': [],
             'Color': [],
             'Path_Direction': []
         }
@@ -77,7 +69,6 @@ class Detector(object):
         self.gpsRaw_position = [0, 0, 0]
         self.gpsRaw_speed = [0, 0, 0]
         self.compassRaw = [1, 0, 0]
-        self.distancesRaw = [[0, 0, 0]]
         self.camerasRaw = [np.zeros((128, 128, 3), np.uint8) for i in range(4)]
 
         self.color_list = [
@@ -118,7 +109,6 @@ class Detector(object):
                     self.gpsRaw_position,
                     self.gpsRaw_speed,
                     self.compassRaw,
-                    self.distancesRaw,
                     self.camerasRaw
                 ) = self.sensors_queue.get(block=False)
             except queue.Empty:
@@ -226,7 +216,7 @@ class Detector(object):
             if not flag_pause.value:
                 # keyboard events
                 if key.value == ord('C'):  # capture image when C is pressed
-                    self.capture(3)
+                    self.capture(2)
 
                 # update sensors data
                 self.update()
@@ -237,11 +227,9 @@ class Detector(object):
                 self.signals['Direction_x'] = self.tri2angle(self.compassRaw[1], self.compassRaw[0])
                 self.signals['Direction_-z'] = self.tri2angle(self.compassRaw[0], -self.compassRaw[1])
                 self.signals['Speed'] = np.array(self.gpsRaw_speed)
-                # the minimum distance for each direction where the unit is m.
-                self.signals['Distance'] = np.min(self.distancesRaw) / 1000
-                self.signals['Color'] = self.get_color(self.get_image(3))
+                self.signals['Color'] = self.get_color(self.get_image(2))
                 # if signals['Path_Direction']==None: the path is end
-                self.signals['Path_Direction'] = self.path_detection(self.get_image(3))
+                self.signals['Path_Direction'] = self.path_detection(self.get_image(2))
 
                 # send all signals to decider
                 self.send_signals(self.signals)
