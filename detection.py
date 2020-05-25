@@ -22,10 +22,10 @@ class Sensors(object):
         timestep = int(robot.getBasicTimeStep())
 
         # enable sensors #######################################################
-        self.direction_list = ['right', 'left', 'path']
+        self.direction_list = ['left', 'path']
         # camera frames are received from the main process, so set a default value here
         self.cameras = []
-        for i in range(3):
+        for i in range(2):
             self.cameras.append(robot.getCamera(self.direction_list[i] + '_cam'))
             self.cameras[i].enable(timestep)
         # compass for moving direction
@@ -245,7 +245,7 @@ class Detector(object):
             if not flag_pause.value:
                 # keyboard events
                 if key.value == ord('C'):  # capture image when C is pressed
-                    self.capture(2)
+                    self.capture(1)
 
                 # update sensors data
                 self.update()
@@ -256,10 +256,10 @@ class Detector(object):
                 self.signals['Direction_x'] = self.tri2angle(self.compassRaw[1], self.compassRaw[0])
                 self.signals['Direction_-z'] = self.tri2angle(self.compassRaw[0], -self.compassRaw[1])
                 self.signals['Speed'] = np.array(self.gpsRaw_speed)
-                self.signals['Color'] = self.get_color(self.get_image(2))
+                self.signals['Color'] = self.get_color(self.get_image(1))
                 # if signals['Path_Direction']==None: the path is end
-                self.signals['Path_Direction'] = self.path_detection(self.get_image(2))
-                self.signals['Bridge_Detection'] = self.bridge_detection(self.get_image(1))
+                self.signals['Path_Direction'] = self.path_detection(self.get_image(1))
+                self.signals['Bridge_Detection'] = self.bridge_detection(self.get_image(0))
 
                 # send all signals to decider
                 self.send_signals(self.signals)
