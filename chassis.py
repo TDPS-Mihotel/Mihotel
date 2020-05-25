@@ -32,7 +32,9 @@ class WebotsMotorsGroup(MotorsGroup):
 
         # enable motors
         self.motors = {}
-        # self.motors['arm'] = robot.getMotor('arm')
+        self.motors['A motor'] = robot.getMotor('A motor')
+        self.motors['B motor'] = robot.getMotor('B motor')
+        self.motors['C motor'] = robot.getMotor('C motor')
         # wheel
         self.motors['wheel1'] = robot.getMotor('wheel1')
         self.motors['wheel2'] = robot.getMotor('wheel2')
@@ -84,9 +86,18 @@ class Controller(object):
             self.velocityDict[motor] = 0
 
         if command:
-            # if command == 'Rotate arm':
-            #     self.state = 'Arm rotating'
-            #     self.velocityDict['arm'] = 10
+            if command == 'Feed':
+                self.state = 'Feeding'
+                self.velocityDict['A motor'] = 1
+                self.velocityDict['B motor'] = 1
+                self.velocityDict['C motor'] = 1
+                
+            if command == 'Feeder recover':
+                self.state = 'Feeder recovering'
+                self.velocityDict['A motor'] = -1
+                self.velocityDict['B motor'] = -1
+                self.velocityDict['C motor'] = -1
+
             # wheel
             if command[:4] == 'Turn':
                 steer = float(command[4:]) * self.steer_coefficient
