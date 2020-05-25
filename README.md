@@ -158,6 +158,16 @@ Our **line detector** works like this:
 4. For each segmentation of the picture, find the direction which contains the most point whose magnitude of gradient exceed the threshold.
 5. Average the direction of the N segmentation and it is the direction of the eage of the path. Rotate it by 90° and we could get the direction of the path.
 
+The illustration of the signals we get:
+1. 'Position': This is a three dimension vector [x, y, z]. The value is the same as the translation property of the robot.
+2. 'Speed': The speed in m/s
+3. 'Bridge_Detection': If the bridge is deteted, `True` is returned. If not detected or improper postion, `False` is returnd.
+4. 'Color': The predifined `String` that indicate the color.
+4. 'Dirction_x': This is a float number ranges from -180 to 180. It indictate the degree that the head deviate from x-axis.
+5. 'Dirction_-z': This is a float number ranges from -180 to 180. It indictate the degree that the head deviate from z-axis.
+6. 'Path_Dirction': This is a float numer that indicate the degree that the path-dirtion deviate from the head dirction. When there is on path, `None` is returned.
+⚠️ Noticing that, the right deviation is positive and the left deviation is negtive.
+
 ### Decision
 
 The **decision making** is still working in progress at [#46](https://github.com/TDPS-Mihotel/Mihotel/issues/#55) and [#56](https://github.com/TDPS-Mihotel/Mihotel/issues/#55)
