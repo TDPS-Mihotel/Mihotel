@@ -63,7 +63,8 @@ class Detector(object):
             'Direction_-z': [],
             'Speed': [],
             'Color': [],
-            'Path_Direction': []
+            'Path_Direction': [],
+            'Bridge_Detection': []
         }
 
         self.gpsRaw_position = [0, 0, 0]
@@ -84,12 +85,12 @@ class Detector(object):
             ('purple', np.array([125, 43, 46]), np.array([155, 255, 255]))
         ]
 
-        info('Sensor initialed')
-
         self.foresight_up = 40
         self.foresight_down = 30
         self.chassis_front = 50
         self.front_wheels_y = 75
+
+        info('Sensor initialed')
 
     def set_queues(self, signal_queue, sensors_queue):
         '''
@@ -192,7 +193,7 @@ class Detector(object):
         Written by Wen Bo
         '''
         cv2.waitKey(1)
-        image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         roi = image_gray[self.chassis_front - self.foresight_up:self.chassis_front - self.foresight_down]
         # cv2.imshow('roi', roi)
         threshold = 70
@@ -203,6 +204,34 @@ class Detector(object):
             # get center of road in roi
             f_y, f_x = np.mean(a=location, axis=0)
             return self.tri2angle(f_x - int(image.shape[1] / 2), 102 - self.front_wheels_y)
+
+    def bridge_detection(self, image):
+        '''
+        This algorithm gives whether we detect the bridge\n
+        if bridge is detected, return `True`, else return `false`
+        Written by Wen Bo
+        '''
+        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # Binarization
+        binary_map = np.zeros(shape=image_gray.shape)
+        binary_map[image_gray < 149] = 1
+        binary_map[image_gray > 153] = 1
+        # delete the noise
+        kernel = np.ones([5, 5], np.uint8)
+        erosion = cv2.erode(binary_map, kernel, iterations=1)
+
+        counter = np.sum(binary_map == 0)
+        # if the x index of the bridge is in no farther than x_range*width from the center,
+        # then the bridge is in the center
+        if counter > 100:
+            location = np.argwhere(binary_map == 0)
+            f_x = np.mean(a=location, axis=0)[1]
+            mid = binary_map.shape[1] / 2
+            x_range = 0.02
+            if np.abs(f_x - mid) <= x_range * binary_map.shape[1]:
+                # print(f_x)
+                return True
+        return False
 
     def run(self, flag_pause, key):
         '''
@@ -230,6 +259,7 @@ class Detector(object):
                 self.signals['Color'] = self.get_color(self.get_image(2))
                 # if signals['Path_Direction']==None: the path is end
                 self.signals['Path_Direction'] = self.path_detection(self.get_image(2))
+                self.signals['Bridge_Detection'] = self.bridge_detection(self.get_image(1))
 
                 # send all signals to decider
                 self.send_signals(self.signals)
