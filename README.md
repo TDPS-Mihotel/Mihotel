@@ -167,6 +167,8 @@ The illustration of the signals we get:
 5. 'Dirction_-z': This is a float number ranges from -180 to 180. It indictate the degree that the head deviate from z-axis.
 6. 'Path_Dirction': This is a float numer that indicate the degree that the path-dirtion deviate from the head dirction. When there is on path, `None` is returned.
 ⚠️ Noticing that, the right deviation is positive and the left deviation is negtive.
+![](doc/Direction.jpg)
+![](doc/Signal_Show.jpg)
 
 ### Decision
 
