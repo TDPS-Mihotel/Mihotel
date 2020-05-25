@@ -92,9 +92,9 @@ class Detector(object):
         self.chassis_front = 50
         self.front_wheels_y = 75
 
-        self.windowedge=9
-        self.windowhsize=int((self.windowedge-1)/2)
-        self.adjacentznum=30
+        self.window_edge=9
+        self.window_h_size=int((self.window_edge-1)/2)
+        self.adjacentz_num=30
 
     def set_queues(self, signal_queue, sensors_queue):
         '''
@@ -215,35 +215,35 @@ class Detector(object):
         if no path is detected, `None` is returned\n
         Written by Wen Bo
         '''
-        cv2.waitKey(1)
-        image_gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         #Binarization
-        A = np.zeros(shape=[128,128])
-        A[image_gray<149] = 1
-        A[image_gray>153] = 1
+        binary_map = np.zeros(shape=[128,128])
+        binary_map[image_gray<149] = 1
+        binary_map[image_gray>153] = 1
         #Delete the noise
         for i in range(128):
             for j in range(128):
                 #eage of the pictiure is noise
-                if i<self.windowhsize or j<self.windowhsize or i>127-self.windowhsize:
-                    A[i, j] = 1
+                if i<self.window_h_size or j<self.window_h_size or i>127-self.window_h_size:
+                    binary_map[i, j] = 1
                 #without enough neighborhood is noise
-                elif j > 127-self.windowhsize:
-                    if A[i,j] == 0:
-                        if np.sum(A[ i-self.windowhsize :i+self.windowhsize , j-self.windowhsize : j]==0)>=self.adjacentznum-2:
-                            A[i,j] =1
-                elif A[i,j] == 0: 
-                    if np.sum(A[i-self.windowhsize:i+self.windowhsize,j-self.windowhsize:j+self.windowhsize]==0)>=self.adjacentznum:
-                        A[i,j] = 1
+                elif j > 127-self.window_h_size:
+                    if binary_map[i,j] == 0:
+                        if np.sum(binary_map[ i-self.window_h_size :i+self.window_h_size , j-self.window_h_size : j]==0)>=self.adjacentz_num-2:
+                            binary_map[i,j] =1
+                elif binary_map[i,j] == 0: 
+                    if np.sum(binary_map[i-self.window_h_size:i+self.window_h_size,j-self.window_h_size:j+self.window_h_size]==0)>=self.adjacentz_num:
+                        binary_map[i,j] = 1
         
         instruction=False
-        counter=np.sum(A==0)
+        counter=np.sum(binary_map==0)
         #if the x index of the bridge is in [63,65], the the bridge is in the center
         if counter>100:
-            location = np.argwhere(A==0)
+            location = np.argwhere(binary_map==0)
             f_x = np.mean(a=location, axis=0)[1]
-            mid=64
-            if np.abs(f_x-mid)<=1:
+            mid=binary_map.shape[1]/2
+            x_range = 0.02
+            if np.abs(f_x-mid)<=x_range * binary_map.shape[1]:
                 instruction=True
 
         return instruction
@@ -278,7 +278,7 @@ class Detector(object):
 
                 # send all signals to decider
                 self.send_signals(self.signals)
-                #detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
+                # detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
 
 
 if __name__ == "__main__":
