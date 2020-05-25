@@ -73,17 +73,12 @@ class Detector(object):
         self.camerasRaw = [np.zeros((128, 128, 3), np.uint8) for i in range(4)]
 
         self.color_list = [
-            ('black', np.array([0, 0, 0]), np.array([180, 255, 46])),
-            ('white', np.array([0, 0, 221]), np.array([180, 30, 255])),
-            ('red', np.array([156, 43, 46]), np.array([180, 255, 255])),
-            ('red', np.array([0, 43, 46]), np.array([10, 255, 255])),
-            ('orange', np.array([11, 43, 46]), np.array([25, 255, 255])),
-            ('yellow', np.array([26, 43, 46]), np.array([34, 255, 255])),
+            ('red', np.array([0, 246, 144]), np.array([3, 255, 154])),
+            ('orange', np.array([14, 199, 234]), np.array([21, 208, 240])),
+            ('yellow', np.array([27, 243, 168]), np.array([33, 255, 178])),
             ('green', np.array([35, 43, 46]), np.array([77, 255, 255])),
-            ('cyan', np.array([78, 43, 46]), np.array([99, 255, 255])),
-            ('blue', np.array([100, 43, 46]), np.array([124, 255, 255])),
-            ('purple', np.array([125, 43, 46]), np.array([155, 255, 255]))
-        ]
+            ('purple', np.array([132, 43, 46]), np.array([155, 255, 255]))
+        ]   # green haven't been changed
 
         self.foresight_up = 40
         self.foresight_down = 30
@@ -149,24 +144,45 @@ class Detector(object):
         cv2.imwrite(capture_path + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '.png', image)
         info('Captured! 📸')
 
-    def get_color(self, frame):
-        """
-        Get the principal color of the image\n
-        `param frame`: Input image\n
-        `return color`: Principal color of the image
-        """
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)  # cvt rgb to hsv
-        maxsum = -100
+    def get_color(self, image):
+        '''
+        Detect the interested colors\n
+        `param image`: Input image\n
+        `return color`: the color being detected\n
+        `return color`: the range of the detected color\n
+        `return beacon`: True when the beacon is detected
+        '''
+        GaussianBlur = cv2.GaussianBlur(image, (5, 5), 0)  # smooth the image
+        hsv = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2HSV)  # cvt rgb to hsv
+        beacon = False
         color = None
+        color_thresh = 20
         for item in self.color_list:
             mask = cv2.inRange(hsv, item[1], item[2])  # set regions of other colors to black
-            binary = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)[1]  # threshold images into binary type
-            binary = cv2.dilate(binary, None, iterations=2)
+            binary = cv2.dilate(mask, None, iterations=2)
             sum = np.sum(binary)
-            if sum > maxsum:
-                maxsum = sum
+            if sum > color_thresh:
                 color = item[0]
-        return color
+                color_range = [item[1], item[2]]
+        if color = "green":
+            beacon = True
+        return color, color_range, beacon
+
+    def img2gray(self, image, color, color_range):
+        '''
+        Once a color is detected, then block other colors\n
+        `param image`: Input image\n
+        `param color`: detected color\n
+        `param color_range`: the range of the detected color\n
+        `return image_gray`: gray image for path detection
+        '''
+        if color = None:
+            image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(image_hsv, color_range[0], color_range[1])
+            image_gray = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY_INV)[1]  # Inverse the image
+        return image_gray
 
     def tri2angle(self, opposite, adjacent):
         '''
@@ -186,14 +202,13 @@ class Detector(object):
                     angle = angle - 180
         return angle
 
-    def path_detection(self, image):
+    def path_detection(self, image_gray):
         '''
         This algorithm gives the angle (in degrees) of the direction of the path
         if no path is detected, `None` is returned\n
         Written by Wen Bo
         '''
         cv2.waitKey(1)
-        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         roi = image_gray[self.chassis_front - self.foresight_up:self.chassis_front - self.foresight_down]
         # cv2.imshow('roi', roi)
         threshold = 70
