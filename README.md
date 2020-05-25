@@ -162,6 +162,8 @@ Our **line detector** works like this:
 
 The **decision making** is still working in progress at [#46](https://github.com/TDPS-Mihotel/Mihotel/issues/#55) and [#56](https://github.com/TDPS-Mihotel/Mihotel/issues/#55)
 
+![](doc/CFG.svg)
+
 ### Environment
 
 #### Specifications
