@@ -85,16 +85,12 @@ class Detector(object):
             ('purple', np.array([125, 43, 46]), np.array([155, 255, 255]))
         ]
 
-        info('Sensor initialed')
-
         self.foresight_up = 40
         self.foresight_down = 30
         self.chassis_front = 50
         self.front_wheels_y = 75
 
-        self.window_edge = 9
-        self.window_h_size = int((self.window_edge - 1) / 2)
-        self.adjacent_num = 30
+        info('Sensor initialed')
 
     def set_queues(self, signal_queue, sensors_queue):
         '''
@@ -211,8 +207,8 @@ class Detector(object):
 
     def bridge_detection(self, image):
         '''
-        This algorithm gives the angle (in degrees) of the direction of the path
-        if no path is detected, `None` is returned\n
+        This algorithm gives whether we detect the bridge\n
+        if bridge is detected, return `True`, else return `false`
         Written by Wen Bo
         '''
         image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -224,18 +220,18 @@ class Detector(object):
         kernel = np.ones([5, 5], np.uint8)
         erosion = cv2.erode(binary_map, kernel, iterations=1)
 
-        instruction = False
         counter = np.sum(binary_map == 0)
-        # if the x index of the bridge is in [63,65], the the bridge is in the center
+        # if the x index of the bridge is in no farther than x_range*width from the center,
+        # then the bridge is in the center
         if counter > 100:
             location = np.argwhere(binary_map == 0)
             f_x = np.mean(a=location, axis=0)[1]
             mid = binary_map.shape[1] / 2
             x_range = 0.02
             if np.abs(f_x - mid) <= x_range * binary_map.shape[1]:
-                instruction = True
-                print(f_x, instruction)
-        return instruction
+                # print(f_x)
+                return True
+        return False
 
     def run(self, flag_pause, key):
         '''
