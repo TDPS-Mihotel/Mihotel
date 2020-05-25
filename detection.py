@@ -64,7 +64,7 @@ class Detector(object):
             'Speed': [],
             'Color': [],
             'Path_Direction': [],
-            'Bridge_Detection':[]
+            'Bridge_Detection': []
         }
 
         self.gpsRaw_position = [0, 0, 0]
@@ -92,9 +92,9 @@ class Detector(object):
         self.chassis_front = 50
         self.front_wheels_y = 75
 
-        self.window_edge=9
-        self.window_h_size=int((self.window_edge-1)/2)
-        self.adjacentz_num=30
+        self.window_edge = 9
+        self.window_h_size = int((self.window_edge - 1) / 2)
+        self.adjacent_num = 30
 
     def set_queues(self, signal_queue, sensors_queue):
         '''
@@ -209,43 +209,32 @@ class Detector(object):
             f_y, f_x = np.mean(a=location, axis=0)
             return self.tri2angle(f_x - int(image.shape[1] / 2), 102 - self.front_wheels_y)
 
-    def bridge_detetcion(self, image):
+    def bridge_detection(self, image):
         '''
         This algorithm gives the angle (in degrees) of the direction of the path
         if no path is detected, `None` is returned\n
         Written by Wen Bo
         '''
         image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        #Binarization
-        binary_map = np.zeros(shape=[128,128])
-        binary_map[image_gray<149] = 1
-        binary_map[image_gray>153] = 1
-        #Delete the noise
-        for i in range(128):
-            for j in range(128):
-                #eage of the pictiure is noise
-                if i<self.window_h_size or j<self.window_h_size or i>127-self.window_h_size:
-                    binary_map[i, j] = 1
-                #without enough neighborhood is noise
-                elif j > 127-self.window_h_size:
-                    if binary_map[i,j] == 0:
-                        if np.sum(binary_map[ i-self.window_h_size :i+self.window_h_size , j-self.window_h_size : j]==0)>=self.adjacentz_num-2:
-                            binary_map[i,j] =1
-                elif binary_map[i,j] == 0: 
-                    if np.sum(binary_map[i-self.window_h_size:i+self.window_h_size,j-self.window_h_size:j+self.window_h_size]==0)>=self.adjacentz_num:
-                        binary_map[i,j] = 1
-        
-        instruction=False
-        counter=np.sum(binary_map==0)
-        #if the x index of the bridge is in [63,65], the the bridge is in the center
-        if counter>100:
-            location = np.argwhere(binary_map==0)
-            f_x = np.mean(a=location, axis=0)[1]
-            mid=binary_map.shape[1]/2
-            x_range = 0.02
-            if np.abs(f_x-mid)<=x_range * binary_map.shape[1]:
-                instruction=True
+        # Binarization
+        binary_map = np.zeros(shape=image_gray.shape)
+        binary_map[image_gray < 149] = 1
+        binary_map[image_gray > 153] = 1
+        # delete the noise
+        kernel = np.ones([5, 5], np.uint8)
+        erosion = cv2.erode(binary_map, kernel, iterations=1)
 
+        instruction = False
+        counter = np.sum(binary_map == 0)
+        # if the x index of the bridge is in [63,65], the the bridge is in the center
+        if counter > 100:
+            location = np.argwhere(binary_map == 0)
+            f_x = np.mean(a=location, axis=0)[1]
+            mid = binary_map.shape[1] / 2
+            x_range = 0.02
+            if np.abs(f_x - mid) <= x_range * binary_map.shape[1]:
+                instruction = True
+                print(f_x, instruction)
         return instruction
 
     def run(self, flag_pause, key):
@@ -274,7 +263,7 @@ class Detector(object):
                 self.signals['Color'] = self.get_color(self.get_image(2))
                 # if signals['Path_Direction']==None: the path is end
                 self.signals['Path_Direction'] = self.path_detection(self.get_image(2))
-                self.signals['Bridge_Detetcion']=self.bridge_detetcion(self.get_image(1))
+                self.signals['Bridge_Detection'] = self.bridge_detection(self.get_image(1))
 
                 # send all signals to decider
                 self.send_signals(self.signals)
