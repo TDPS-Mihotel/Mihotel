@@ -31,6 +31,8 @@ class Decider(object):
         self.states = {
             'line patrol': self.line_patrol,
             'stop': self.stop,
+            'cross_bridge': self.cross_bridge,
+            'cross_gate': self.cross_gate
         }
         self.current_state = 'line patrol'
         info('Decision initialed')
@@ -44,34 +46,45 @@ class Decider(object):
         if 'Path_Direction' in self.signals:
             if self.signals['Path_Direction'] is None:
                 return 'stop'
+            if self.signals['feed'] is True:
+                pass
             self.send_command('Turn' + str(self.signals['Path_Direction']))
         return 'line patrol'
-
-    def lineless_x_axis(self):
-        '''
-        无线直行x轴
-        '''
-        self.send_command('Turn' + str(self.signals['Direction_x']))
-
-    def lineless_z_axis(self):
-        '''
-        无线直行-z轴
-        '''
-        self.send_command('Turn' + str(self.signals['Direction_-z']))
 
     def cross_bridge(self):
         '''
         过桥逻辑
-        无线直行 (结束:左侧摄像头中心线对准桥)
-        转弯, (应该判定是:前摄像头与桥中心线对齐) (但是如没有对齐, 应考虑补救措施）
-        无线直行 (结束: 检测到信标结束)
-        右转 (start: 检测到信标)
-        无线直行 (结束: 左摄像头与门的中心线对齐)
         '''
-        self.lineless_x_axis()
-        # 此处缺个转弯，明天与视觉组商定
-        self.lineless_z_axis()
-        self.send_command(self.command['2'] + ' Angle:' + self.signals['Path_Direction'])
+        if self.signals['Bridge_Detection'] is False and self.signals['Gate_Detection'] is False:
+            # 过桥前直行x
+            self.send_command('Turn' + str(self.signals['Direction_x']))
+            return 'cross_bridge'
+        elif self.signals['Bridge_Detection'] is True and self.signals['Gate_Detection'] is False:
+            # 对准桥转向-z直行
+            self.send_command('Turn' + str(self.signals['Direction_-z']))
+            return 'cross_bridge'
+        elif self.signals['Color'] == 'Green':
+            # 过桥后左转，切换状态
+            self.send_command('Turn' + str(self.signals['Direction_x']))
+            self.send_command('Stop')
+            return 'cross_gate'
+
+    def cross_gate(self):
+        '''
+        过门
+        '''
+        if self.signals['Bridge_Detection'] is True and self.signals['Gate_Detection'] is False:
+            # 过门前直行x
+            self.send_command('Turn' + str(self.signals['Direction_x']))
+            return 'cross_gate'
+        elif self.signals['Bridge_Detection'] is True and self.signals['Gate_Detection'] is True:
+            # 对准门转向-z直行
+            self.send_command('Turn' + str(self.signals['Direction_-z']))
+            return 'cross_gate'
+        elif self.signals['Path_Direction'] is not None:
+            # 过门后，切换巡线状态
+            self.send_command('Stop')
+            return 'line patrol'
 
     def stop(self):
         '''
