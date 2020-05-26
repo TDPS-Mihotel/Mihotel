@@ -193,7 +193,6 @@ class Detector(object):
         if no path is detected, `None` is returned\n
         Written by Wen Bo
         '''
-        self.mid = image.shape[0] / 2
         cv2.waitKey(1)
         image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         roi = image_gray[self.chassis_front - self.foresight_up:self.chassis_front - self.foresight_down]
@@ -227,8 +226,8 @@ class Detector(object):
         if counter > 100:
             location = np.argwhere(binary_map == 0)
             f_x = np.mean(a=location, axis=0)[1]
-            x_range=0.02
-            if np.abs(f_x - image.shape[0] / 2) <= x_range * binary_map.shape[1]:
+            x_range = 0.02
+            if np.abs(f_x - image.shape[1] // 2) <= x_range * binary_map.shape[1]:
                 return True
         return False
 
@@ -248,8 +247,8 @@ class Detector(object):
         edge = np.argwhere(counter > 10)
         if edge.shape[0] >= 4:
             f_x = np.mean(edge)
-            x_range=0.02
-            if np.abs(f_x -  image.shape[0] / 2) <= x_range * binary_map.shape[1]:
+            x_range = 0.02
+            if np.abs(f_x - image.shape[1] // 2) <= x_range * binary_map.shape[1]:
                 return True
 
         return False
