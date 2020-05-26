@@ -240,7 +240,7 @@ class Detector(object):
         Written by Wen Bo, modified by Han Haoran
         '''
         # Get the  gradient map
-        gradient = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize =3)
+        gradient = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
         # Binarization
         binary_map = np.zeros(shape=image.shape)
         binary_map[gradient > 400] = 1
