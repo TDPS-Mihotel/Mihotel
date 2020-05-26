@@ -34,6 +34,8 @@ class Sensors(object):
         # GPS for position and speed
         self.gps = robot.getGPS('gps')
         self.gps.enable(timestep)
+        self.beacon = ''
+        self.tank = ''
 
     def update(self):
         '''
@@ -77,9 +79,9 @@ class Detector(object):
             ('red', np.array([0, 246, 144]), np.array([3, 255, 154])),
             ('orange', np.array([14, 199, 234]), np.array([21, 208, 240])),
             ('yellow', np.array([27, 243, 168]), np.array([33, 255, 178])),
-            ('green', np.array([35, 43, 46]), np.array([77, 255, 255])),
+            ('green', np.array([55, 236, 156]), np.array([63, 255, 173])),
             ('purple', np.array([132, 43, 46]), np.array([155, 255, 255]))
-        ]   # green haven't been changed
+        ]
 
         self.foresight_up = 40
         self.foresight_down = 30
@@ -150,13 +152,9 @@ class Detector(object):
         Detect the interested colors\n
         `param image`: Input image\n
         `return image_gray`: gray image with unwanted color filtered\n
-        `return tank`: return `True` when the orange box is detected, otherwise return `False`\n
-        `return beacon`: return `True` when the beacon is detected, otherwise return `False`
         '''
         GaussianBlur = cv2.GaussianBlur(image, (5, 5), 0)  # smooth the image
         image_hsv = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2HSV)  # cvt rgb to hsv
-        tank = False
-        beacon = False
         color = None
         color_thresh = 20
         for item in self.color_list:
@@ -167,14 +165,14 @@ class Detector(object):
                 color = item[0]
                 image_binary = binary
         if color == "orange":
-            tank = True
+            self.tank = 'tank'
         elif color == "green":
-            beacon = True
+            self.beacon = 'after bridge'
         elif color is None:
             image_gray = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2GRAY)
         else:
             image_gray = cv2.threshold(image_binary, 127, 255, cv2.THRESH_BINARY_INV)[1]  # Inverse the binary image
-        return image_gray, tank, beacon
+        return image_gray
 
     def tri2angle(self, opposite, adjacent):
         '''
@@ -237,16 +235,16 @@ class Detector(object):
                 return True
         return False
 
-    def gate_detection(self, image):
+    def gate_detection(self, image_gray):
         '''
         This algorithm gives whether we detect the gate\n
         if gate is detected, return `True`, else return `false`
         Written by Wen Bo, modified by Han Haoran
         '''
         # Get the  gradient map
-        gradient = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+        gradient = cv2.Sobel(image_gray, cv2.CV_64F, 1, 0, ksize=3)
         # Binarization
-        binary_map = np.zeros(shape=image.shape)
+        binary_map = np.zeros(shape=image_gray.shape)
         binary_map[gradient > 400] = 1
         # Counting the pixel along a column where the gradient exceed the threshold
         counter = np.sum(binary_map, axis=0)
@@ -254,7 +252,7 @@ class Detector(object):
         if edge.shape[0] >= 4:
             f_x = np.mean(edge)
             x_range = 0.02
-            if np.abs(f_x - image.shape[1] // 2) <= x_range * binary_map.shape[1]:
+            if np.abs(f_x - image_gray.shape[1] // 2) <= x_range * binary_map.shape[1]:
                 return True
 
         return False
