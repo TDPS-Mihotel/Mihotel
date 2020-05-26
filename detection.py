@@ -34,8 +34,6 @@ class Sensors(object):
         # GPS for position and speed
         self.gps = robot.getGPS('gps')
         self.gps.enable(timestep)
-        self.beacon = ''
-        self.tank = ''
 
     def update(self):
         '''
@@ -64,10 +62,10 @@ class Detector(object):
             'Direction_x': [],
             'Direction_-z': [],
             'Speed': [],
-            'Color': [],
             'Path_Direction': [],
             'Bridge_Detection': False,
             'Gate_Detection': False
+            'Beacon': ''
         }
 
         self.gpsRaw_position = [0, 0, 0]
@@ -165,14 +163,14 @@ class Detector(object):
                 color = item[0]
                 image_binary = binary
         if color == "orange":
-            self.tank = 'tank'
+            Beacon = 'tank'
         elif color == "green":
-            self.beacon = 'after bridge'
+            Beacon = 'after bridge'
         elif color is None:
             image_gray = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2GRAY)
         else:
             image_gray = cv2.threshold(image_binary, 127, 255, cv2.THRESH_BINARY_INV)[1]  # Inverse the binary image
-        return image_gray
+        return Beacon, image_gray
 
     def tri2angle(self, opposite, adjacent):
         '''
@@ -280,14 +278,14 @@ class Detector(object):
                 self.signals['Direction_x'] = self.tri2angle(self.compassRaw[1], self.compassRaw[0])
                 self.signals['Direction_-z'] = self.tri2angle(self.compassRaw[0], -self.compassRaw[1])
                 self.signals['Speed'] = np.array(self.gpsRaw_speed)
-                self.signals['Color'] = self.get_color(self.get_image(1))
+                self.signals['Beacon'], path_gray = self.get_color(self.get_image(1))
                 # if signals['Path_Direction']==None: the path is end
-                self.signals['Path_Direction'] = self.path_detection(self.get_image(1))
+                self.signals['Path_Direction'] = self.path_detection(path_gray)
 
-                image_gray = cv2.cvtColor(self.get_image(0), cv2.COLOR_BGR2GRAY)
+                _, image_gray = self.get_color(self.get_image(0))
                 if not self.signals['Bridge_Detection']:
                     self.signals['Bridge_Detection'] = self.bridge_detection(image_gray)
-                if not (self.signals['Gate_Detection']) and (self.signals['Bridge_Detection']) :
+                if not (self.signals['Gate_Detection']) and (self.signals['Bridge_Detection']):
                     self.signals['Gate_Detection'] = self.gate_detection(image_gray)
                 # send all signals to decider
                 self.send_signals(self.signals)
