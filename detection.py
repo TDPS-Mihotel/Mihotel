@@ -148,41 +148,32 @@ class Detector(object):
         '''
         Detect the interested colors\n
         `param image`: Input image\n
-        `return color`: the color being detected\n
-        `return color`: the range of the detected color\n
-        `return beacon`: True when the beacon is detected
+        `return image_gray`: gray image with unwanted color filtered\n
+        `return tank`: return `True` when the orange box is detected, otherwise return `False`\n
+        `return beacon`: return `True` when the beacon is detected, otherwise return `False`
         '''
         GaussianBlur = cv2.GaussianBlur(image, (5, 5), 0)  # smooth the image
-        hsv = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2HSV)  # cvt rgb to hsv
+        image_hsv = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2HSV)  # cvt rgb to hsv
+        tank = False
         beacon = False
         color = None
         color_thresh = 20
         for item in self.color_list:
-            mask = cv2.inRange(hsv, item[1], item[2])  # set regions of other colors to black
+            mask = cv2.inRange(image_hsv, item[1], item[2])  # set regions of other colors to black
             binary = cv2.dilate(mask, None, iterations=2)
             sum = np.sum(binary)
             if sum > color_thresh:
                 color = item[0]
-                color_range = [item[1], item[2]]
-        if color = "green":
+                image_binary = binary
+        if color == "orange":
+            tank = True
+        elif color == "green":
             beacon = True
-        return color, color_range, beacon
-
-    def img2gray(self, image, color, color_range):
-        '''
-        Once a color is detected, then block other colors\n
-        `param image`: Input image\n
-        `param color`: detected color\n
-        `param color_range`: the range of the detected color\n
-        `return image_gray`: gray image for path detection
-        '''
-        if color = None:
-            image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        elif color is None:
+            image_gray = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2GRAY)
         else:
-            image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-            mask = cv2.inRange(image_hsv, color_range[0], color_range[1])
-            image_gray = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY_INV)[1]  # Inverse the image
-        return image_gray
+            image_gray = cv2.threshold(image_binary, 127, 255, cv2.THRESH_BINARY_INV)[1]  # Inverse the binary image
+        return image_gray, tank, beacon
 
     def tri2angle(self, opposite, adjacent):
         '''
@@ -218,15 +209,14 @@ class Detector(object):
         else:
             # get center of road in roi
             f_y, f_x = np.mean(a=location, axis=0)
-            return self.tri2angle(f_x - int(image.shape[1] / 2), 102 - self.front_wheels_y)
+            return self.tri2angle(f_x - int(image_gray.shape[1] / 2), 102 - self.front_wheels_y)
 
-    def bridge_detection(self, image):
+    def bridge_detection(self, image_gray):
         '''
         This algorithm gives whether we detect the bridge\n
         if bridge is detected, return `True`, else return `false`
         Written by Wen Bo
         '''
-        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # Binarization
         binary_map = np.zeros(shape=image_gray.shape)
         binary_map[image_gray < 149] = 1
@@ -282,12 +272,4 @@ class Detector(object):
 
 
 if __name__ == "__main__":
-    detector = Detector()
-    img1 = './test/img/lena.jpg'
-    img2 = './test/img/mihotel.jpg'
-    img3 = './test/img/bird.jpg'
-    frame1 = cv2.imread(img1)
-    frame2 = cv2.imread(img2)
-    frame3 = cv2.imread(img3)
-    print(detector.get_color(frame1), detector.get_color(frame2), detector.get_color(frame3))
-    # Expected output: red white cyan
+    pass
