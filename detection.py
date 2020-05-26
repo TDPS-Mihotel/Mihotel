@@ -64,7 +64,8 @@ class Detector(object):
             'Speed': [],
             'Color': [],
             'Path_Direction': [],
-            'Bridge_Detection': []
+            'Bridge_Detection': [],
+            'Gate_Detection': []
         }
 
         self.gpsRaw_position = [0, 0, 0]
@@ -89,6 +90,9 @@ class Detector(object):
         self.foresight_down = 30
         self.chassis_front = 50
         self.front_wheels_y = 75
+
+        self.x_range = 0.02
+        self.mid = 64
 
         info('Sensor initialed')
 
@@ -209,13 +213,12 @@ class Detector(object):
         '''
         This algorithm gives whether we detect the bridge\n
         if bridge is detected, return `True`, else return `false`
-        Written by Wen Bo
+        Written by Wen Bo, modified by Han Haoran
         '''
-        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # Binarization
-        binary_map = np.zeros(shape=image_gray.shape)
-        binary_map[image_gray < 149] = 1
-        binary_map[image_gray > 153] = 1
+        binary_map = np.zeros(shape=image.shape)
+        binary_map[image < 149] = 1
+        binary_map[image > 153] = 1
         # delete the noise
         kernel = np.ones([5, 5], np.uint8)
         erosion = cv2.erode(binary_map, kernel, iterations=1)
@@ -226,11 +229,29 @@ class Detector(object):
         if counter > 100:
             location = np.argwhere(binary_map == 0)
             f_x = np.mean(a=location, axis=0)[1]
-            mid = binary_map.shape[1] / 2
-            x_range = 0.02
-            if np.abs(f_x - mid) <= x_range * binary_map.shape[1]:
-                # print(f_x)
+            if np.abs(f_x - self.mid) <= self.x_range * binary_map.shape[1]:
                 return True
+        return False
+
+    def gate_detection(self, image):
+        '''
+        This algorithm gives whether we detect the gate\n
+        if gate is detected, return `True`, else return `false`
+        Written by Wen Bo, modified by Han Haoran
+        '''
+        # Get the  gradient map
+        gradient = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize =3)
+        # Binarization
+        binary_map = np.zeros(shape=image.shape)
+        binary_map[gradient > 400] = 1
+        # Counting the pixel along a column where the gradient exceed the threshold
+        counter = np.sum(binary_map, axis=0)
+        edge = np.argwhere(counter > 10)
+        if edge.shape[0] >= 4:
+            f_x = np.mean(edge)
+            if np.abs(f_x - self.mid) <= self.x_range * binary_map.shape[1]:
+                return True
+
         return False
 
     def run(self, flag_pause, key):
@@ -259,8 +280,10 @@ class Detector(object):
                 self.signals['Color'] = self.get_color(self.get_image(1))
                 # if signals['Path_Direction']==None: the path is end
                 self.signals['Path_Direction'] = self.path_detection(self.get_image(1))
-                self.signals['Bridge_Detection'] = self.bridge_detection(self.get_image(0))
 
+                image_gray = cv2.cvtColor(self.get_image(0), cv2.COLOR_BGR2GRAY)
+                self.signals['Bridge_Detection'] = self.bridge_detection(image_gray)
+                self.signals['Gate_Detection'] = self.gate_detection(image_gray)
                 # send all signals to decider
                 self.send_signals(self.signals)
                 # detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
