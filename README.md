@@ -156,12 +156,14 @@ The illustration of the signals we get:
 | Position         | [`float`, `float`, `float`] | The position of the robot which is same with **translation** |
 | Speed            | `float`                     | A float in m/s                                               |
 | Bridge_Detection | `bool`                      | If the bridge is in the right position, return **True**      |
+| Gate_Detection   | `bool`                      | If the bridge is in the right position, return **True**      |
 | Color            | `str`                       | The predefined string that indicate the color                |
 | Direction_x      | `float`                     | Ranges of **(-180, 180]**. Indicating the degree that the head deviate from x-axis |
 | Direction_-z     | `float`                     | Ranges of **(-180, 180]**. Indicating the degree that the head deviate from -z-axis |
 | Path_Direction   | `float`/`None`              | Range of approximately [-54.88, 54.88]. A float number that indicates the degree that the path-direction deviates from the head direction. If there is no path, `None` is returned. |
 
 ⚠️ Noticing that, the right deviation is positive and the left deviation is negative.
+⚠️ Noticing that, the original signal of bridge and gate detection is `False`. Once the object is detected, the corresponding signal will turn to `True` and the detection function will not process again.
 ![](doc/Direction.jpg)
 ![](doc/Signal_Show.jpg)
 
