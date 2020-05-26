@@ -91,9 +91,6 @@ class Detector(object):
         self.chassis_front = 50
         self.front_wheels_y = 75
 
-        self.x_range = 0.02
-        self.mid = []
-
         info('Sensor initialed')
 
     def set_queues(self, signal_queue, sensors_queue):
@@ -216,7 +213,6 @@ class Detector(object):
         if bridge is detected, return `True`, else return `false`
         Written by Wen Bo, modified by Han Haoran
         '''
-        self.mid = image.shape[0] / 2
         # Binarization
         binary_map = np.zeros(shape=image.shape)
         binary_map[image < 149] = 1
@@ -231,7 +227,8 @@ class Detector(object):
         if counter > 100:
             location = np.argwhere(binary_map == 0)
             f_x = np.mean(a=location, axis=0)[1]
-            if np.abs(f_x - self.mid) <= self.x_range * binary_map.shape[1]:
+            x_range=0.02
+            if np.abs(f_x - image.shape[0] / 2) <= x_range * binary_map.shape[1]:
                 return True
         return False
 
@@ -251,7 +248,8 @@ class Detector(object):
         edge = np.argwhere(counter > 10)
         if edge.shape[0] >= 4:
             f_x = np.mean(edge)
-            if np.abs(f_x - self.mid) <= self.x_range * binary_map.shape[1]:
+            x_range=0.02
+            if np.abs(f_x -  image.shape[0] / 2) <= x_range * binary_map.shape[1]:
                 return True
 
         return False
