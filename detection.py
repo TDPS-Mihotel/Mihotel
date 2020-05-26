@@ -92,7 +92,7 @@ class Detector(object):
         self.front_wheels_y = 75
 
         self.x_range = 0.02
-        self.mid = 64
+        self.mid = []
 
         info('Sensor initialed')
 
@@ -196,6 +196,7 @@ class Detector(object):
         if no path is detected, `None` is returned\n
         Written by Wen Bo
         '''
+        self.mid = image.shape[0] / 2
         cv2.waitKey(1)
         image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         roi = image_gray[self.chassis_front - self.foresight_up:self.chassis_front - self.foresight_down]
@@ -215,6 +216,7 @@ class Detector(object):
         if bridge is detected, return `True`, else return `false`
         Written by Wen Bo, modified by Han Haoran
         '''
+        self.mid = image.shape[0] / 2
         # Binarization
         binary_map = np.zeros(shape=image.shape)
         binary_map[image < 149] = 1
