@@ -279,10 +279,9 @@ class Detector(object):
                 self.signals['Direction_-z'] = self.tri2angle(self.compassRaw[0], -self.compassRaw[1])
                 self.signals['Speed'] = np.array(self.gpsRaw_speed)
                 self.signals['Beacon'], path_gray = self.get_color(self.get_image(1))
-                # if signals['Path_Direction']==None: the path is end
                 self.signals['Path_Direction'] = self.path_detection(path_gray)
 
-                _, image_gray = self.get_color(self.get_image(0))
+                image_gray = cv2.cvtColor(self.get_image(0), cv2.COLOR_BGR2GRAY)
                 if not self.signals['Bridge_Detection']:
                     self.signals['Bridge_Detection'] = self.bridge_detection(image_gray)
                 if not (self.signals['Gate_Detection']) and (self.signals['Bridge_Detection']):
