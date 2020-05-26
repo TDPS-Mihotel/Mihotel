@@ -62,10 +62,10 @@ class Detector(object):
             'Direction_x': [],
             'Direction_-z': [],
             'Speed': [],
-            'Color': [],
             'Path_Direction': [],
             'Bridge_Detection': False,
             'Gate_Detection': False
+            'Beacon': ''
         }
 
         self.gpsRaw_position = [0, 0, 0]
@@ -74,16 +74,11 @@ class Detector(object):
         self.camerasRaw = [np.zeros((128, 128, 3), np.uint8) for i in range(4)]
 
         self.color_list = [
-            ('black', np.array([0, 0, 0]), np.array([180, 255, 46])),
-            ('white', np.array([0, 0, 221]), np.array([180, 30, 255])),
-            ('red', np.array([156, 43, 46]), np.array([180, 255, 255])),
-            ('red', np.array([0, 43, 46]), np.array([10, 255, 255])),
-            ('orange', np.array([11, 43, 46]), np.array([25, 255, 255])),
-            ('yellow', np.array([26, 43, 46]), np.array([34, 255, 255])),
-            ('green', np.array([35, 43, 46]), np.array([77, 255, 255])),
-            ('cyan', np.array([78, 43, 46]), np.array([99, 255, 255])),
-            ('blue', np.array([100, 43, 46]), np.array([124, 255, 255])),
-            ('purple', np.array([125, 43, 46]), np.array([155, 255, 255]))
+            ('red', np.array([0, 246, 144]), np.array([3, 255, 154])),
+            ('orange', np.array([14, 199, 234]), np.array([21, 208, 240])),
+            ('yellow', np.array([27, 243, 168]), np.array([33, 255, 178])),
+            ('green', np.array([55, 236, 156]), np.array([63, 255, 173])),
+            ('purple', np.array([132, 43, 46]), np.array([155, 255, 255]))
         ]
 
         self.foresight_up = 40
@@ -150,24 +145,32 @@ class Detector(object):
         cv2.imwrite(capture_path + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '.png', image)
         info('Captured! 📸')
 
-    def get_color(self, frame):
-        """
-        Get the principal color of the image\n
-        `param frame`: Input image\n
-        `return color`: Principal color of the image
-        """
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)  # cvt rgb to hsv
-        maxsum = -100
+    def get_color(self, image):
+        '''
+        Detect the interested colors\n
+        `param image`: Input image\n
+        `return image_gray`: gray image with unwanted color filtered\n
+        '''
+        GaussianBlur = cv2.GaussianBlur(image, (5, 5), 0)  # smooth the image
+        image_hsv = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2HSV)  # cvt rgb to hsv
         color = None
+        color_thresh = 20
         for item in self.color_list:
-            mask = cv2.inRange(hsv, item[1], item[2])  # set regions of other colors to black
-            binary = cv2.threshold(mask, 127, 255, cv2.THRESH_BINARY)[1]  # threshold images into binary type
-            binary = cv2.dilate(binary, None, iterations=2)
+            mask = cv2.inRange(image_hsv, item[1], item[2])  # set regions of other colors to black
+            binary = cv2.dilate(mask, None, iterations=2)
             sum = np.sum(binary)
-            if sum > maxsum:
-                maxsum = sum
+            if sum > color_thresh:
                 color = item[0]
-        return color
+                image_binary = binary
+        if color == "orange":
+            Beacon = 'tank'
+        elif color == "green":
+            Beacon = 'after bridge'
+        elif color is None:
+            image_gray = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2GRAY)
+        else:
+            image_gray = cv2.threshold(image_binary, 127, 255, cv2.THRESH_BINARY_INV)[1]  # Inverse the binary image
+        return Beacon, image_gray
 
     def tri2angle(self, opposite, adjacent):
         '''
@@ -187,14 +190,13 @@ class Detector(object):
                     angle = angle - 180
         return angle
 
-    def path_detection(self, image):
+    def path_detection(self, image_gray):
         '''
         This algorithm gives the angle (in degrees) of the direction of the path
         if no path is detected, `None` is returned\n
         Written by Wen Bo
         '''
         cv2.waitKey(1)
-        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         roi = image_gray[self.chassis_front - self.foresight_up:self.chassis_front - self.foresight_down]
         # cv2.imshow('roi', roi)
         threshold = 70
@@ -204,9 +206,9 @@ class Detector(object):
         else:
             # get center of road in roi
             f_y, f_x = np.mean(a=location, axis=0)
-            return self.tri2angle(f_x - int(image.shape[1] / 2), 102 - self.front_wheels_y)
+            return self.tri2angle(f_x - int(image_gray.shape[1] / 2), 102 - self.front_wheels_y)
 
-    def bridge_detection(self, image):
+    def bridge_detection(self, image_gray):
         '''
         This algorithm gives whether we detect the bridge\n
         if bridge is detected, return `True`, else return `false`
@@ -231,16 +233,16 @@ class Detector(object):
                 return True
         return False
 
-    def gate_detection(self, image):
+    def gate_detection(self, image_gray):
         '''
         This algorithm gives whether we detect the gate\n
         if gate is detected, return `True`, else return `false`
         Written by Wen Bo, modified by Han Haoran
         '''
         # Get the  gradient map
-        gradient = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+        gradient = cv2.Sobel(image_gray, cv2.CV_64F, 1, 0, ksize=3)
         # Binarization
-        binary_map = np.zeros(shape=image.shape)
+        binary_map = np.zeros(shape=image_gray.shape)
         binary_map[gradient > 400] = 1
         # Counting the pixel along a column where the gradient exceed the threshold
         counter = np.sum(binary_map, axis=0)
@@ -248,7 +250,7 @@ class Detector(object):
         if edge.shape[0] >= 4:
             f_x = np.mean(edge)
             x_range = 0.02
-            if np.abs(f_x - image.shape[1] // 2) <= x_range * binary_map.shape[1]:
+            if np.abs(f_x - image_gray.shape[1] // 2) <= x_range * binary_map.shape[1]:
                 return True
 
         return False
@@ -276,14 +278,13 @@ class Detector(object):
                 self.signals['Direction_x'] = self.tri2angle(self.compassRaw[1], self.compassRaw[0])
                 self.signals['Direction_-z'] = self.tri2angle(self.compassRaw[0], -self.compassRaw[1])
                 self.signals['Speed'] = np.array(self.gpsRaw_speed)
-                self.signals['Color'] = self.get_color(self.get_image(1))
-                # if signals['Path_Direction']==None: the path is end
-                self.signals['Path_Direction'] = self.path_detection(self.get_image(1))
+                self.signals['Beacon'], path_gray = self.get_color(self.get_image(1))
+                self.signals['Path_Direction'] = self.path_detection(path_gray)
 
                 image_gray = cv2.cvtColor(self.get_image(0), cv2.COLOR_BGR2GRAY)
                 if not self.signals['Bridge_Detection']:
                     self.signals['Bridge_Detection'] = self.bridge_detection(image_gray)
-                if not (self.signals['Gate_Detection']) and (self.signals['Bridge_Detection']) :
+                if not (self.signals['Gate_Detection']) and (self.signals['Bridge_Detection']):
                     self.signals['Gate_Detection'] = self.gate_detection(image_gray)
                 # send all signals to decider
                 self.send_signals(self.signals)
@@ -291,12 +292,4 @@ class Detector(object):
 
 
 if __name__ == "__main__":
-    detector = Detector()
-    img1 = './test/img/lena.jpg'
-    img2 = './test/img/mihotel.jpg'
-    img3 = './test/img/bird.jpg'
-    frame1 = cv2.imread(img1)
-    frame2 = cv2.imread(img2)
-    frame3 = cv2.imread(img3)
-    print(detector.get_color(frame1), detector.get_color(frame2), detector.get_color(frame3))
-    # Expected output: red white cyan
+    pass
