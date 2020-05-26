@@ -17,7 +17,6 @@ class Sensors(object):
         '''
         `robot`: the Robot() instance from main process
         '''
-        # TODO: refactor to use dict after the solution is decided
         from controller import GPS, Camera, Compass, DistanceSensor
         timestep = int(robot.getBasicTimeStep())
 
@@ -32,20 +31,20 @@ class Sensors(object):
         self.compass = robot.getCompass('compass')
         self.compass.enable(timestep)
         # GPS for position and speed
-        self.gps = robot.getGPS('gps')
-        self.gps.enable(timestep)
+        # self.gps = robot.getGPS('gps')
+        # self.gps.enable(timestep)
 
     def update(self):
         '''
         get and return `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `camerasRaw`
         '''
-        gpsRaw_position = self.gps.getValues()
-        gpsRaw_speed = self.gps.getSpeed()
+        # gpsRaw_position = self.gps.getValues()
+        # gpsRaw_speed = self.gps.getSpeed()
         compassRaw = self.compass.getValues()
-        camerasRaw = [item.getImageArray() for item in self.cameras]
+        camerasRaw = {camera: self.cameras[camera].getImageArray() for camera in self.cameras}
         return (
-            gpsRaw_position,
-            gpsRaw_speed,
+            # gpsRaw_position,
+            # gpsRaw_speed,
             compassRaw,
             camerasRaw
         )
@@ -99,8 +98,8 @@ class Detector(object):
         while True:
             try:
                 (
-                    self.gpsRaw_position,
-                    self.gpsRaw_speed,
+                    # self.gpsRaw_position,
+                    # self.gpsRaw_speed,
                     self.compassRaw,
                     self.camerasRaw
                 ) = self.sensors_queue.get(block=True, timeout=0.05)
@@ -207,7 +206,7 @@ class Detector(object):
         else:
             # get center of road in roi
             f_y, f_x = np.mean(a=location, axis=0)
-            return self.tri2angle(f_x - int(image_gray.shape[1] / 2), 102 - front_wheels_y)
+            return self.tri2angle(f_x - int(image_gray.shape[1] / 2), front_wheels_y - f_y)
 
     def bridge_detection(self, image):
         '''
