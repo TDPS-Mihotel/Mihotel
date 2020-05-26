@@ -159,7 +159,7 @@ Our **line detector** works like this:
 5. Average the direction of the N segmentation and it is the direction of the eage of the path. Rotate it by 90° and we could get the direction of the path.
 
 The illustration of the signals we get:
-| Name             | eg             | Description                                                  |
+| Name             | Example        | Description                                                  |
 | ---------------- | -------------- | ------------------------------------------------------------ |
 | Position         | [x, y, z]      | The position of the robot which is same with `translation`   |
 | Speed            | x              | A float in m/s                                               |
@@ -167,7 +167,7 @@ The illustration of the signals we get:
 | Color            | orange         | The predefined string that indicate the color                |
 | Direction_x      | x              | Ranges from -180 to 180. Indicating the degree that the head deviate from x-axis |
 | Direction_-z     | x              | Ranges from -180 to 180. Indicating the degree that the head deviate from -z-axis |
-| Path_Dirction    | x, `None`      | A float number that indicates the degree that the path-diretion deviates from the head direction. If there is no path, `None` is returned. |
+| Path_Direction   | x, `None`      | A float number that indicates the degree that the path-direction deviates from the head direction. If there is no path, `None` is returned. |
 
 ⚠️ Noticing that, the right deviation is positive and the left deviation is negtive.
 ![](doc/Direction.jpg)
