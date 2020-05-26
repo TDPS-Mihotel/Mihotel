@@ -150,26 +150,18 @@ the control of the three-freedom arm is lanched by a function which controls thr
 
 📑 [Basic usage of several sensors](doc/Sensor.md)
 
-Our **line detector** works like this:
-
-1. Filtering the original picture to denoise then get the gradient distribution of the picture.
-2. Cut the whole picture into N rows averagely. (N=4 in current code)
-3. For each segmentation of the picture, for each the point whose magnitude of gradient is greater than the threshold (15 in current code), classify them according to the direction of their gradient. (from 1° to 360°)
-4. For each segmentation of the picture, find the direction which contains the most point whose magnitude of gradient exceed the threshold.
-5. Average the direction of the N segmentation and it is the direction of the eage of the path. Rotate it by 90° and we could get the direction of the path.
-
 The illustration of the signals we get:
-| Name             | Example        | Description                                                  |
-| ---------------- | -------------- | ------------------------------------------------------------ |
-| Position         | [x, y, z]      | The position of the robot which is same with `translation`   |
-| Speed            | x              | A float in m/s                                               |
-| Bridge_Detection | `True`,`False` | If the bridge is in the right position, return `True`        |
-| Color            | orange         | The predefined string that indicate the color                |
-| Direction_x      | x              | Ranges from -180 to 180. Indicating the degree that the head deviate from x-axis |
-| Direction_-z     | x              | Ranges from -180 to 180. Indicating the degree that the head deviate from -z-axis |
-| Path_Direction   | x, `None`      | A float number that indicates the degree that the path-direction deviates from the head direction. If there is no path, `None` is returned. |
+| Name             | Data Type                   | Description                                                  |
+| ---------------- | --------------------------- | ------------------------------------------------------------ |
+| Position         | [`float`, `float`, `float`] | The position of the robot which is same with **translation** |
+| Speed            | `float`                     | A float in m/s                                               |
+| Bridge_Detection | `bool`                      | If the bridge is in the right position, return **True**      |
+| Color            | `str`                       | The predefined string that indicate the color                |
+| Direction_x      | `float`                     | Ranges of **(-180, 180]**. Indicating the degree that the head deviate from x-axis |
+| Direction_-z     | `float`                     | Ranges of **(-180, 180]**. Indicating the degree that the head deviate from -z-axis |
+| Path_Direction   | `float`/`None`              | Range of approximately [-54.88, 54.88]. A float number that indicates the degree that the path-direction deviates from the head direction. If there is no path, `None` is returned. |
 
-⚠️ Noticing that, the right deviation is positive and the left deviation is negtive.
+⚠️ Noticing that, the right deviation is positive and the left deviation is negative.
 ![](doc/Direction.jpg)
 ![](doc/Signal_Show.jpg)
 
