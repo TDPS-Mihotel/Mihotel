@@ -64,8 +64,8 @@ class Detector(object):
             'Speed': [],
             'Color': [],
             'Path_Direction': [],
-            'Bridge_Detection': [],
-            'Gate_Detection': []
+            'Bridge_Detection': False,
+            'Gate_Detection': False
         }
 
         self.gpsRaw_position = [0, 0, 0]
@@ -282,8 +282,10 @@ class Detector(object):
                 self.signals['Path_Direction'] = self.path_detection(self.get_image(1))
 
                 image_gray = cv2.cvtColor(self.get_image(0), cv2.COLOR_BGR2GRAY)
-                self.signals['Bridge_Detection'] = self.bridge_detection(image_gray)
-                self.signals['Gate_Detection'] = self.gate_detection(image_gray)
+                if not self.signals['Bridge_Detection']:
+                    self.signals['Bridge_Detection'] = self.bridge_detection(image_gray)
+                if not (self.signals['Gate_Detection']) and (self.signals['Bridge_Detection']) :
+                    self.signals['Gate_Detection'] = self.gate_detection(image_gray)
                 # send all signals to decider
                 self.send_signals(self.signals)
                 # detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
