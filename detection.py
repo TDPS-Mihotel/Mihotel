@@ -151,7 +151,7 @@ class Detector(object):
         image_gray = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2GRAY)
         Beacon = ''
         color_thresh = 20
-        Beacon = None
+        color = None
         for item in self.color_list:
             mask = cv2.inRange(image_hsv, item[1], item[2])  # set regions of other colors to black
             binary = cv2.dilate(mask, None, iterations=2)
