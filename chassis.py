@@ -32,12 +32,14 @@ class WebotsMotorsGroup(MotorsGroup):
 
         # enable motors
         self.motors = {}
-        # self.motors['arm'] = robot.getMotor('arm')
+        self.motors['Shoulder'] = robot.getMotor('Shoulder')
+        self.motors['Elbow'] = robot.getMotor('Elbow')
+        self.motors['Wrist'] = robot.getMotor('Wrist')
         # wheel
-        self.motors['wheel1'] = robot.getMotor('wheel1')
-        self.motors['wheel2'] = robot.getMotor('wheel2')
-        self.motors['wheel3'] = robot.getMotor('wheel3')
-        self.motors['wheel4'] = robot.getMotor('wheel4')
+        self.motors['flWheel'] = robot.getMotor('flWheel')
+        self.motors['rlWheel'] = robot.getMotor('rlWheel')
+        self.motors['rrWheel'] = robot.getMotor('rrWheel')
+        self.motors['frWheel'] = robot.getMotor('frWheel')
         for motor in self.motors:
             self.motors[motor].setPosition(float('inf'))
             self.motors[motor].setVelocity(0.0)
@@ -84,45 +86,56 @@ class Controller(object):
             self.velocityDict[motor] = 0
 
         if command:
-            # if command == 'Rotate arm':
-            #     self.state = 'Arm rotating'
-            #     self.velocityDict['arm'] = 10
+            if command == 'Feed':
+                self.state = 'Feeding'
+                self.velocityDict['Shoulder'] = 5
+                self.velocityDict['Elbow'] = 2.5
+                self.velocityDict['Wrist'] = -10
+
+            if command == 'Feeder recover':
+                self.state = 'Feeder recovering'
+                self.velocityDict['Shoulder'] = -1
+                self.velocityDict['Elbow'] = -1
+                self.velocityDict['Wrist'] = 1
+
             # wheel
             if command[:4] == 'Turn':
                 steer = float(command[4:]) * self.steer_coefficient
                 self.state = 'Steering speed: ' + str(steer)
-                self.velocityDict['wheel1'] = self.defaultVelocity + steer
-                self.velocityDict['wheel2'] = self.defaultVelocity + steer
-                self.velocityDict['wheel3'] = self.defaultVelocity - steer
-                self.velocityDict['wheel4'] = self.defaultVelocity - steer
+                self.velocityDict['flWheel'] = self.defaultVelocity + steer
+                self.velocityDict['rlWheel'] = self.defaultVelocity + steer
+                self.velocityDict['rrWheel'] = self.defaultVelocity - steer
+                self.velocityDict['frWheel'] = self.defaultVelocity - steer
 
             if command == 'Move forward':
                 self.state = 'Moving forward'
-                self.velocityDict['wheel1'] = self.defaultVelocity
-                self.velocityDict['wheel2'] = self.defaultVelocity
-                self.velocityDict['wheel3'] = self.defaultVelocity
-                self.velocityDict['wheel4'] = self.defaultVelocity
+                self.velocityDict['flWheel'] = self.defaultVelocity
+                self.velocityDict['rlWheel'] = self.defaultVelocity
+                self.velocityDict['rrWheel'] = self.defaultVelocity
+                self.velocityDict['frWheel'] = self.defaultVelocity
 
             if command == 'Move backward':
                 self.state = 'Moving backward'
-                self.velocityDict['wheel1'] = -self.defaultVelocity
-                self.velocityDict['wheel2'] = -self.defaultVelocity
-                self.velocityDict['wheel3'] = -self.defaultVelocity
-                self.velocityDict['wheel4'] = -self.defaultVelocity
+                self.velocityDict['flWheel'] = -self.defaultVelocity
+                self.velocityDict['rlWheel'] = -self.defaultVelocity
+                self.velocityDict['rrWheel'] = -self.defaultVelocity
+                self.velocityDict['frWheel'] = -self.defaultVelocity
 
             if command == 'Stop':
                 self.state = 'Stopped'
-                self.velocityDict['wheel1'] = 0
-                self.velocityDict['wheel2'] = 0
-                self.velocityDict['wheel3'] = 0
-                self.velocityDict['wheel4'] = 0
+                self.velocityDict['flWheel'] = 0
+                self.velocityDict['rlWheel'] = 0
+                self.velocityDict['rrWheel'] = 0
+                self.velocityDict['frWheel'] = 0
 
-            for item in self.velocityDict:
-                if self.velocityDict[item] < -self.maxVelocity:
-                    self.velocityDict[item] = -self.maxVelocity
-                if self.velocityDict[item] > self.maxVelocity:
-                    self.velocityDict[item] = self.maxVelocity
-                self.velocityDict[item] = -self.velocityDict[item]
+            # wheel motor speed limitation and reverse
+            for motor in self.velocityDict:
+                if 'Wheel' in motor:
+                    if self.velocityDict[motor] < -self.maxVelocity:
+                        self.velocityDict[motor] = -self.maxVelocity
+                    if self.velocityDict[motor] > self.maxVelocity:
+                        self.velocityDict[motor] = self.maxVelocity
+                    self.velocityDict[motor] = -self.velocityDict[motor]
 
             self.motors_queue.put(self.velocityDict)
             # commandInfo(self.state)

@@ -19,12 +19,15 @@
     "cSpell.words": [
         "ACKERMAN",
         "Binarization",
+        "Haoran",
         "Mihotel",
+        "Sobel",
         "dtype",
         "imgs",
         "imread",
         "imwrite",
         "isnan",
+        "ksize",
         "numpy",
         "psutil",
         "webots"
