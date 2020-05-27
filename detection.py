@@ -149,6 +149,7 @@ class Detector(object):
         image_hsv = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2HSV)  # cvt rgb to hsv
         color = None
         color_thresh = 20
+        Beacon = None
         for item in self.color_list:
             mask = cv2.inRange(image_hsv, item[1], item[2])  # set regions of other colors to black
             binary = cv2.dilate(mask, None, iterations=2)
@@ -219,10 +220,10 @@ class Detector(object):
         binary_map[image < 149] = 1
         binary_map[image > 153] = 1
         # delete the noise
-        kernel = np.ones([5, 5], np.uint8)
-        erosion = cv2.erode(binary_map, kernel, iterations=1)
+        kernel = np.ones([3, 3], np.uint8)
+        dilate = cv2.dilate(binary_map, kernel, iterations=1)
 
-        counter = np.sum(binary_map == 0)
+        counter = np.sum(dilate == 0)
         # if the x index of the bridge is in no farther than x_range*width from the center,
         # then the bridge is in the center
         if counter > 100:
@@ -267,7 +268,7 @@ class Detector(object):
             if not flag_pause.value:
                 # keyboard events
                 if key.value == ord('C'):  # capture image when C is pressed
-                    self.capture(1)
+                    self.capture('path')
 
                 # update sensors data
                 self.update()
