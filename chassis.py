@@ -88,15 +88,15 @@ class Controller(object):
         if command:
             if command == 'Feed':
                 self.state = 'Feeding'
-                self.velocityDict['Shoulder'] = 1
-                self.velocityDict['Elbow'] = 1
-                self.velocityDict['Wrist'] = 1
+                self.velocityDict['Shoulder'] = 5
+                self.velocityDict['Elbow'] = 2.5
+                self.velocityDict['Wrist'] = -10
 
             if command == 'Feeder recover':
                 self.state = 'Feeder recovering'
                 self.velocityDict['Shoulder'] = -1
                 self.velocityDict['Elbow'] = -1
-                self.velocityDict['Wrist'] = -1
+                self.velocityDict['Wrist'] = 1
 
             # wheel
             if command[:4] == 'Turn':
