@@ -30,12 +30,13 @@ class Decider(object):
         self.flag_patio_finished = flag_patio_finished
         self.signals = {}
         self.states = {
-            'line patrol': self.line_patrol,
+            'line_patrol': self.line_patrol,
             'stop': self.stop,
             'cross_bridge': self.cross_bridge,
-            'cross_gate': self.cross_gate
+            'cross_gate': self.cross_gate,
         }
-        self.current_state = 'line patrol'
+        self.feed = False
+        self.current_state = 'line_patrol'
         info('Decision initialed')
 
 # ############################# state functions ################################
@@ -43,10 +44,19 @@ class Decider(object):
         '''
         巡线
         '''
-        if self.signals['Path_Direction'] is None:
+        if self.signals['Path_Direction'] is None and self.signals['Bridge_Detection'] is False:
+            # 无线收机械臂，转过桥状态
+            self.send_command('Back_Arm')
+            return 'cross_bridge'
+        if self.signals['Beacon'] == 'tank' and self.feed is False:
+            # 橙盒子投食
+            self.send_command('Rotate_Arm')
+            self.feed = True
+        if self.signals['Path_Direction'] is None and self.signals['Bridge_Detection']:
+            # 终点无线stop
             return 'stop'
         self.send_command('Turn' + str(self.signals['Path_Direction']))
-        return 'line patrol'
+        return 'line_patrol'
 
     def cross_bridge(self):
         '''
@@ -54,17 +64,22 @@ class Decider(object):
         '''
         if self.signals['Bridge_Detection'] is False and self.signals['Gate_Detection'] is False:
             # 过桥前直行x
-            self.send_command('Turn' + str(self.signals['Direction_x']))
+            self.send_command('Turn' + str(-self.signals['Direction_x']))
             return 'cross_bridge'
         elif self.signals['Bridge_Detection'] is True and self.signals['Gate_Detection'] is False:
-            # 对准桥转向-z直行
-            self.send_command('Turn' + str(self.signals['Direction_-z']))
+            # 对准桥左转向-z直行，>=10转90，<10直行
+            if abs(self.signals['Direction_-z']) >= 10:
+                self.send_command('Turn-90')
+            elif abs(self.signals['Direction_-z']) < 10:
+                self.send_command('Turn' + str(-self.signals['Direction_-z']))
             return 'cross_bridge'
-        elif self.signals['Color'] == 'Green':
-            # 过桥后左转，切换状态
-            self.send_command('Turn' + str(self.signals['Direction_x']))
-            self.send_command('Stop')
-            return 'cross_gate'
+        elif self.signals['Beacon'] == 'after bridge':
+            # 过桥后右转，>=10转90，<10切换过门状态
+            if abs(self.signals['Direction_x']) >= 10:
+                self.send_command('Turn90')
+                return 'cross_bridge'
+            elif abs(self.signals['Direction_x']) < 10:
+                return 'cross_gate'
 
     def cross_gate(self):
         '''
@@ -72,20 +87,22 @@ class Decider(object):
         '''
         if self.signals['Bridge_Detection'] is True and self.signals['Gate_Detection'] is False:
             # 过门前直行x
-            self.send_command('Turn' + str(self.signals['Direction_x']))
+            self.send_command('Turn' + str(-self.signals['Direction_x']))
             return 'cross_gate'
         elif self.signals['Bridge_Detection'] is True and self.signals['Gate_Detection'] is True:
-            # 对准门转向-z直行
-            self.send_command('Turn' + str(self.signals['Direction_-z']))
+            # 对准门左转向-z直行，>=10转90，<10直行
+            if abs(self.signals['Direction_-z']) >= 10:
+                self.send_command('Turn-90')
+            elif abs(self.signals['Direction_-z']) < 10:
+                self.send_command('Turn' + str(-self.signals['Direction_-z']))
             return 'cross_gate'
         elif self.signals['Path_Direction'] is not None:
-            # 过门后，切换巡线状态
-            self.send_command('Stop')
-            return 'line patrol'
+            # 过门后切换巡线状态
+            return 'line_patrol'
 
     def stop(self):
         '''
-        测试用
+        End
         '''
         self.send_command('Stop')
         return 'stop'
