@@ -32,8 +32,8 @@ class WebotsMotorsGroup(MotorsGroup):
 
         # enable motors
         self.motors = {}
-        self.motors['Base'] = robot.getMotor('Base')
         self.motors['Shoulder'] = robot.getMotor('Shoulder')
+        self.motors['Elbow'] = robot.getMotor('Elbow')
         self.motors['Wrist'] = robot.getMotor('Wrist')
         # wheel
         self.motors['flWheel'] = robot.getMotor('flWheel')
@@ -88,14 +88,14 @@ class Controller(object):
         if command:
             if command == 'Feed':
                 self.state = 'Feeding'
-                self.velocityDict['Base'] = 1
                 self.velocityDict['Shoulder'] = 1
+                self.velocityDict['Elbow'] = 1
                 self.velocityDict['Wrist'] = 1
 
             if command == 'Feeder recover':
                 self.state = 'Feeder recovering'
-                self.velocityDict['Base'] = -1
                 self.velocityDict['Shoulder'] = -1
+                self.velocityDict['Elbow'] = -1
                 self.velocityDict['Wrist'] = -1
 
             # wheel
@@ -128,12 +128,14 @@ class Controller(object):
                 self.velocityDict['rrWheel'] = 0
                 self.velocityDict['frWheel'] = 0
 
-            for item in self.velocityDict:
-                if self.velocityDict[item] < -self.maxVelocity:
-                    self.velocityDict[item] = -self.maxVelocity
-                if self.velocityDict[item] > self.maxVelocity:
-                    self.velocityDict[item] = self.maxVelocity
-                self.velocityDict[item] = -self.velocityDict[item]
+            # wheel motor speed limitation and reverse
+            for motor in self.velocityDict:
+                if 'Wheel' in motor:
+                    if self.velocityDict[motor] < -self.maxVelocity:
+                        self.velocityDict[motor] = -self.maxVelocity
+                    if self.velocityDict[motor] > self.maxVelocity:
+                        self.velocityDict[motor] = self.maxVelocity
+                    self.velocityDict[motor] = -self.velocityDict[motor]
 
             self.motors_queue.put(self.velocityDict)
             # commandInfo(self.state)
