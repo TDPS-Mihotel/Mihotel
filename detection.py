@@ -139,7 +139,7 @@ class Detector(object):
         cv2.imwrite(capture_path + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()) + '.png', image)
         info('Captured! 📸')
 
-    def get_color(self, image):
+    def filter_color(self, image):
         '''
         Detect the interested colors\n
         `param image`: Input image\n
@@ -147,7 +147,9 @@ class Detector(object):
         '''
         GaussianBlur = cv2.GaussianBlur(image, (5, 5), 0)  # smooth the image
         image_hsv = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2HSV)  # cvt rgb to hsv
-        color = None
+        # initialize image_gray and Beacon
+        image_gray = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2GRAY)
+        Beacon = ''
         color_thresh = 20
         Beacon = None
         for item in self.color_list:
@@ -162,7 +164,7 @@ class Detector(object):
         elif color == "green":
             Beacon = 'after bridge'
         elif color is None:
-            image_gray = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2GRAY)
+            pass
         else:
             image_gray = cv2.threshold(image_binary, 127, 255, cv2.THRESH_BINARY_INV)[1]  # Inverse the binary image
         return Beacon, image_gray
@@ -279,7 +281,7 @@ class Detector(object):
                 self.signals['Direction_x'] = self.tri2angle(self.compassRaw[1], self.compassRaw[0])
                 self.signals['Direction_-z'] = self.tri2angle(self.compassRaw[0], -self.compassRaw[1])
                 self.signals['Speed'] = self.gpsRaw_speed
-                self.signals['Beacon'], path_gray = self.get_color(self.get_image('path'))
+                self.signals['Beacon'], path_gray = self.filter_color(self.get_image('path'))
                 self.signals['Path_Direction'] = self.path_detection(path_gray)
 
                 image_gray = cv2.cvtColor(self.get_image('left'), cv2.COLOR_BGR2GRAY)
