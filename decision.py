@@ -14,7 +14,8 @@ def runLoop(state_machine):
             # skip all code inside if paused by webots
             if not flag_pause.value:
                 self.update_signals()
-                state_machine(self, flag_pause, key, lock)
+                if len(self.signals):
+                    state_machine(self, flag_pause, key, lock)
                 with lock:
                     flag_pause.value = True
     return run
@@ -40,11 +41,9 @@ class Decider(object):
         '''
         巡线
         '''
-        # 在程序刚开始时可能这个量还没有传过来, 所以先判断下有没有
-        if 'Path_Direction' in self.signals:
-            if self.signals['Path_Direction'] is None:
-                return 'stop'
-            self.send_command('Turn' + str(self.signals['Path_Direction']))
+        if self.signals['Path_Direction'] is None:
+            return 'stop'
+        self.send_command('Turn' + str(self.signals['Path_Direction']))
         return 'line patrol'
 
     def lineless_x_axis(self):
