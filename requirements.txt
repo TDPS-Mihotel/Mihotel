@@ -1,3 +1,4 @@
+opencv-contrib-python
 numpy
-opencv-contrib-python>=4.2
-psuitl
+psutil
+colorama

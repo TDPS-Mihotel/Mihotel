@@ -14,7 +14,7 @@ Mihotel Project Document.
 Table of Contents
 - [✔️ Highlights](#️-Highlights)
 - [⚠️ Precautions](#️-Precautions)
-- [Known Problems](#Known-Problems)
+- [🐛 Known Problems](#-Known-Problems)
 - [Configurations](#Configurations)
 - [🔍 Output Description](#-Output-Description)
 - [Solution (WIP)](#Solution-WIP)
@@ -67,9 +67,19 @@ Table of Contents
 - be care of team communication and convergence
 - need more hang outs 🍻
 
-## Known Problems
+## 🐛 Known Problems
 
 - It seems that webots does not support a multiprocessing controller, since I did not find a way to stop all child processes when simulation is paused.
+- A few factors influent webots's simulation speed:
+  - factors listed by webots [here](https://cyberbotics.com/doc/guide/speed-performance)
+  - number of complex sensors initialed
+  - get value from sensors frequently
+  - `basicTimeStep` in WorldInfo
+  - time step of controller
+  - output frequently
+  - multiprocessing controller
+
+- If `basicTimeStep` or time step of controller is set to a high value, the simulation becomes very **imprecision**
 
 ## Configurations
 
