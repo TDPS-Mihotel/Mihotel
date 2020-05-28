@@ -80,8 +80,8 @@ if __name__ == "__main__" and flag_simulation:
     # get the time step of the current world.
     timestep = int(robot.getBasicTimeStep())
     # enable keyboard listening
-    keyboard = Keyboard()
-    keyboard.enable(timestep)
+    # keyboard = Keyboard()
+    # keyboard.enable(timestep)
     # enable sensors
     sensors = detection.Sensors(robot)
     # enable motors
@@ -94,14 +94,17 @@ if __name__ == "__main__" and flag_simulation:
         sensors_queue.put(sensors.update())
         # update motors speed
         while True:
-            try:
-                motors.update(motors_queue.get(block=True, timeout=0.05))
-            except queue.Empty:
+            # try:
+            #     motors.update(motors_queue.get(block=True, timeout=0.05))
+            # except queue.Empty:
+            #     break
+            if motors_queue.empty():
                 break
+            motors.update(motors_queue.get(block=True, timeout=0.05))
         # resume decider process
         with lock:
             flag_pause.value = False
-            key.value = keyboard.getKey()  # character of the key press
+            # key.value = keyboard.getKey()  # character of the key press
 
 # if run for real rover
 if __name__ == "__main__" and not flag_simulation:
