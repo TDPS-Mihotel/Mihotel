@@ -149,12 +149,68 @@ the main process ends when `flag_patio_finished` turns to **True**. Now all thre
 
 ### Chassis
 
-The **chassis** of the rover is size of **15cm*45cm**, with wheels which diameter is **10cm**. The max speed of the rover is not decided yet. It is a **4WD** chassis, which mean speed of each wheel is separately defined.
+A four-wheel drived chassis, which mean speed of each wheel is set separately.
 
 ![](doc/rover.jpg)
 
-The **feeding device** acts like a garbage truck dumping trash, we dump the kiwi by raising one side of the kiwi holder to let the kiwi slides down.
-the control of the three-freedom arm is lanched by a function which controls three motors in the arm, we recorded the initial and final position of each motor then chosee a proper piecewise function to enpower each motor, as in webots we don't need to care about PID of motor control, the control processes become much easier.
+#### Body
+
+| Item    | Measurement              | Note                  |
+| ------- | ------------------------ | --------------------- |
+| Size    | 0.15m, 0.23m, 0.05m      | width, length, height |
+| Density | $7.85 \times 10^3kg/m^3$ | Density of metal      |
+
+#### Wheels
+
+| Item                 | Measurement      | Note                                                         |
+| -------------------- | ---------------- | ------------------------------------------------------------ |
+| Radius               | 0.033m           |                                                              |
+| Max Velocity         | 100rad/s         | the rover moves **forward** when velocity is **negative**    |
+| Max Torque           | 100N⋅m           |                                                              |
+| Front Track          | 0.12m            | Vertical distance from center is 0.068 m                     |
+| Rear Track           | 0.12m            | Vertical distance from center is 0.07 m                      |
+| Motor Control Method | velocity control | PID is not used in velocity control. See [here](https://cyberbotics.com/doc/reference/motor#velocity-control) for doc |
+
+#### Arm
+
+| Item    | Measurement              | Note                                            |
+| ------- | ------------------------ | ----------------------------------------------- |
+| Density | $2.7 \times 10^3 kg/m^3$ | Density of aluminium                            |
+| Length  | 2.1m                     | From axis of Elbow Motor to axis of Wrist Motor |
+
+##### Shoulder Motor
+
+| Item             | Measurement | Note                                                         |
+| ---------------- | ----------- | ------------------------------------------------------------ |
+| Max Velocity     | 10rad/s     | Rotates anti-clockwise when velocity is positive             |
+| Max Torque       | 50000N⋅m    |                                                              |
+| Initial Position | 1.6         |                                                              |
+| Hard Limits      | [1.5, 3.13] | See [here](https://cyberbotics.com/doc/reference/jointparameters#joint-limits) for doc. The soft limits is same with this. |
+
+##### Elbow Motor
+
+| Item             | Measurement  | Note                                 |
+| ---------------- | ------------ | ------------------------------------ |
+| Max Velocity     | 10rad/s      | Rotates up when velocity is positive |
+| Max Torque       | 500000N⋅m    |                                      |
+| Initial Position | -1.57        |                                      |
+| Hard Limits      | [-1.6, -1.2] |                                      |
+
+##### Wrist Motor
+
+| Item             | Measurement | Note                                |
+| ---------------- | ----------- | ----------------------------------- |
+| Max Velocity     | 10rad/s     | Pours out when velocity is negative |
+| Max Torque       | 10000N⋅m    |                                     |
+| Initial Position | 0           |                                     |
+| Hard Limits      | [-3, 0.1]   |                                     |
+
+##### Hand
+
+| Item    | Measurement              | Note                  |
+| ------- | ------------------------ | --------------------- |
+| Density | $0.8 \times 10^3 kg/m^3$ | Density of Plastic    |
+| Size    | 0.4m, 0.66m, 0.24m       | width, length, height |
 
 ### Visual & Sensor
 
