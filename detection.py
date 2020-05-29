@@ -74,12 +74,14 @@ class Detector(object):
         self.camerasRaw = {camera: np.zeros((128, 128, 3), np.uint8) for camera in ['left', 'path']}
 
         self.color_list = [
-            ('red', np.array([0, 246, 144]), np.array([3, 255, 154])),
-            ('orange', np.array([14, 199, 234]), np.array([21, 208, 240])),
-            ('yellow', np.array([27, 243, 168]), np.array([33, 255, 178])),
-            ('green', np.array([55, 236, 156]), np.array([63, 255, 173])),
-            ('purple', np.array([132, 43, 46]), np.array([155, 255, 255]))
+            ('red', (0, 205, 89), (3, 255, 170)),
+            ('orange', (14, 193, 111), (21, 208, 233)),
+            ('yellow', (27, 205, 98), (33, 255, 180)),
+            ('green', (55, 220, 138), (63, 255, 180)),
+            ('purple', (132, 43, 46), (155, 255, 255))
         ]
+        self.path_color = None
+        self.orange_count = 0
 
         info('Sensor initialed')
 
@@ -145,28 +147,43 @@ class Detector(object):
         `param image`: Input image\n
         `return image_gray`: gray image with unwanted color filtered\n
         '''
-        GaussianBlur = cv2.GaussianBlur(image, (5, 5), 0)  # smooth the image
+        GaussianBlur = cv2.GaussianBlur(image, (3, 3), 0)  # smooth the image
         image_hsv = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2HSV)  # cvt rgb to hsv
         # initialize image_gray and Beacon
         image_gray = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2GRAY)
-        Beacon = ''
-        color_thresh = 20
         color = None
+        color_thresh = image_hsv.shape[0] * image_hsv.shape[1] * 0.04
+        kernel = np.ones([3, 3], np.uint8)
         for item in self.color_list:
+            if self.path_color is not None:
+                if item[0] != self.path_color:
+                    continue
             mask = cv2.inRange(image_hsv, item[1], item[2])  # set regions of other colors to black
-            binary = cv2.dilate(mask, None, iterations=2)
-            sum = np.sum(binary)
+            binary = cv2.erode(mask, kernel, iterations=1)
+            # locals()[item[0]] = binary
+            # cv2.imshow(str(item[0]), eval(str(item[0])))
+            sum = np.sum(binary) / 255
+            # debugInfo(sum)
             if sum > color_thresh:
                 color = item[0]
                 image_binary = binary
+                break
         if color == "orange":
-            Beacon = 'tank'
+            if self.orange_count > 3:
+                Beacon = 'tank'
+            else:
+                self.orange_count += 1
+                Beacon = ''
         elif color == "green":
             Beacon = 'after bridge'
         elif color is None:
-            pass
+            Beacon = ''
+        # color path is detected
         else:
             image_gray = cv2.threshold(image_binary, 127, 255, cv2.THRESH_BINARY_INV)[1]  # Inverse the binary image
+            if self.path_color is None:
+                self.path_color = color
+        # cv2.imshow('output', image_gray)
         return Beacon, image_gray
 
     def tri2angle(self, opposite, adjacent):
@@ -194,13 +211,12 @@ class Detector(object):
         Written by Wen Bo
         '''
         # chassis configurations
-        foresight_up = 40
-        foresight_down = 30
-        chassis_front = 50
-        front_wheels_y = 75
+        foresight_up = 63
+        foresight_down = 100
+        front_wheels_y = 135
 
         cv2.waitKey(1)
-        roi = image_gray[chassis_front - foresight_up:chassis_front - foresight_down]
+        roi = image_gray[foresight_up:foresight_down]
         # cv2.imshow('roi', roi)
         threshold = 70
         location = np.argwhere((roi) <= threshold)
@@ -231,7 +247,7 @@ class Detector(object):
         if counter > 100:
             location = np.argwhere(binary_map == 0)
             f_x = np.mean(a=location, axis=0)[1]
-            x_range = 0.02
+            x_range = 0.08
             if np.abs(f_x - image.shape[1] // 2) <= x_range * binary_map.shape[1]:
                 return True
         return False
@@ -283,16 +299,25 @@ class Detector(object):
                 self.signals['Speed'] = self.gpsRaw_speed
                 self.signals['Beacon'], path_gray = self.filter_color(self.get_image('path'))
                 self.signals['Path_Direction'] = self.path_detection(path_gray)
-
                 image_gray = cv2.cvtColor(self.get_image('left'), cv2.COLOR_BGR2GRAY)
                 if not self.signals['Bridge_Detection']:
                     self.signals['Bridge_Detection'] = self.bridge_detection(image_gray)
                 if not (self.signals['Gate_Detection']) and (self.signals['Bridge_Detection']):
                     self.signals['Gate_Detection'] = self.gate_detection(image_gray)
+
+                # self.capture('path')
+
                 # send all signals to decider
                 self.send_signals(self.signals)
                 # detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
 
 
 if __name__ == "__main__":
-    pass
+    detector = Detector()
+
+    img = cv2.imread('./test/camera/path/1.png')
+    detector.filter_color(img)
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
