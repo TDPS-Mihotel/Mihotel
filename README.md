@@ -202,6 +202,19 @@ The illustration of the signals we get:
 ![](doc/Direction.jpg)
 ![](doc/Signal_Show.jpg)
 
+#### Path Camera Paarameters
+
+| Item             | Measurement | Note                                  |
+| ---------------- | ----------- | ------------------------------------- |
+| Height           | 0.205m      | height of camera center to the ground |
+| depression angle | 0.7rad      |                                       |
+| Field of View    | 0.9         |                                       |
+| Size             | 138*138     |                                       |
+
+![](doc/path_camera_top.png)
+
+![](doc/path_camera_side.png)
+
 ### Decision
 
 The **decision making** is still working in progress at [#46](https://github.com/TDPS-Mihotel/Mihotel/issues/#55) and [#56](https://github.com/TDPS-Mihotel/Mihotel/issues/#55)
