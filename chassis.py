@@ -10,7 +10,7 @@ class MotorsGroup(object):
     '''
 
     def __init__(self):
-        pass
+        self.motors = {}
 
     def update(self, velocityDict):
         '''
@@ -28,10 +28,13 @@ class WebotsMotorsGroup(MotorsGroup):
     def __init__(self, robot):
         super().__init__()
 
+        self.robot = robot
+        self.time = robot.getTime()
+        self.arm_action = ''
+
         timestep = int(robot.getBasicTimeStep())
 
-        # enable motors
-        self.motors = {}
+        # arm
         self.motors['Shoulder'] = robot.getMotor('Shoulder')
         self.motors['Elbow'] = robot.getMotor('Elbow')
         self.motors['Wrist'] = robot.getMotor('Wrist')
@@ -45,6 +48,26 @@ class WebotsMotorsGroup(MotorsGroup):
             self.motors[motor].setVelocity(0.0)
 
     def update(self, velocityDict):
+        if velocityDict['Shoulder'] > 0:
+            if self.arm_action == 'forward':
+                # give 0.25s to rotate forward
+                if self.robot.getTime() - self.time > 0.25:
+                    velocityDict['Shoulder'] = 0
+                    velocityDict['Elbow'] = 0
+                    velocityDict['Wrist'] = 0
+            else:
+                self.arm_action = 'forward'
+                self.time = self.robot.getTime()
+        if velocityDict['Shoulder'] < 0:
+            if self.arm_action == 'backward':
+                # give 0.5s to rotate back
+                if self.robot.getTime() - self.time > 0.5:
+                    velocityDict['Shoulder'] = 0
+                    velocityDict['Elbow'] = 0
+                    velocityDict['Wrist'] = 0
+            else:
+                self.arm_action = 'backward'
+                self.time = self.robot.getTime()
         return super().update(velocityDict)
 
 
@@ -54,9 +77,18 @@ class Controller(object):
     '''
 
     def __init__(self):
-        self.velocityDict = {}
-        self.defaultVelocity = 8
-        self.maxVelocity = 10
+        self.velocityDict = {
+            'flWheel': 0,
+            'frWheel': 0,
+            'rlWheel': 0,
+            'rrWheel': 0,
+            'Shoulder': 0,
+            'Elbow': 0,
+            'Wrist': 0,
+        }
+        self.state = ''
+        self.defaultVelocity = 30
+        self.maxVelocity = 30
         self.steer_coefficient = 0.5
         info('Chassis initialed')
 
@@ -81,22 +113,19 @@ class Controller(object):
         '''
         set state of the chassis by command, a commandInfo will output
         '''
-        # clean state
-        for motor in self.velocityDict:
-            self.velocityDict[motor] = 0
 
         if command:
             if command == 'Feed':
                 self.state = 'Feeding'
-                self.velocityDict['Shoulder'] = 5
-                self.velocityDict['Elbow'] = 2.5
-                self.velocityDict['Wrist'] = -10
+                self.velocityDict['Shoulder'] = 8
+                # self.velocityDict['Elbow'] = 0
+                self.velocityDict['Wrist'] = -15
 
             if command == 'Feeder recover':
                 self.state = 'Feeder recovering'
-                self.velocityDict['Shoulder'] = -1
-                self.velocityDict['Elbow'] = -1
-                self.velocityDict['Wrist'] = 1
+                self.velocityDict['Shoulder'] = -4
+                # self.velocityDict['Elbow'] = 0
+                self.velocityDict['Wrist'] = 7.5
 
             # wheel
             if command[:4] == 'Turn':
@@ -147,6 +176,7 @@ class Controller(object):
         while True:
             time.sleep(0.1)  # set chassis period to 0.1s
             self.set_state(self.recv_command())
+            # commandInfo(self.state)
 
 
 if __name__ == "__main__":

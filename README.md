@@ -151,7 +151,7 @@ the main process ends when `flag_patio_finished` turns to **True**. Now all thre
 
 A four-wheel drived chassis, which mean speed of each wheel is set separately.
 
-![](doc/rover.jpg)
+![](doc/rover.png)
 
 #### Body
 
@@ -173,44 +173,13 @@ A four-wheel drived chassis, which mean speed of each wheel is set separately.
 
 #### Arm
 
-| Item    | Measurement              | Note                                            |
-| ------- | ------------------------ | ----------------------------------------------- |
-| Density | $2.7 \times 10^3 kg/m^3$ | Density of aluminium                            |
-| Length  | 2.1m                     | From axis of Elbow Motor to axis of Wrist Motor |
-
-##### Shoulder Motor
-
-| Item             | Measurement | Note                                                         |
-| ---------------- | ----------- | ------------------------------------------------------------ |
-| Max Velocity     | 10rad/s     | Rotates anti-clockwise when velocity is positive             |
-| Max Torque       | 50000N⋅m    |                                                              |
-| Initial Position | 1.6         |                                                              |
-| Hard Limits      | [1.5, 3.13] | See [here](https://cyberbotics.com/doc/reference/jointparameters#joint-limits) for doc. The soft limits is same with this. |
-
-##### Elbow Motor
-
-| Item             | Measurement  | Note                                 |
-| ---------------- | ------------ | ------------------------------------ |
-| Max Velocity     | 10rad/s      | Rotates up when velocity is positive |
-| Max Torque       | 500000N⋅m    |                                      |
-| Initial Position | -1.57        |                                      |
-| Hard Limits      | [-1.6, -1.2] |                                      |
-
-##### Wrist Motor
-
-| Item             | Measurement | Note                                |
-| ---------------- | ----------- | ----------------------------------- |
-| Max Velocity     | 10rad/s     | Pours out when velocity is negative |
-| Max Torque       | 10000N⋅m    |                                     |
-| Initial Position | 0           |                                     |
-| Hard Limits      | [-3, 0.1]   |                                     |
-
-##### Hand
-
-| Item    | Measurement              | Note                  |
-| ------- | ------------------------ | --------------------- |
-| Density | $0.8 \times 10^3 kg/m^3$ | Density of Plastic    |
-| Size    | 0.4m, 0.66m, 0.24m       | width, length, height |
+| Item         | Measurement              | Note                                            |
+| ------------ | ------------------------ | ----------------------------------------------- |
+| Density      | $0.8 \times 10^3 kg/m^3$ | Density of plastic                              |
+| Arm Length   | 0.035m                   | From axis of Elbow Motor to axis of Wrist Motor |
+| Max Velocity | 20rad/s                  |                                                 |
+| Max Torque   | 10N⋅m                    |                                                 |
+| Holder Size  | 0.04m, 0.066m, 0.024m    | width, length, height                           |
 
 ### Visual & Sensor
 
