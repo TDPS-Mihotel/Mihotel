@@ -36,6 +36,14 @@ def debugInfo(item):
     print(Style.BRIGHT + Fore.RED + '[Debug] ' + item + Style.RESET_ALL)
 
 
+def stateInfo(item):
+    '''
+    Bright output for state information
+    '''
+    item = str(item)
+    print(Style.BRIGHT + Fore.MAGENTA + '[State] ' + item + Style.RESET_ALL)
+
+
 def commandInfo(item):
     '''
     Bright blue output for movement information

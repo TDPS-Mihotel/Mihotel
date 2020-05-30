@@ -1,6 +1,6 @@
 import queue
 import time
-from colored import commandInfo, debugInfo, detectedInfo, info
+from colored import commandInfo, debugInfo, stateInfo, detectedInfo, info
 
 
 def runLoop(state_machine):
@@ -35,70 +35,80 @@ class Decider(object):
             'cross_bridge': self.cross_bridge,
             'cross_gate': self.cross_gate,
         }
-        self.feed = False
         self.current_state = 'line_patrol'
+        self.lost_count = 0
+        self.isFeeded = False
         info('Decision initialed')
+        stateInfo(self.current_state)
 
 # ############################# state functions ################################
     def line_patrol(self):
         '''
         巡线
         '''
-        if self.signals['Path_Direction'] is None and self.signals['Bridge_Detection'] is False:
-            # 无线收机械臂，转过桥状态
-            self.send_command('Back_Arm')
-            return 'cross_bridge'
-        if self.signals['Beacon'] == 'tank' and self.feed is False:
+        if self.signals['Path_Direction'] is None:
+            if self.lost_count > 9:
+                if not self.signals['Bridge_Detection']:
+                    # 无线收机械臂，转过桥状态
+                    self.send_command('Feeder recover')
+                    commandInfo('Feeder recover')
+                    stateInfo('cross_bridge')
+                    return 'cross_bridge'
+                else:
+                    # 终点无线stop
+                    commandInfo('Stop')
+                    stateInfo('Finish')
+                    return 'stop'
+            else:
+                self.lost_count += 1
+                self.send_command('Turn0')
+                debugInfo('Path lost count:' + str(self.lost_count))
+                return 'line_patrol'
+        if self.signals['Beacon'] == 'tank' and not self.isFeeded:
             # 橙盒子投食
-            self.send_command('Rotate_Arm')
-            self.feed = True
-        if self.signals['Path_Direction'] is None and self.signals['Bridge_Detection']:
-            # 终点无线stop
-            return 'stop'
+            self.send_command('Feed')
+            commandInfo('Feed')
+            self.isFeeded = True
+            return 'line_patrol'
+        # 巡黑线或彩色线
         self.send_command('Turn' + str(self.signals['Path_Direction']))
+        self.lost_count = 0
         return 'line_patrol'
 
     def cross_bridge(self):
         '''
         过桥逻辑
         '''
-        if self.signals['Bridge_Detection'] is False and self.signals['Gate_Detection'] is False:
+        if not self.signals['Bridge_Detection']:
             # 过桥前直行x
             self.send_command('Turn' + str(-self.signals['Direction_x']))
             return 'cross_bridge'
-        elif self.signals['Bridge_Detection'] is True and self.signals['Gate_Detection'] is False:
-            # 对准桥左转向-z直行，>=10转90，<10直行
-            if abs(self.signals['Direction_-z']) >= 10:
-                self.send_command('Turn-90')
-            elif abs(self.signals['Direction_-z']) < 10:
-                self.send_command('Turn' + str(-self.signals['Direction_-z']))
-            return 'cross_bridge'
-        elif self.signals['Beacon'] == 'after bridge':
-            # 过桥后右转，>=10转90，<10切换过门状态
-            if abs(self.signals['Direction_x']) >= 10:
-                self.send_command('Turn90')
-                return 'cross_bridge'
-            elif abs(self.signals['Direction_x']) < 10:
+        else:
+            if self.signals['Beacon'] == 'after bridge':
+                # 过桥后切换过门状态
+                stateInfo('cross_gate')
                 return 'cross_gate'
+            # 对准桥左转向-z直行
+            self.send_command('Turn' + str(-self.signals['Direction_-z']))
+            return 'cross_bridge'
 
     def cross_gate(self):
         '''
         过门
         '''
-        if self.signals['Bridge_Detection'] is True and self.signals['Gate_Detection'] is False:
+        if not self.signals['Gate_Detection']:
             # 过门前直行x
             self.send_command('Turn' + str(-self.signals['Direction_x']))
             return 'cross_gate'
-        elif self.signals['Bridge_Detection'] is True and self.signals['Gate_Detection'] is True:
-            # 对准门左转向-z直行，>=10转90，<10直行
-            if abs(self.signals['Direction_-z']) >= 10:
-                self.send_command('Turn-90')
-            elif abs(self.signals['Direction_-z']) < 10:
-                self.send_command('Turn' + str(-self.signals['Direction_-z']))
+        else:
+            if self.signals['Path_Direction']:
+                # 过门后切换巡线状态
+                self.send_command('Turn' + str(self.signals['Path_Direction']))
+                stateInfo('line_patrol')
+                return 'line_patrol'
+            # 对准门左转向-z直行
+            self.send_command('Turn' + str(-self.signals['Direction_-z']))
             return 'cross_gate'
-        elif self.signals['Path_Direction'] is not None:
-            # 过门后切换巡线状态
-            return 'line_patrol'
 
     def stop(self):
         '''
@@ -140,7 +150,7 @@ class Decider(object):
         `lock`: a process lock, used for `flag_pause`\n
         '''
         if key.value == ord('Q'):
-            debugInfo('Quit')
+            stateInfo('Quit manually')
             with lock:
                 self.flag_patio_finished.value = True
 
