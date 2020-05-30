@@ -27,7 +27,11 @@ Table of Contents
     - [ANSI codes in webots console](#ANSI-codes-in-webots-console)
     - [Keyboard event](#Keyboard-event)
   - [Chassis](#Chassis)
+    - [Body](#Body)
+    - [Wheels](#Wheels)
+    - [Arm](#Arm)
   - [Visual & Sensor](#Visual--Sensor)
+    - [Path Camera Parameters](#Path-Camera-Parameters)
   - [Decision](#Decision)
   - [Environment](#Environment)
     - [Specifications](#Specifications)
@@ -70,7 +74,7 @@ Table of Contents
 ## 🐛 Known Problems
 
 - It seems that webots does not support a multiprocessing controller, since I did not find a way to stop all child processes when simulation is paused.
-- A few factors influent webots's simulation speed:
+- A few factors influent webots simulation speed:
   - factors listed by webots [here](https://cyberbotics.com/doc/guide/speed-performance)
   - number of complex sensors initialed
   - get value from sensors frequently
@@ -79,7 +83,13 @@ Table of Contents
   - output frequently
   - multiprocessing controller
 
-- If `basicTimeStep` or time step of controller is set to a high value, the simulation becomes very **imprecision**
+- A few factors influent webots simulation precision:
+  - factors listed by webots [here](https://cyberbotics.com/doc/guide/modeling#how-to-make-replicabledeterministic-simulations)
+  - webots claims bug on [Orientation Dependent Friction](https://cyberbotics.com/doc/guide/general-bugs#orientation-dependent-friction)
+  - very high `basicTimeStep` or time step of controller
+  - too complex world
+  - performance of the computer...
+    - I suppose there is delay in the queues when the computer overloads 😓
 
 ## Configurations
 
@@ -202,14 +212,16 @@ The illustration of the signals we get:
 ![](doc/Direction.jpg)
 ![](doc/Signal_Show.jpg)
 
-#### Path Camera Paarameters
+#### Path Camera Parameters
 
-| Item             | Measurement | Note                                  |
-| ---------------- | ----------- | ------------------------------------- |
-| Height           | 0.205m      | height of camera center to the ground |
-| depression angle | 0.7rad      |                                       |
-| Field of View    | 0.9         |                                       |
-| Size             | 138*138     |                                       |
+| Item               | Measurement  | Note                                                         |
+| ------------------ | ------------ | ------------------------------------------------------------ |
+| Height             | 0.553m       | Height of camera center to the ground                        |
+| Position           | 0.1m         | From center of the rover to the front                        |
+| depression angle   | 1.57rad      | From horizontal axis to down                                 |
+| Field of View      | 0.9          |                                                              |
+| Size               | 138*138      | It seems there are some black pixels at the edge, so **5 pixels are cut off at each edge** when passed into the program |
+| Actual Size of ROI | 0.52m, 0.21m | Width and length of the wood board below                     |
 
 ![](doc/path_camera_top.png)
 
@@ -217,22 +229,22 @@ The illustration of the signals we get:
 
 ### Decision
 
-The **decision making** is still working in progress at [#46](https://github.com/TDPS-Mihotel/Mihotel/issues/#55) and [#56](https://github.com/TDPS-Mihotel/Mihotel/issues/#55)
-
 ![](doc/CFG.svg)
 
 ### Environment
 
 #### Specifications
 
-| Item        | Measurement (x, y, z) (m) | Note                                            |
-| ----------- | ------------------------- | ----------------------------------------------- |
-| patio       | 100, 2, 30                | with wall of height , thickness of 2m, 0.5m     |
-| pond        | 55, 1.9, 9                |                                                 |
-| river       | 100, 2, 2                 |                                                 |
-| road        | width: 0.2                | at height of 2.002                              |
-| curved road | radius: 0.8               |                                                 |
-| bridge      | 0.1, 0.338, 2.8           | slope is 20 degree, made of three 1, 0.1, 1 box |
+| Item                | Measurement (x, y, z) (m) | Note                                                         |
+| ------------------- | ------------------------- | ------------------------------------------------------------ |
+| Patio               | 100, 2, 30                | With wall of height , thickness of 2m, 0.5m                  |
+| Pond                | 55, 1.9, 9                |                                                              |
+| River               | 100, 2, 2                 |                                                              |
+| Asphalt Road        | width: 0.2                | At height of 2.002. Radius of the Curve is 0.8m              |
+| Orange Box          | 1, 1                      | Width and length. Actual color (r, g, b): 245, 121, 0        |
+| Bridge              | 0.1, 0.338, 2.8           | Slope is 20 degree, made of three 1, 0.1, 1 boxes            |
+| Color Box           | 0.2, 0.6                  | Width and length                                             |
+| Color road          | width: 0.05               | Colors: **yellow** (255, 255, 0), **red** (255, 0, 0), **purple** (153, 0, 255). Intersection angle of red and yellow path is 0.25rad |
 
 ## Development Strategy
 
