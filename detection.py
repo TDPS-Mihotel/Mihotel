@@ -21,6 +21,7 @@ class Sensors(object):
         timestep = int(robot.getBasicTimeStep())
 
         # enable sensors #######################################################
+        self.getTime = robot.getTime
         self.cameras = {
             'left': robot.getCamera('left_cam'),
             'path': robot.getCamera('path_cam'),
@@ -38,11 +39,13 @@ class Sensors(object):
         '''
         get and return `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `camerasRaw`
         '''
+        time = self.getTime()  # in seconds
         # gpsRaw_position = self.gps.getValues()
         # gpsRaw_speed = self.gps.getSpeed()
         compassRaw = self.compass.getValues()
         camerasRaw = {camera: self.cameras[camera].getImageArray() for camera in self.cameras}
         return (
+            time,
             # gpsRaw_position,
             # gpsRaw_speed,
             compassRaw,
@@ -81,7 +84,7 @@ class Detector(object):
             ('purple', (132, 43, 46), (155, 255, 255))
         ]
         self.path_color = None
-        self.orange_count = 0
+        self.beacon_count = 0
 
         info('Sensor initialed')
 
@@ -99,6 +102,7 @@ class Detector(object):
         '''
         try:
             (
+                self.time,
                 # self.gpsRaw_position,
                 # self.gpsRaw_speed,
                 self.compassRaw,
@@ -154,8 +158,9 @@ class Detector(object):
         color = None
         color_thresh = image_hsv.shape[0] * image_hsv.shape[1] * 0.04
         kernel = np.ones([3, 3], np.uint8)
+        # traversal interest colors
         for item in self.color_list:
-            if self.path_color is not None:
+            if self.path_color:
                 if item[0] != self.path_color:
                     continue
             mask = cv2.inRange(image_hsv, item[1], item[2])  # set regions of other colors to black
@@ -164,25 +169,40 @@ class Detector(object):
             # cv2.imshow(str(item[0]), eval(str(item[0])))
             sum = np.sum(binary) / 255
             # debugInfo(sum)
-            if sum > color_thresh:
+            # if enough color path or path color is set, filter the image
+            if sum > color_thresh or self.path_color:
                 color = item[0]
                 image_binary = binary
                 break
+        # set beacon and return image
         if color == "orange":
-            if self.orange_count > 3:
+            if self.beacon_count > 3:
                 Beacon = 'tank'
+                if self.beacon_count != 1000:
+                    self.beacon_count = 1000
+                    detectedInfo('time: ' + self.signals['Time'] + ' | Orange box detected')
             else:
-                self.orange_count += 1
+                self.beacon_count += 1
                 Beacon = ''
         elif color == "green":
-            Beacon = 'after bridge'
+            if self.beacon_count > 5:
+                Beacon = 'after bridge'
+                if self.beacon_count != 1000:
+                    self.beacon_count = 1000
+                    detectedInfo('time: ' + self.signals['Time'] + ' | Green box detected')
+            else:
+                self.beacon_count += 1
+                Beacon = ''
         elif color is None:
             Beacon = ''
+            self.beacon_count = 0
         # color path is detected
         else:
             image_gray = cv2.threshold(image_binary, 127, 255, cv2.THRESH_BINARY_INV)[1]  # Inverse the binary image
             if self.path_color is None:
                 self.path_color = color
+                detectedInfo('time: ' + self.signals['Time'] + ' | path color: ' + color)
+            Beacon = ''
         # cv2.imshow('output', image_gray)
         return Beacon, image_gray
 
@@ -211,13 +231,16 @@ class Detector(object):
         Written by Wen Bo
         '''
         # chassis configurations
-        foresight_up = 63
-        foresight_down = 100
-        front_wheels_y = 135
+        foresight_up = 10
+        foresight_down = 15
+        front_wheels_y = 102
 
-        cv2.waitKey(1)
+        # cv2.imshow('gray', image_gray)
         roi = image_gray[foresight_up:foresight_down]
-        # cv2.imshow('roi', roi)
+        image_show = self.get_image('path')
+        cv2.waitKey(1)
+        cv2.rectangle(image_show, (0, foresight_up), (image_show.shape[1], foresight_down), (0, 255, 0))
+        cv2.imshow('path_detection', image_show)
         threshold = 70
         location = np.argwhere((roi) <= threshold)
         if location.size == 0:
@@ -225,6 +248,8 @@ class Detector(object):
         else:
             # get center of road in roi
             f_y, f_x = np.mean(a=location, axis=0)
+            cv2.circle(image_show, (int(f_x), foresight_up + int(f_y)), 1, (0, 0, 255), 0)
+            cv2.imshow('path_detection', image_show)
             return self.tri2angle(f_x - int(image_gray.shape[1] / 2), front_wheels_y - f_y)
 
     def bridge_detection(self, image):
@@ -234,6 +259,7 @@ class Detector(object):
         Written by Wen Bo, modified by Han Haoran
         '''
         # Binarization
+        # cv2.imshow('bridge', image)
         binary_map = np.zeros(shape=image.shape)
         binary_map[image < 149] = 1
         binary_map[image > 153] = 1
@@ -244,11 +270,12 @@ class Detector(object):
         counter = np.sum(dilate == 0)
         # if the x index of the bridge is in no farther than x_range*width from the center,
         # then the bridge is in the center
-        if counter > 100:
+        if counter > 240:
             location = np.argwhere(binary_map == 0)
             f_x = np.mean(a=location, axis=0)[1]
-            x_range = 0.08
+            x_range = 0.02
             if np.abs(f_x - image.shape[1] // 2) <= x_range * binary_map.shape[1]:
+                detectedInfo('time: ' + self.signals['Time'] + ' | Bridge detected.')
                 return True
         return False
 
@@ -268,8 +295,9 @@ class Detector(object):
         edge = np.argwhere(counter > 10)
         if edge.shape[0] >= 4:
             f_x = np.mean(edge)
-            x_range = 0.02
+            x_range = 0.48
             if np.abs(f_x - image_gray.shape[1] // 2) <= x_range * binary_map.shape[1]:
+                detectedInfo('time: ' + self.signals['Time'] + ' | Gate detected.')
                 return True
 
         return False
@@ -291,8 +319,11 @@ class Detector(object):
                 # update sensors data
                 self.update()
                 # update signals
-                self.signals['time'] = time.strftime("%H:%M:%S", time.localtime())
-
+                s, ms = divmod(self.time, 1)
+                m, s = divmod(s, 60)
+                h, m = divmod(m, 60)
+                self.signals['Time'] = ':'.join([str(int(item)) for item in [h, m, s, ms * 1000]])
+                self.signals['Seconds'] = self.time
                 self.signals['Position'] = self.gpsRaw_position
                 self.signals['Direction_x'] = self.tri2angle(self.compassRaw[1], self.compassRaw[0])
                 self.signals['Direction_-z'] = self.tri2angle(self.compassRaw[0], -self.compassRaw[1])
