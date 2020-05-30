@@ -101,13 +101,10 @@ class Controller(object):
         return the received command from command_queue\n
         the return value will be `''` if command_queue is empty
         '''
-        command = ''
-        while True:
-            try:
-                command = self.command_queue.get(block=True, timeout=0.05)
-            except queue.Empty:
-                break
-        return command
+        try:
+            return self.command_queue.get(block=True, timeout=0.01)
+        except queue.Empty:
+            return ''
 
     def set_state(self, command):
         '''
@@ -166,8 +163,9 @@ class Controller(object):
                         self.velocityDict[motor] = self.maxVelocity
                     self.velocityDict[motor] = -self.velocityDict[motor]
 
-            self.motors_queue.put(self.velocityDict)
-            # commandInfo(self.state)
+            if self.motors_queue.empty():
+                self.motors_queue.put(self.velocityDict)
+                # commandInfo(self.state)
 
     def run(self, flag_pause):
         '''

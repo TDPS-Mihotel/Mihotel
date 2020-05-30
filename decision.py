@@ -118,17 +118,19 @@ class Decider(object):
         self.command_queue = command_queue
 
     def send_command(self, command):
-        self.command_queue.put(command)
+        while True:
+            if self.command_queue.empty():
+                self.command_queue.put(command)
+                break
 
     def update_signals(self):
         '''
         update self.signals if signal_queue is not empty
         '''
-        while True:
-            try:
-                self.signals = self.signal_queue.get(block=True, timeout=0.05)
-            except queue.Empty:
-                break
+        try:
+            self.signals = self.signal_queue.get(block=True, timeout=0.05)
+        except queue.Empty:
+            pass
 
     @runLoop
     def state_machine(self, flag_pause, key, lock):

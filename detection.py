@@ -97,23 +97,23 @@ class Detector(object):
         '''
         update `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `distancesRaw`, `camerasRaw` received from main process
         '''
-        while True:
-            try:
-                (
-                    # self.gpsRaw_position,
-                    # self.gpsRaw_speed,
-                    self.compassRaw,
-                    self.camerasRaw
-                ) = self.sensors_queue.get(block=True, timeout=0.05)
-            except queue.Empty:
-                break
+        try:
+            (
+                # self.gpsRaw_position,
+                # self.gpsRaw_speed,
+                self.compassRaw,
+                self.camerasRaw
+            ) = self.sensors_queue.get(block=True, timeout=0.01)
+        except queue.Empty:
+            pass
 
     def send_signals(self, signals):
         '''
         `signals`: a dictionary of signals\n
         send out signals through signal_queue
         '''
-        self.signal_queue.put(signals)
+        if self.sensors_queue.empty():
+            self.signal_queue.put(signals)
 
     def get_image(self, key):
         '''
@@ -320,4 +320,3 @@ if __name__ == "__main__":
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
