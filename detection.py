@@ -1,11 +1,10 @@
 import os
-import queue
 import time
 
 import cv2
 import numpy as np
 
-from colored import commandInfo, debugInfo, detectedInfo, info
+from colored import commandInfo, debugInfo, detectedInfo, info, clock
 
 
 class Sensors(object):
@@ -71,53 +70,28 @@ class Detector(object):
         }
 
         # sensors data is received from the main process by queue, so set default values here
+        self.time = 0.0
         self.gpsRaw_position = [0, 0, 0]
         self.gpsRaw_speed = [0, 0, 0]
         self.compassRaw = [1, 0, 0]
         self.camerasRaw = {camera: np.zeros((128, 128, 3), np.uint8) for camera in ['left', 'path']}
+        # initial time signal
+        s, ms = divmod(self.time, 1)
+        m, s = divmod(s, 60)
+        h, m = divmod(m, 60)
+        self.signals['Time'] = ':'.join([str(int(item)) for item in [h, m, s, ms * 1000]])
 
         self.color_list = [
             ('red', (0, 205, 89), (3, 255, 170)),
             ('orange', (14, 193, 111), (21, 208, 233)),
             ('yellow', (27, 205, 98), (33, 255, 180)),
             ('green', (55, 220, 138), (63, 255, 180)),
-            ('purple', (132, 43, 46), (155, 255, 255))
+            ('purple', (132, 90, 46), (155, 255, 255))
         ]
         self.path_color = None
         self.beacon_count = 0
 
         info('Sensor initialed')
-
-    def set_queues(self, signal_queue, sensors_queue):
-        '''
-        `signal_queue`: queue for signals from sensor\n
-        `sensors_queue`: queue for sensors raw data from main process\n
-        '''
-        self.signal_queue = signal_queue
-        self.sensors_queue = sensors_queue
-
-    def update(self):
-        '''
-        update `gpsRaw_position`, `gpsRaw_speed`, `compassRaw`, `distancesRaw`, `camerasRaw` received from main process
-        '''
-        try:
-            (
-                self.time,
-                # self.gpsRaw_position,
-                # self.gpsRaw_speed,
-                self.compassRaw,
-                self.camerasRaw
-            ) = self.sensors_queue.get(block=True, timeout=0.01)
-        except queue.Empty:
-            pass
-
-    def send_signals(self, signals):
-        '''
-        `signals`: a dictionary of signals\n
-        send out signals through signal_queue
-        '''
-        if self.sensors_queue.empty():
-            self.signal_queue.put(signals)
 
     def get_image(self, key):
         '''
@@ -156,7 +130,7 @@ class Detector(object):
         # initialize image_gray and Beacon
         image_gray = cv2.cvtColor(GaussianBlur, cv2.COLOR_BGR2GRAY)
         color = None
-        color_thresh = image_hsv.shape[0] * image_hsv.shape[1] * 0.04
+        color_thresh = image_hsv.shape[0] * image_hsv.shape[1] * 0.02
         kernel = np.ones([3, 3], np.uint8)
         # traversal interest colors
         for item in self.color_list:
@@ -176,7 +150,7 @@ class Detector(object):
                 break
         # set beacon and return image
         if color == "orange":
-            if self.beacon_count > 3:
+            if self.beacon_count > 0:
                 Beacon = 'tank'
                 if self.beacon_count != 1000:
                     self.beacon_count = 1000
@@ -185,7 +159,7 @@ class Detector(object):
                 self.beacon_count += 1
                 Beacon = ''
         elif color == "green":
-            if self.beacon_count > 5:
+            if self.beacon_count > 0:
                 Beacon = 'after bridge'
                 if self.beacon_count != 1000:
                     self.beacon_count = 1000
@@ -198,7 +172,7 @@ class Detector(object):
             self.beacon_count = 0
         # color path is detected
         else:
-            image_gray = cv2.threshold(image_binary, 127, 255, cv2.THRESH_BINARY_INV)[1]  # Inverse the binary image
+            _, image_gray = cv2.threshold(image_binary, 127, 255, cv2.THRESH_BINARY_INV)  # Inverse the binary image
             if self.path_color is None:
                 self.path_color = color
                 detectedInfo('time: ' + self.signals['Time'] + ' | path color: ' + color)
@@ -231,17 +205,17 @@ class Detector(object):
         Written by Wen Bo
         '''
         # chassis configurations
-        foresight_up = 10
-        foresight_down = 15
+        foresight_up = 25
+        foresight_down = 30
         front_wheels_y = 102
 
         # cv2.imshow('gray', image_gray)
         roi = image_gray[foresight_up:foresight_down]
-        image_show = self.get_image('path')
         cv2.waitKey(1)
+        image_show = self.get_image('path')
         cv2.rectangle(image_show, (0, foresight_up), (image_show.shape[1], foresight_down), (0, 255, 0))
         cv2.imshow('path_detection', image_show)
-        threshold = 70
+        threshold = 60
         location = np.argwhere((roi) <= threshold)
         if location.size == 0:
             return None
@@ -295,52 +269,41 @@ class Detector(object):
         edge = np.argwhere(counter > 10)
         if edge.shape[0] >= 4:
             f_x = np.mean(edge)
-            x_range = 0.48
+            x_range = 0.65
             if np.abs(f_x - image_gray.shape[1] // 2) <= x_range * binary_map.shape[1]:
                 detectedInfo('time: ' + self.signals['Time'] + ' | Gate detected.')
                 return True
 
         return False
 
-    def run(self, flag_pause, key):
+    def process(self):
         '''
         run the detection
         `flag_pause`: the flag to pause this Detector running (actually skips code in this function)\n
         `key`: ascii number of pressed key on keyboard, is -1 when no key pressed
         '''
-        while True:
-            # time.sleep(0.1)  # set detection period to 0.1s
-            # skip all code inside if paused by webots
-            if not flag_pause.value:
-                # keyboard events
-                if key.value == ord('C'):  # capture image when C is pressed
-                    self.capture('path')
+        # update signals
+        s, ms = divmod(self.time, 1)
+        m, s = divmod(s, 60)
+        h, m = divmod(m, 60)
+        self.signals['Time'] = ':'.join([str(int(item)) for item in [h, m, s, ms * 1000]])
+        self.signals['Seconds'] = self.time
+        # self.signals['Position'] = self.gpsRaw_position
+        # self.signals['Speed'] = self.gpsRaw_speed
+        self.signals['Direction_x'] = self.tri2angle(self.compassRaw[1], self.compassRaw[0])
+        self.signals['Direction_-z'] = self.tri2angle(self.compassRaw[0], -self.compassRaw[1])
+        self.signals['Beacon'], path_gray = self.filter_color(self.get_image('path'))
+        self.signals['Path_color'] = self.path_color
+        self.signals['Path_Direction'] = self.path_detection(path_gray)
 
-                # update sensors data
-                self.update()
-                # update signals
-                s, ms = divmod(self.time, 1)
-                m, s = divmod(s, 60)
-                h, m = divmod(m, 60)
-                self.signals['Time'] = ':'.join([str(int(item)) for item in [h, m, s, ms * 1000]])
-                self.signals['Seconds'] = self.time
-                self.signals['Position'] = self.gpsRaw_position
-                self.signals['Direction_x'] = self.tri2angle(self.compassRaw[1], self.compassRaw[0])
-                self.signals['Direction_-z'] = self.tri2angle(self.compassRaw[0], -self.compassRaw[1])
-                self.signals['Speed'] = self.gpsRaw_speed
-                self.signals['Beacon'], path_gray = self.filter_color(self.get_image('path'))
-                self.signals['Path_Direction'] = self.path_detection(path_gray)
-                image_gray = cv2.cvtColor(self.get_image('left'), cv2.COLOR_BGR2GRAY)
-                if not self.signals['Bridge_Detection']:
-                    self.signals['Bridge_Detection'] = self.bridge_detection(image_gray)
-                if not (self.signals['Gate_Detection']) and (self.signals['Bridge_Detection']):
-                    self.signals['Gate_Detection'] = self.gate_detection(image_gray)
+    def object_detection(self):
+        image_gray = cv2.cvtColor(self.get_image('left'), cv2.COLOR_BGR2GRAY)
+        if not self.signals['Bridge_Detection']:
+            self.signals['Bridge_Detection'] = self.bridge_detection(image_gray)
+        if not (self.signals['Gate_Detection']) and (self.signals['Bridge_Detection']):
+            self.signals['Gate_Detection'] = self.gate_detection(image_gray)
 
-                # self.capture('path')
-
-                # send all signals to decider
-                self.send_signals(self.signals)
-                # detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
+        # detectedInfo('\n        '.join([str(item) + ': ' + str(self.signals[item]) for item in self.signals]))
 
 
 if __name__ == "__main__":
