@@ -1,5 +1,6 @@
 import os
 import platform
+from datetime import datetime
 
 from colorama import Back, Fore, Style, init
 
@@ -58,6 +59,13 @@ def detectedInfo(item):
     '''
     item = str(item)
     print(Style.BRIGHT + Fore.YELLOW + '[Detected] ' + item + Style.RESET_ALL)
+
+
+def clock():
+    '''
+    return now time in format of hour:minute:second
+    '''
+    return 'time: ' + datetime.utcnow().strftime('%H:%M:%S.%f')
 
 
 # FIXME: unknown bug... without this output seems stuck
