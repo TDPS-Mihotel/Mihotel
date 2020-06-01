@@ -1,0 +1,68 @@
+digraph G {
+    compound=true;
+    Start [shape=none fillcolor=green style=filled]
+    subgraph cluster0 {
+        color=blue
+        label="Line_patrol 1"
+        "recognise the path angle and send to chassis to update the speed"-> "path camera recognises orange box" 
+        "path camera recognises orange box" -> "recognise the path angle and send to chassis to update the speed" [label="No"]
+        "path camera recognises orange box" -> "start feeder" [label="Yes"]
+        "start feeder" -> "feeder rocever & drive ahead" [label="no path direction signal"]
+    }
+    subgraph cluster2 {
+        color=blue
+        label="Follow the x direction"
+        "feeder rocever & drive ahead" -> "left camera recognises bridge"
+        "recognise the angle between car and x direction" -> "send angle to chassis to update the speed"
+        "send angle to chassis to update the speed" -> "left camera recognises gate" [label="finding gate"]
+    }
+    subgraph cluster3 {
+        color=blue
+        label="Posture adjustment before bridge & gate"
+        "identify the deviation of item in left camera field" -> "turn left" [label="item enters the center area of left camera"]
+        "turn left" -> "recognise the angle between car and z direction"
+        "recognise the angle between car and x direction" -> "turn left" [label="do not aim -z direction"]
+    }
+    subgraph cluster4 {
+        color=blue
+        label="Cross bridge"
+        "drive ahead following -z direction" -> "path camera identify green symbol after bridge"
+        "path camera identify green symbol after bridge" -> "drive ahead following -z direction" [label="Not detected"]
+        "path camera identify green symbol after bridge" -> "turn right" [label="Detected"]
+        "turn right" -> "recognise the angle between car and x direction 2"
+        "recognise the angle between car and x direction 2" -> "turn right" [label="do not aim x direction"]
+    }
+    subgraph cluster5 {
+        color=blue
+        label="Cross gate"
+        "drive ahead following -z direction 2" -> "path camera identify the road"
+        "path camera identify the road" -> "drive ahead following -z direction 2" [label="Not detect road"]
+    }
+    subgraph cluster6 {
+        color=blue
+        label="Line patrol 2"
+        "recognise the path angle and send to chassis to update the speed 3" -> "path camera identify the red/yellow/purple" 
+        "path camera identify the red/yellow/purple" -> "recognise the path angle and send to chassis to update the speed 3" [label="Not detected"]
+    }
+    subgraph cluster7 {
+        color=blue
+        label="Color line patrol"
+        "count down 10s and enter color line part" -> "path camera recognises thepath in same color"
+        "path camera recognises thepath in same color" -> "recognise the path angle and send to chassis to update the speed 3" -> "Path exist?"
+        "Path exist?" -> "recognise the path angle and send to chassis to update the speed 3" [label="Yes"]
+    }
+    Start -> "recognise the path angle and send to chassis to update the speed"
+    "identify the deviation of item in left camera field" -> "recognise the angle between car and x direction" [label="item out of the center area of left camera"]
+    "left camera recognises bridge" -> "recognise the angle between car and x direction" [label="Not detected"]
+    "left camera recognises gate" -> "recognise the angle between car and x direction" [label="Not detected"]
+    "send angle to chassis to update the speed" -> "left camera recognises bridge" [label="Finding bridge"]
+    "left camera recognises gate" -> "identify the deviation of item in left camera field" [label="Detected"]
+    "recognise the angle between car and x direction" -> "drive ahead following -z direction" [label="aim -z direction"]
+    "recognise the angle between car and x direction" -> "drive ahead following -z direction 2" [label="aim -z direction"]
+    "left camera recognises bridge" -> "identify the deviation of item in left camera field" [label="Detected"]
+    "recognise the angle between car and x direction 2" -> "recognise the angle between car and x direction" [label="aim x direction"]
+    "path camera identify the road" -> "recognise the path angle and send to chassis to update the speed 3" [label="find at gate"]
+    "path camera identify the red/yellow/purple" -> "count down 10s and enter color line part" [label="Detected"]
+    Stop [shape=none fillcolor=red style=filled]
+    "Path exist?" -> Stop [label="No"]
+}
