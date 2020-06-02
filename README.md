@@ -229,7 +229,7 @@ The illustration of the signals we get:
 
 ### Decision
 
-![](doc/CFG.svg)
+![](flow_chart/GFC.svg)
 
 ### Environment
 

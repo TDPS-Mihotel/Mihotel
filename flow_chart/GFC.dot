@@ -1,0 +1,11 @@
+digraph G {
+    compound=true;
+    subgraph cluster0 {
+        color=blue
+        label="General flow-chart"
+        "line patrol" -> "cross bridge" [label="no line & no path color signal"]
+        "line patrol" -> "stop" [label="no line > 5s & have path color signal"]
+        "cross bridge" -> "cross gate" [label="'beacon' after bridge"]
+        "cross gate" -> "line patrol" [label="have path direction signal"]
+    }
+}
