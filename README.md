@@ -235,16 +235,17 @@ The illustration of the signals we get:
 
 #### Specifications
 
-| Item                | Measurement (x, y, z) (m) | Note                                                         |
-| ------------------- | ------------------------- | ------------------------------------------------------------ |
-| Patio               | 100, 2, 30                | With wall of height , thickness of 2m, 0.5m                  |
-| Pond                | 55, 1.9, 9                |                                                              |
-| River               | 100, 2, 2                 |                                                              |
-| Asphalt Road        | width: 0.2                | At height of 2.002. Radius of the Curve is 0.8m              |
-| Orange Box          | 1, 1                      | Width and length. Actual color (r, g, b): 245, 121, 0        |
-| Bridge              | 0.1, 0.338, 2.8           | Slope is 20 degree, made of three 1, 0.1, 1 boxes            |
-| Color Box           | 0.2, 0.6                  | Width and length                                             |
-| Color road          | width: 0.05               | Colors: **yellow** (255, 255, 0), **red** (255, 0, 0), **purple** (153, 0, 255). Intersection angle of red and yellow path is 0.25rad |
+| Item         | Measurement (x, y, z) (m) | Note                                                         |
+| ------------ | ------------------------- | ------------------------------------------------------------ |
+| Patio        | 100, 2, 30                | With wall of height , thickness of 2m, 0.5m                  |
+| Pond         | 55, 1.9, 9                |                                                              |
+| River        | 100, 2, 2                 |                                                              |
+| Asphalt Road | width: 0.2                | At height of 2.002. Radius of the Curve is 0.8m              |
+| Orange Box   | 0.1, 1                    | Width and length. Actual color (r, g, b): 245, 121, 0. height of top is about 8.7mm above the ground, slope of about 7.5 degree |
+| Bridge       | 0.1, 0.338, 2.8           | Slope is 20 degree, made of three 1, 0.1, 1 boxes            |
+| Color Box    | 0.2, 0.6                  | Width and length                                             |
+| Color Road   | width: 0.05               | Colors: **yellow** (255, 255, 0), **red** (255, 0, 0), **purple** (153, 0, 255). Intersection angle of red and yellow path is 0.25rad |
+| Fish Food    | radius: 0.005             | mass: 0.01g, 18 balls in total. High total mass weaken the steering performance |
 
 ## Development Strategy
 
