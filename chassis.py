@@ -9,7 +9,7 @@ class MotorsGroup(object):
     '''
 
     def __init__(self):
-        pass
+        self.motors = {}
 
     def update(self, velocityDict):
         '''
@@ -27,16 +27,21 @@ class WebotsMotorsGroup(MotorsGroup):
     def __init__(self, robot):
         super().__init__()
 
+        self.robot = robot
+        self.time = robot.getTime()
+        self.arm_action = ''
+
         timestep = int(robot.getBasicTimeStep())
 
-        # enable motors
-        self.motors = {}
-        # self.motors['arm'] = robot.getMotor('arm')
+        # arm
+        self.motors['Shoulder'] = robot.getMotor('Shoulder')
+        self.motors['Elbow'] = robot.getMotor('Elbow')
+        self.motors['Wrist'] = robot.getMotor('Wrist')
         # wheel
-        self.motors['wheel1'] = robot.getMotor('wheel1')
-        self.motors['wheel2'] = robot.getMotor('wheel2')
-        self.motors['wheel3'] = robot.getMotor('wheel3')
-        self.motors['wheel4'] = robot.getMotor('wheel4')
+        self.motors['flWheel'] = robot.getMotor('flWheel')
+        self.motors['rlWheel'] = robot.getMotor('rlWheel')
+        self.motors['rrWheel'] = robot.getMotor('rrWheel')
+        self.motors['frWheel'] = robot.getMotor('frWheel')
         for motor in self.motors:
             self.motors[motor].setPosition(float('inf'))
             self.motors[motor].setVelocity(0.0)
@@ -51,79 +56,85 @@ class Controller(object):
     '''
 
     def __init__(self):
-        self.velocityDict = {}
+        self.velocityDict = {
+            'flWheel': 0,
+            'frWheel': 0,
+            'rlWheel': 0,
+            'rrWheel': 0,
+            'Shoulder': 0,
+            'Elbow': 0,
+            'Wrist': 0,
+        }
+        self.state = ''
+        self.feed_action = False
+        # parameters
+        self.maxVelocity = 45
+        self.defaultVelocity = 45
+        self.steer_coefficient = 0.5
+        self.feed_time = 0.3  # in seconds
         info('Chassis initialed')
 
-    def set_queue(self, command_queue, motors_queue):
-        self.command_queue = command_queue
-        self.motors_queue = motors_queue
-
-    def recv_command(self):
-        '''
-        return the received command from command_queue\n
-        the return value will be `''` if command_queue is empty
-        '''
-        while not self.command_queue.empty():
-            return self.command_queue.get()
-        else:
-            return ''
-
-    def set_state(self, command):
+    def set_state(self, command, time):
         '''
         set state of the chassis by command, a commandInfo will output
         '''
-        # clean state
-        for motor in self.velocityDict:
-            self.velocityDict[motor] = 0
 
         if command:
-            if command == 'Move forward':
-                self.state = 'Moving forward'
-                self.velocityDict['wheel1'] = -10
-                self.velocityDict['wheel2'] = -10
-                self.velocityDict['wheel3'] = -10
-                self.velocityDict['wheel4'] = -10
+            if command == 'Feed' or self.feed_action:
+                self.state = 'Feeding'
+                shoulder_vel = 5
+                elbow_vel = 0
+                wrist_vel = 8
+                if not self.feed_action:
+                    self.velocityDict['Shoulder'] = shoulder_vel
+                    self.velocityDict['Elbow'] = elbow_vel
+                    self.velocityDict['Wrist'] = -wrist_vel
+                    self.feed_action = True
+                    self.feed_start = time
+                    commandInfo(self.state)
+                else:
+                    if time - self.feed_start < self.feed_time:
+                        pass
+                    elif time - self.feed_start < self.feed_time * 3:
+                        self.velocityDict['Shoulder'] = 0
+                        self.velocityDict['Elbow'] = 0
+                        self.velocityDict['Wrist'] = 0
+                    elif time - self.feed_start < self.feed_time * 11:
+                        self.velocityDict['Shoulder'] = -shoulder_vel / 8
+                        self.velocityDict['Elbow'] = -elbow_vel / 8
+                        self.velocityDict['Wrist'] = wrist_vel / 8
+                    else:
+                        self.velocityDict['Shoulder'] = 0
+                        self.velocityDict['Elbow'] = 0
+                        self.velocityDict['Wrist'] = 0
+                        commandInfo('Feeder recovered')
+                        self.feed_action = False
 
-            if command == 'Move backward':
-                self.state = 'Moving backward'
-                self.velocityDict['wheel1'] = 10
-                self.velocityDict['wheel2'] = 10
-                self.velocityDict['wheel3'] = 10
-                self.velocityDict['wheel4'] = 10
-
-            if command == 'Turn right':
-                self.state = 'Turning right'
-                self.velocityDict['wheel1'] = -10
-                self.velocityDict['wheel2'] = -10
-                self.velocityDict['wheel3'] = 10
-                self.velocityDict['wheel4'] = 10
-
-            if command == 'Turn left':
-                self.state = 'Turning left'
-                self.velocityDict['wheel1'] = 10
-                self.velocityDict['wheel2'] = 10
-                self.velocityDict['wheel3'] = -10
-                self.velocityDict['wheel4'] = -10
+            # wheel
+            if command[:4] == 'Turn':
+                steer = float(command[4:]) * self.steer_coefficient
+                self.state = 'Steering speed: ' + str(steer)
+                self.velocityDict['flWheel'] = self.defaultVelocity + steer
+                self.velocityDict['rlWheel'] = self.defaultVelocity + steer
+                self.velocityDict['rrWheel'] = self.defaultVelocity - steer
+                self.velocityDict['frWheel'] = self.defaultVelocity - steer
+                # wheel motor speed limitation and reverse
+                for motor in self.velocityDict:
+                    if 'Wheel' in motor:
+                        if self.velocityDict[motor] < -self.maxVelocity:
+                            self.velocityDict[motor] = -self.maxVelocity
+                        if self.velocityDict[motor] > self.maxVelocity:
+                            self.velocityDict[motor] = self.maxVelocity
+                        self.velocityDict[motor] = -self.velocityDict[motor]
 
             if command == 'Stop':
                 self.state = 'Stopped'
-                self.velocityDict['wheel1'] = -10
-                self.velocityDict['wheel2'] = -10
-                self.velocityDict['wheel3'] = -10
-                self.velocityDict['wheel4'] = -10
+                self.velocityDict['flWheel'] = 0
+                self.velocityDict['rlWheel'] = 0
+                self.velocityDict['rrWheel'] = 0
+                self.velocityDict['frWheel'] = 0
 
-            self.motors_queue.put(self.velocityDict)
-            commandInfo(self.state)
-
-    def run(self, flag_pause):
-        '''
-        `flag_pause`: the flag to pause this Decider running (actually skips all code in this function)\n
-        '''
-        while True:
-            # time.sleep(0.1)  # set chassis period to 0.1s
-            # skip all code inside if paused by webots
-            if not flag_pause.value:
-                self.set_state(self.recv_command())
+            # commandInfo(self.state)
 
 
 if __name__ == "__main__":

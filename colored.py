@@ -1,5 +1,6 @@
 import os
 import platform
+from datetime import datetime
 
 from colorama import Back, Fore, Style, init
 
@@ -36,6 +37,14 @@ def debugInfo(item):
     print(Style.BRIGHT + Fore.RED + '[Debug] ' + item + Style.RESET_ALL)
 
 
+def stateInfo(item):
+    '''
+    Bright output for state information
+    '''
+    item = str(item)
+    print(Style.BRIGHT + Fore.MAGENTA + '[State] ' + item + Style.RESET_ALL)
+
+
 def commandInfo(item):
     '''
     Bright blue output for movement information
@@ -50,6 +59,13 @@ def detectedInfo(item):
     '''
     item = str(item)
     print(Style.BRIGHT + Fore.YELLOW + '[Detected] ' + item + Style.RESET_ALL)
+
+
+def clock():
+    '''
+    return now time in format of hour:minute:second
+    '''
+    return 'time: ' + datetime.utcnow().strftime('%H:%M:%S.%f')
 
 
 # FIXME: unknown bug... without this output seems stuck

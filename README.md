@@ -14,7 +14,7 @@ Mihotel Project Document.
 Table of Contents
 - [✔️ Highlights](#️-Highlights)
 - [⚠️ Precautions](#️-Precautions)
-- [Known Problems](#Known-Problems)
+- [🐛 Known Problems](#-Known-Problems)
 - [Configurations](#Configurations)
 - [🔍 Output Description](#-Output-Description)
 - [Solution (WIP)](#Solution-WIP)
@@ -27,7 +27,11 @@ Table of Contents
     - [ANSI codes in webots console](#ANSI-codes-in-webots-console)
     - [Keyboard event](#Keyboard-event)
   - [Chassis](#Chassis)
+    - [Body](#Body)
+    - [Wheels](#Wheels)
+    - [Arm](#Arm)
   - [Visual & Sensor](#Visual--Sensor)
+    - [Path Camera Parameters](#Path-Camera-Parameters)
   - [Decision](#Decision)
   - [Environment](#Environment)
     - [Specifications](#Specifications)
@@ -67,9 +71,25 @@ Table of Contents
 - be care of team communication and convergence
 - need more hang outs 🍻
 
-## Known Problems
+## 🐛 Known Problems
 
 - It seems that webots does not support a multiprocessing controller, since I did not find a way to stop all child processes when simulation is paused.
+- A few factors influent webots simulation speed:
+  - factors listed by webots [here](https://cyberbotics.com/doc/guide/speed-performance)
+  - number of complex sensors initialed
+  - get value from sensors frequently
+  - `basicTimeStep` in WorldInfo
+  - time step of controller
+  - output frequently
+  - multiprocessing controller
+
+- A few factors influent webots simulation precision:
+  - factors listed by webots [here](https://cyberbotics.com/doc/guide/modeling#how-to-make-replicabledeterministic-simulations)
+  - webots claims bug on [Orientation Dependent Friction](https://cyberbotics.com/doc/guide/general-bugs#orientation-dependent-friction)
+  - very high `basicTimeStep` or time step of controller
+  - too complex world
+  - performance of the computer...
+    - I suppose there is delay in the queues when the computer overloads 😓
 
 ## Configurations
 
@@ -139,41 +159,93 @@ the main process ends when `flag_patio_finished` turns to **True**. Now all thre
 
 ### Chassis
 
-The **chassis** of the rover is size of **15cm*45cm**, with wheels which diameter is **10cm**. The max speed of the rover is not decided yet. It is a **4WD** chassis, which mean speed of each wheel is separately defined.
+A four-wheel drived chassis, which mean speed of each wheel is set separately.
 
-![](doc/rover.jpg)
+![](doc/rover.png)
 
-The **feeding device** acts like a garbage truck dumping trash, we dump the kiwi by raising one side of the kiwi holder to let the kiwi slides down.
-the control of the three-freedom arm is lanched by a function which controls three motors in the arm, we recorded the initial and final position of each motor then chosee a proper piecewise function to enpower each motor, as in webots we don't need to care about PID of motor control, the control processes become much easier.
+#### Body
+
+| Item    | Measurement              | Note                  |
+| ------- | ------------------------ | --------------------- |
+| Size    | 0.15m, 0.23m, 0.05m      | width, length, height |
+| Density | $7.85 \times 10^3kg/m^3$ | Density of metal      |
+
+#### Wheels
+
+| Item                 | Measurement      | Note                                                         |
+| -------------------- | ---------------- | ------------------------------------------------------------ |
+| Radius               | 0.033m           |                                                              |
+| Max Velocity         | 100rad/s         | the rover moves **forward** when velocity is **negative**    |
+| Max Torque           | 100N⋅m           |                                                              |
+| Front Track          | 0.12m            | Vertical distance from center is 0.068 m                     |
+| Rear Track           | 0.12m            | Vertical distance from center is 0.07 m                      |
+| Motor Control Method | velocity control | PID is not used in velocity control. See [here](https://cyberbotics.com/doc/reference/motor#velocity-control) for doc |
+
+#### Arm
+
+| Item         | Measurement              | Note                                            |
+| ------------ | ------------------------ | ----------------------------------------------- |
+| Density      | $0.8 \times 10^3 kg/m^3$ | Density of plastic                              |
+| Arm Length   | 0.035m                   | From axis of Elbow Motor to axis of Wrist Motor |
+| Max Velocity | 20rad/s                  |                                                 |
+| Max Torque   | 10N⋅m                    |                                                 |
+| Holder Size  | 0.04m, 0.066m, 0.024m    | width, length, height                           |
 
 ### Visual & Sensor
 
 📑 [Basic usage of several sensors](doc/Sensor.md)
 
-Our **line detector** works like this:
+The illustration of the signals we get:
+| Name             | Data Type                   | Description                                                  |
+| ---------------- | --------------------------- | ------------------------------------------------------------ |
+| Position         | [`float`, `float`, `float`] | The position of the robot which is same with **translation** |
+| Speed            | `float`                     | A float in m/s                                               |
+| Bridge_Detection | `bool`                      | If the bridge is in the right position, return **True**      |
+| Gate_Detection   | `bool`                      | If the bridge is in the right position, return **True**      |
+| Color            | `str`                       | The predefined string that indicate the color                |
+| Direction_x      | `float`                     | Ranges of **(-180, 180]**. Indicating the degree that the head deviate from x-axis |
+| Direction_-z     | `float`                     | Ranges of **(-180, 180]**. Indicating the degree that the head deviate from -z-axis |
+| Path_Direction   | `float`/`None`              | Range of approximately [-54.88, 54.88]. A float number that indicates the degree that the path-direction deviates from the head direction. If there is no path, `None` is returned. |
 
-1. Filtering the original picture to denoise then get the gradient distribution of the picture.
-2. Cut the whole picture into N rows averagely. (N=4 in current code)
-3. For each segmentation of the picture, for each the point whose magnitude of gradient is greater than the threshold (15 in current code), classify them according to the direction of their gradient. (from 1° to 360°)
-4. For each segmentation of the picture, find the direction which contains the most point whose magnitude of gradient exceed the threshold.
-5. Average the direction of the N segmentation and it is the direction of the eage of the path. Rotate it by 90° and we could get the direction of the path.
+⚠️ Noticing that, the right deviation is positive and the left deviation is negative.
+⚠️ Noticing that, the original signal of bridge and gate detection is `False`. Once the object is detected, the corresponding signal will turn to `True` and the detection function will not process again.
+![](doc/Direction.jpg)
+![](doc/Signal_Show.jpg)
+
+#### Path Camera Parameters
+
+| Item               | Measurement  | Note                                                         |
+| ------------------ | ------------ | ------------------------------------------------------------ |
+| Height             | 0.553m       | Height of camera center to the ground                        |
+| Position           | 0.1m         | From center of the rover to the front                        |
+| depression angle   | 1.57rad      | From horizontal axis to down                                 |
+| Field of View      | 0.9          |                                                              |
+| Size               | 138*138      | It seems there are some black pixels at the edge, so **5 pixels are cut off at each edge** when passed into the program |
+| Actual Size of ROI | 0.52m, 0.21m | Width and length of the wood board below                     |
+
+![](doc/path_camera_top.png)
+
+![](doc/path_camera_side.png)
 
 ### Decision
 
-The **decision making** is still working in progress at [#46](https://github.com/TDPS-Mihotel/Mihotel/issues/#55) and [#56](https://github.com/TDPS-Mihotel/Mihotel/issues/#55)
+![](doc/CFG.svg)
 
 ### Environment
 
 #### Specifications
 
-| Item        | Measurement (x, y, z) (m) | Note                                            |
-| ----------- | ------------------------- | ----------------------------------------------- |
-| patio       | 100, 2, 30                | with wall of height , thickness of 2m, 0.5m     |
-| pond        | 55, 1.9, 9                |                                                 |
-| river       | 100, 2, 2                 |                                                 |
-| road        | width: 0.2                | at height of 2.002                              |
-| curved road | radius: 0.8               |                                                 |
-| bridge      | 0.1, 0.338, 2.8           | slope is 20 degree, made of three 1, 0.1, 1 box |
+| Item         | Measurement (x, y, z) (m) | Note                                                         |
+| ------------ | ------------------------- | ------------------------------------------------------------ |
+| Patio        | 100, 2, 30                | With wall of height , thickness of 2m, 0.5m                  |
+| Pond         | 55, 1.9, 9                |                                                              |
+| River        | 100, 2, 2                 |                                                              |
+| Asphalt Road | width: 0.2                | At height of 2.002. Radius of the Curve is 0.8m              |
+| Orange Box   | 0.1, 1                    | Width and length. Actual color (r, g, b): 245, 121, 0. height of top is about 8.7mm above the ground, slope of about 7.5 degree |
+| Bridge       | 0.1, 0.338, 2.8           | Slope is 20 degree, made of three 1, 0.1, 1 boxes            |
+| Color Box    | 0.2, 0.6                  | Width and length                                             |
+| Color Road   | width: 0.05               | Colors: **yellow** (255, 255, 0), **red** (255, 0, 0), **purple** (153, 0, 255). Intersection angle of red and yellow path is 0.25rad |
+| Fish Food    | radius: 0.005             | mass: 0.01g, 18 balls in total. High total mass weaken the steering performance |
 
 ## Development Strategy
 
