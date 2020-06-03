@@ -1,7 +1,9 @@
 digraph G {
-    compound=true;
+    rankdir=LR
+    splines=splines
+    node [shape=box]
+    component=true
     subgraph cluster0 {
-        color=blue
         label="General flow-chart"
         "line patrol" -> "cross bridge" [label="no line & no path color signal"]
         "line patrol" -> "stop" [label="no line > 5s & have path color signal"]

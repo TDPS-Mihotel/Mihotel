@@ -1,0 +1,25 @@
+digraph G {
+    compound=true;
+    subgraph cluster0 {
+        color=blue
+        label="Line Patrol"
+        "find line or not" [shape=box]
+        "recognise orange box & not feed" [shape= box]
+        "find line or not" -> "recognise orange box & not feed" [label="Yes"]
+        "recognise orange box & not feed" -> "send feeding command" [label="Yes"]
+        "recognise orange box & not feed" -> "send turning command" [label="No"]
+        "send feeding command" -> "find line or not"
+        "send turning command" -> "find line or not"
+        "lost count > 5" [shape=box]
+        "find line or not" -> "lost count > 5" [label="No"]
+        "find colored line or not" [shape=box]
+        "lost count > 5" -> "send the same turning command" [label="No"]
+        "lost count > 5" -> "find colored line or not" [label="Yes"]
+        "send the same turning command" -> "find line or not"
+        "find colored line or not" -> "send stop command" [label="Yes"]
+    }
+    Stop [shape=box fillcolor=red style=filled]
+    "Cross Bridge" [shape=box fillcolor=blue style=filled]
+    "send stop command" -> Stop
+    "find colored line or not" -> "Cross Bridge" [label="否"]
+}

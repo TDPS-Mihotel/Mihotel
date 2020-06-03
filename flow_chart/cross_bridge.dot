@@ -1,0 +1,16 @@
+digraph G {
+    compound=true;
+    subgraph cluster0 {
+        color=blue
+        label="Cross Bridge"
+        "identify bridge or not" [shape=box]
+        "identify bridge or not" -> "send turning command\ndrive along x direction" [label="No"]
+        "send turning command\ndrive along x direction" -> "identify bridge or not"
+        "identify bridge or not" -> "send turning command\ndrive along -z direction" [label="Yes"]
+        "identify green beacon or not" [shape=box]
+        "send turning command\ndrive along -z direction" -> "identify green beacon or not"
+        "identify green beacon or not" -> "send turning command\ndrive along -z direction" [label="No"]
+    }
+    "Cross Gate" [shape=box fillcolor=purple style=filled]
+    "identify green beacon or not" -> "Cross Gate" [label="Yes"]
+}

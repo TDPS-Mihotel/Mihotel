@@ -1,0 +1,16 @@
+digraph G {
+    compound=true;
+    subgraph cluster0 {
+        color=blue
+        label="Cross Gate"
+        "identify gate or not" [shape=box]
+        "identify gate or not" -> "send turning command\ndrive along x direction" [label="No"]
+        "send turning command\ndrive along x direction" -> "identify gate or not"
+        "identify gate or not" -> "send turning command\ndrive along -z direction" [label="Yes"]
+        "find line or not" [shape=box]
+        "send turning command\ndrive along -z direction" -> "find line or not"
+        "find line or not" -> "send turning command\ndrive along -z direction" [label="No"]
+    }
+    "Line Patrol" [shape=box fillcolor=green style=filled]
+    "find line or not" -> "Line Patrol" [label="Yes"]
+}
