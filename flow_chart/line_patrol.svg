@@ -11,7 +11,7 @@
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-569.2 998.7444,-569.2 998.7444,4 -4,4"/>
 <g id="clust1" class="cluster">
 <title>cluster0</title>
-<polygon fill="none" stroke="#0000ff" points="8,-65 8,-557.2 897,-557.2 897,-65 8,-65"/>
+<polygon fill="none" stroke="#00ff00" points="8,-65 8,-557.2 897,-557.2 897,-65 8,-65"/>
 <text text-anchor="middle" x="452.5" y="-540.6" font-family="Times,serif" font-size="14.00" fill="#000000">Line Patrol</text>
 </g>
 <!-- find line or not -->
@@ -126,7 +126,7 @@
 <!-- Cross Bridge -->
 <g id="node10" class="node">
 <title>Cross Bridge</title>
-<polygon fill="#0000ff" stroke="#000000" points="994.9901,-182 905.0099,-182 905.0099,-146 994.9901,-146 994.9901,-182"/>
+<polygon fill="none" stroke="#0000ff" points="994.9901,-182 905.0099,-182 905.0099,-146 994.9901,-146 994.9901,-182"/>
 <text text-anchor="middle" x="950" y="-159.8" font-family="Times,serif" font-size="14.00" fill="#000000">Cross Bridge</text>
 </g>
 <!-- find colored line or not&#45;&gt;Cross Bridge -->
@@ -145,7 +145,7 @@
 <!-- Stop -->
 <g id="node9" class="node">
 <title>Stop</title>
-<polygon fill="#ff0000" stroke="#000000" points="828,-36 774,-36 774,0 828,0 828,-36"/>
+<polygon fill="none" stroke="#ff0000" points="828,-36 774,-36 774,0 828,0 828,-36"/>
 <text text-anchor="middle" x="801" y="-13.8" font-family="Times,serif" font-size="14.00" fill="#000000">Stop</text>
 </g>
 <!-- send stop command&#45;&gt;Stop -->

@@ -11,7 +11,7 @@
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-446.0313 466,-446.0313 466,4 -4,4"/>
 <g id="clust1" class="cluster">
 <title>cluster0</title>
-<polygon fill="none" stroke="#0000ff" points="8,-80.8 8,-434.0313 454,-434.0313 454,-80.8 8,-80.8"/>
+<polygon fill="none" stroke="#a020f0" points="8,-80.8 8,-434.0313 454,-434.0313 454,-80.8 8,-80.8"/>
 <text text-anchor="middle" x="231" y="-417.4313" font-family="Times,serif" font-size="14.00" fill="#000000">Cross Gate</text>
 </g>
 <!-- identify gate or not -->
@@ -76,7 +76,7 @@
 <!-- Line Patrol -->
 <g id="node5" class="node">
 <title>Line Patrol</title>
-<polygon fill="#00ff00" stroke="#000000" points="381.0978,-36 302.9022,-36 302.9022,0 381.0978,0 381.0978,-36"/>
+<polygon fill="none" stroke="#00ff00" points="381.0978,-36 302.9022,-36 302.9022,0 381.0978,0 381.0978,-36"/>
 <text text-anchor="middle" x="342" y="-13.8" font-family="Times,serif" font-size="14.00" fill="#000000">Line Patrol</text>
 </g>
 <!-- find line or not&#45;&gt;Line Patrol -->

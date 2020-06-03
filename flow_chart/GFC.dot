@@ -3,11 +3,15 @@ digraph G {
     splines=splines
     node [shape=box]
     component=true
-    subgraph cluster0 {
-        label="General flow-chart"
-        "line patrol" -> "cross bridge" [label="no line & no path color signal"]
-        "line patrol" -> "stop" [label="no line > 5s & have path color signal"]
-        "cross bridge" -> "cross gate" [label="'beacon' after bridge"]
-        "cross gate" -> "line patrol" [label="have path direction signal"]
-    }
+    
+    label="General Flow-Chart"
+    "Line Patrol"[color=green]
+    "Cross Bridge" [color=blue]
+    "Cross Gate" [color=purple]
+    "Stop" [color=red]
+    "Line Patrol" -> "Cross Bridge" [label="no line & no path color signal"]
+    "Line Patrol" -> "Stop" [label="no line > 5s & have path color signal"]
+    "Cross Bridge" -> "Cross Gate" [label="'beacon' after bridge"]
+    "Cross Gate" -> "Line Patrol" [label="have path direction signal"]
+    
 }

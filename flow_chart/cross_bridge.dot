@@ -11,6 +11,6 @@ digraph G {
         "send turning command\ndrive along -z direction" -> "identify green beacon or not"
         "identify green beacon or not" -> "send turning command\ndrive along -z direction" [label="No"]
     }
-    "Cross Gate" [shape=box fillcolor=purple style=filled]
+    "Cross Gate" [shape=box color=purple]
     "identify green beacon or not" -> "Cross Gate" [label="Yes"]
 }

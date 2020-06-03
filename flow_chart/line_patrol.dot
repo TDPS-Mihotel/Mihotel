@@ -1,7 +1,7 @@
 digraph G {
     compound=true;
     subgraph cluster0 {
-        color=blue
+        color=green
         label="Line Patrol"
         "find line or not" [shape=box]
         "recognise orange box & not feed" [shape= box]
@@ -18,8 +18,8 @@ digraph G {
         "send the same turning command" -> "find line or not"
         "find colored line or not" -> "send stop command" [label="Yes"]
     }
-    Stop [shape=box fillcolor=red style=filled]
-    "Cross Bridge" [shape=box fillcolor=blue style=filled]
+    Stop [shape=box color=red]
+    "Cross Bridge" [shape=box color=blue]
     "send stop command" -> Stop
     "find colored line or not" -> "Cross Bridge" [label="否"]
 }

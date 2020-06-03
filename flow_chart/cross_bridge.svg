@@ -76,7 +76,7 @@
 <!-- Cross Gate -->
 <g id="node5" class="node">
 <title>Cross Gate</title>
-<polygon fill="#a020f0" stroke="#000000" points="379.813,-36 302.187,-36 302.187,0 379.813,0 379.813,-36"/>
+<polygon fill="none" stroke="#a020f0" points="379.813,-36 302.187,-36 302.187,0 379.813,0 379.813,-36"/>
 <text text-anchor="middle" x="341" y="-13.8" font-family="Times,serif" font-size="14.00" fill="#000000">Cross Gate</text>
 </g>
 <!-- identify green beacon or not&#45;&gt;Cross Gate -->
