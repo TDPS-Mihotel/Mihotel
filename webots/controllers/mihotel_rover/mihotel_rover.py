@@ -5,6 +5,7 @@ import os
 import sys
 import time
 import psutil
+import queue
 
 # flags ########################################################################
 # flag_simulation = True  # turn to False to run for real rover
@@ -39,6 +40,11 @@ def control(command_queue, motors_queue, simulation_time):
                 break
             else:
                 command, frame = command_queue.get()
+        while True:
+            try:
+                motors_queue.get(block=True, timeout=0.005)
+            except queue.Empty:
+                break
         motors_queue.put((controller.velocityDict, frame))
         # commandInfo('Chassis frame: ' + str(frame))
 
@@ -141,15 +147,14 @@ if __name__ == "__main__" and flag_simulation:
         # update sensors data
         if sensors_queue.empty():
             sensors_queue.put((sensors.update(), frame))
-        while True:
-            if int((time.time() - start) * 1000) > 30:
-                break
-            time.sleep(0.0001)
         # update motors speed
-        while not motors_queue.empty():
-            velocityDict, motor_frame = motors_queue.get()
+        # while not motors_queue.empty():
+        try:
+            velocityDict, motor_frame = motors_queue.get(block=True, timeout=0.01)
             motors.update(velocityDict)
             # commandInfo('Motor frame: ' + str(motor_frame))
+        except queue.Empty:
+            pass
         # debugInfo(int((time.time() - start) * 1000))
         # with lock:
         #     key.value = keyboard.getKey()  # character of the key press
