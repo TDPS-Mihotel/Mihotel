@@ -147,8 +147,13 @@ if __name__ == "__main__" and flag_simulation:
         # update sensors data
         if sensors_queue.empty():
             sensors_queue.put((sensors.update(), frame))
+        # limit webots simulation
+        block_time = 30
+        while True:
+            if int((time.time() - start) * 1000) > block_time:
+                break
+            time.sleep(0.0001)
         # update motors speed
-        # while not motors_queue.empty():
         try:
             velocityDict, motor_frame = motors_queue.get(block=True, timeout=0.01)
             motors.update(velocityDict)

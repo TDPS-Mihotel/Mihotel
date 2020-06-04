@@ -229,10 +229,10 @@ The illustration of the signals we get:
 
 ### Decision
 
-![](flow_chart/GFC.svg)
-![](flow_chart/line_patrol.svg)
-![](flow_chart/cross_bridge.svg)
-![](flow_chart/cross_gate.svg)
+![](doc/flow_chart/GFC.svg)
+![](doc/flow_chart/line_patrol.svg)
+![](doc/flow_chart/cross_bridge.svg)
+![](doc/flow_chart/cross_gate.svg)
 
 ### Environment
 
