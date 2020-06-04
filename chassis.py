@@ -72,6 +72,8 @@ class Controller(object):
         self.defaultVelocity = 45
         self.steer_coefficient = 0.5
         self.feed_time = 0.3  # in seconds
+        self.flag = 0
+        self.timerecord = 0
         info('Chassis initialed')
 
     def set_state(self, command, time):
@@ -80,38 +82,50 @@ class Controller(object):
         '''
 
         if command:
-            if command == 'Feed' or self.feed_action:
+            if command == 'Feed' or self.feed_action or (self.flag > 0):
                 self.state = 'Feeding'
                 shoulder_vel = 5
                 elbow_vel = 0
                 wrist_vel = 8
-                if not self.feed_action:
+
+                if self.flag == 0:
+                    self.timerecord = time
+                    self.flag = 1
+                if time - self.timerecord > 0.3:
+                    self.flag = 2
+
+                if (self.feed_action is False) and (self.flag == 2):
+                    self.velocityDict['flWheel'] = 0
+                    self.velocityDict['rlWheel'] = 0
+                    self.velocityDict['rrWheel'] = 0
+                    self.velocityDict['frWheel'] = 0
                     self.velocityDict['Shoulder'] = shoulder_vel
                     self.velocityDict['Elbow'] = elbow_vel
                     self.velocityDict['Wrist'] = -wrist_vel
                     self.feed_action = True
                     self.feed_start = time
                     commandInfo(self.state)
-                else:
+                elif(self.flag == 2):
                     if time - self.feed_start < self.feed_time:
                         pass
                     elif time - self.feed_start < self.feed_time * 3:
                         self.velocityDict['Shoulder'] = 0
                         self.velocityDict['Elbow'] = 0
                         self.velocityDict['Wrist'] = 0
-                    elif time - self.feed_start < self.feed_time * 11:
-                        self.velocityDict['Shoulder'] = -shoulder_vel / 8
-                        self.velocityDict['Elbow'] = -elbow_vel / 8
-                        self.velocityDict['Wrist'] = wrist_vel / 8
+                    elif time - self.feed_start < self.feed_time * 5:
+                        self.velocityDict['Shoulder'] = -shoulder_vel / 1.8
+                        self.velocityDict['Elbow'] = -elbow_vel / 1.8
+                        self.velocityDict['Wrist'] = wrist_vel / 1.8
                     else:
                         self.velocityDict['Shoulder'] = 0
                         self.velocityDict['Elbow'] = 0
                         self.velocityDict['Wrist'] = 0
                         commandInfo('Feeder recovered')
                         self.feed_action = False
+                        self.flag = 0
 
             # wheel
-            if command[:4] == 'Turn':
+            if command[:4] == 'Turn' and (self.feed_action is False):
                 steer = float(command[4:]) * self.steer_coefficient
                 self.state = 'Steering speed: ' + str(steer)
                 self.velocityDict['flWheel'] = self.defaultVelocity + steer
@@ -126,7 +140,6 @@ class Controller(object):
                         if self.velocityDict[motor] > self.maxVelocity:
                             self.velocityDict[motor] = self.maxVelocity
                         self.velocityDict[motor] = -self.velocityDict[motor]
-
             if command == 'Stop':
                 self.state = 'Stopped'
                 self.velocityDict['flWheel'] = 0

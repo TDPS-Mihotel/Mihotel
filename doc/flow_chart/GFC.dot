@@ -1,0 +1,17 @@
+digraph G {
+    rankdir=LR
+    splines=splines
+    node [shape=box]
+    component=true
+    
+    label="General Flow-Chart"
+    "Line Patrol"[color=green]
+    "Cross Bridge" [color=blue]
+    "Cross Gate" [color=purple]
+    "Stop" [color=red]
+    "Line Patrol" -> "Cross Bridge" [label="no line & no path color signal"]
+    "Line Patrol" -> "Stop" [label="no line > 5s & have path color signal"]
+    "Cross Bridge" -> "Cross Gate" [label="'beacon' after bridge"]
+    "Cross Gate" -> "Line Patrol" [label="have path direction signal"]
+    
+}
