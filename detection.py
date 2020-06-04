@@ -216,18 +216,26 @@ class Detector(object):
         if location.size == 0:
             return None
         else:
-            # add semi-transparent mask of the filtered path
-            mask = cv2.cvtColor(image_gray, cv2.COLOR_GRAY2BGR)
-            alpha = 0.4
-            beta = 1 - alpha
-            gamma = 0
-            image_mask = cv2.addWeighted(image_show, alpha, mask, beta, gamma)
-            # get rectangle of road in roi
-            cv2.rectangle(image_mask, (0, foresight_up), (image_show.shape[1], foresight_down), (0, 255, 0))
-            # get center of road in roi
-            f_y, f_x = np.mean(a=location, axis=0)
-            cv2.circle(image_mask, (int(f_x), foresight_up + int(f_y)), 1, (0, 0, 255), 0)
-            cv2.imshow('path_detection', image_mask)
+            if self.path_color is None:
+                # get rectangle of road in roi
+                cv2.rectangle(image_show, (0, foresight_up), (image_show.shape[1], foresight_down), (0, 255, 0))
+                # get center of road in roi
+                f_y, f_x = np.mean(a=location, axis=0)
+                cv2.circle(image_show, (int(f_x), foresight_up + int(f_y)), 1, (0, 0, 255), 0)
+                cv2.imshow('path_detection', image_show)
+            else:
+                # add semi-transparent mask of the filtered path
+                mask = cv2.cvtColor(image_gray, cv2.COLOR_GRAY2BGR)
+                alpha = 0.7
+                beta = 1 - alpha
+                gamma = 0
+                image_mask = cv2.addWeighted(image_show, alpha, mask, beta, gamma)
+                # get rectangle of road in roi
+                cv2.rectangle(image_mask, (0, foresight_up), (image_show.shape[1], foresight_down), (0, 255, 0))
+                # get center of road in roi
+                f_y, f_x = np.mean(a=location, axis=0)
+                cv2.circle(image_mask, (int(f_x), foresight_up + int(f_y)), 1, (0, 0, 255), 0)
+                cv2.imshow('path_detection', image_mask)
 
             return self.tri2angle(f_x - int(image_gray.shape[1] / 2), front_wheels_y - f_y)
 
