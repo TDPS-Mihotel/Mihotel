@@ -68,9 +68,9 @@ class Controller(object):
         self.state = ''
         self.feed_action = False
         # parameters
-        self.maxVelocity = 45
-        self.defaultVelocity = 45
-        self.steer_coefficient = 0.5
+        self.maxVelocity = 35
+        self.defaultVelocity = 35
+        self.steer_coefficient = 0.6
         self.feed_time = 0.3  # in seconds
         self.flag = 0
         self.timerecord = 0
@@ -112,10 +112,10 @@ class Controller(object):
                         self.velocityDict['Shoulder'] = 0
                         self.velocityDict['Elbow'] = 0
                         self.velocityDict['Wrist'] = 0
-                    elif time - self.feed_start < self.feed_time * 5:
-                        self.velocityDict['Shoulder'] = -shoulder_vel / 1.8
-                        self.velocityDict['Elbow'] = -elbow_vel / 1.8
-                        self.velocityDict['Wrist'] = wrist_vel / 1.8
+                    elif time - self.feed_start < self.feed_time * 15:
+                        self.velocityDict['Shoulder'] = -shoulder_vel / 10.6
+                        self.velocityDict['Elbow'] = -elbow_vel / 10.6
+                        self.velocityDict['Wrist'] = wrist_vel / 10.6
                     else:
                         self.velocityDict['Shoulder'] = 0
                         self.velocityDict['Elbow'] = 0
