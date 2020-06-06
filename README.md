@@ -17,7 +17,7 @@ Table of Contents
 - [🐛 Known Problems](#-Known-Problems)
 - [Configurations](#Configurations)
 - [🔍 Output Description](#-Output-Description)
-- [Solution (WIP)](#Solution-WIP)
+- [Solution](#Solution)
   - [System](#System)
     - [Structure](#Structure)
     - [Communication](#Communication)
@@ -111,7 +111,7 @@ List of tools, modules with their version
 | Bright Blue   | [Command]  | command given to chassis                                     |
 | Bright Yellow | [Detected] | detect of object                                             |
 
-## Solution (WIP)
+## Solution
 
 ### System
 
@@ -263,12 +263,12 @@ But since **we don't have much experience** and **we don't have very long time**
 ## Personnel Division
 
 - Tech Lead: [宋铸恒](https://github.com/LeoJhonSong)
-- [Chassis](https://github.com/orgs/TDPS-Mihotel/teams/chassis): [王灏天](https://github.com/Howard2503) [王子建](https://github.com/Prince-JIAN) [史超凡](https://github.com/allensted)
+- [Chassis](https://github.com/orgs/TDPS-Mihotel/teams/chassis): [王灏天](https://github.com/Howard2503) [史超凡](https://github.com/allensted)
 - [Electrical](https://github.com/orgs/TDPS-Mihotel/teams/electrical)
-  - [System Architecture](https://github.com/orgs/TDPS-Mihotel/teams/system): [宋铸恒](https://github.com/LeoJhonSong) [许瀚鹏](https://github.com/Laince20)
+  - [System Architecture](https://github.com/orgs/TDPS-Mihotel/teams/system): [宋铸恒](https://github.com/LeoJhonSong)
   - [Visual](https://github.com/orgs/TDPS-Mihotel/teams/visual): [文博](https://github.com/wb05025) [树畅](https://github.com/shuchang) [韩浩然](https://github.com/HandAdam)
   - [Decision](https://github.com/orgs/TDPS-Mihotel/teams/decision): [王子建](https://github.com/Prince-JIAN) [许瀚鹏](https://github.com/Laince20)
-  - [Sensors and Peripheral Units](https://github.com/orgs/TDPS-Mihotel/teams/sensor): [韩浩然](https://github.com/HandAdam) [文博](https://github.com/wb05025)
+  - [Sensors and Peripheral Units](https://github.com/orgs/TDPS-Mihotel/teams/sensor): [韩浩然](https://github.com/HandAdam)
 - Environment: [褚进炜](https://github.com/LiamBishop) [熊汇雨](https://github.com/Xiong-Huiyu)
 - [Document](https://github.com/orgs/TDPS-Mihotel/teams/document)
   - Slides: [熊汇雨](https://github.com/Xiong-Huiyu)
