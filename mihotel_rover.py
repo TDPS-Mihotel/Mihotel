@@ -32,8 +32,8 @@ def control(command_queue, motors_queue, simulation_time):
     command = ''
     frame = 0
     while True:
-        time.sleep(0.01)
-        is_changed = False
+        timer = time.time()
+        time.sleep(0.001)
         while True:
             controller.set_state(command, simulation_time.value)
             if command_queue.empty():
@@ -46,33 +46,39 @@ def control(command_queue, motors_queue, simulation_time):
             except queue.Empty:
                 break
         motors_queue.put((controller.velocityDict, frame))
-        # commandInfo('Chassis frame: ' + str(frame))
+        # commandInfo('Chassis frame: ' + str(frame) + ' spend ' + str(int((time.time() - timer) * 1000)) + 'ms')
 
 
 def detect(signal_queue, key, sensors_queue):
     detector = detection.Detector()
     while True:
-        time.sleep(0.01)
-        is_changed = False
+        time.sleep(0.001)
         # update sensors data
-        while not sensors_queue.empty():
-            (
-                detector.time,
-                # detector.gpsRaw_position,
-                # detector.gpsRaw_speed,
-                detector.compassRaw,
-                detector.camerasRaw
-            ), frame = sensors_queue.get()
-            is_changed = True
-        if is_changed:
-            start = time.time()
-            # detectedInfo('Detector frame: ' + str(frame))
-            detector.process()
-            # send all signals except object detection to decider
-            signal_queue.put((detector.signals, frame))
-            detector.object_detection()
-            # object detection updated
-            signal_queue.put((detector.signals, frame))
+        while True:
+            try:
+                (
+                    detector.time,
+                    # detector.gpsRaw_position,
+                    # detector.gpsRaw_speed,
+                    detector.compassRaw,
+                    detector.camerasRaw
+                ), frame = sensors_queue.get(block=True, timeout=0.001)
+                timer = time.time()
+                detector.process()
+                # send all signals except object detection to decider
+                signal_queue.put((detector.signals, frame))
+                detectedInfo(' '.join(
+                    ['Detector frame:', str(frame), 'stage1: spend', str(int((time.time() - timer) * 1000)), 'ms']
+                ))
+                timer = time.time()
+                detector.object_detection()
+                # object detection updated
+                signal_queue.put((detector.signals, frame))
+                detectedInfo(' '.join(
+                    ['Detector frame:', str(frame), 'stage2: spend', str(int((time.time() - timer) * 1000)), 'ms']
+                ))
+            except queue.Empty:
+                pass
         # keyboard events
         # if key.value == ord('C'):  # capture image when C is pressed
         #     detector.capture('path')
@@ -81,16 +87,17 @@ def detect(signal_queue, key, sensors_queue):
 def decide(signal_queue, command_queue, simulation_time, key, lock, flag_patio_finished):
     decider = decision.Decider()
     while True:
-        time.sleep(0.01)
+        time.sleep(0.0001)
         # update signals
-        is_changed = False
-        while not signal_queue.empty():
-            decider.signals, frame = signal_queue.get()
-            is_changed = True
-        if is_changed:
+        #  if not signal_queue.empty():
+        try:
+            timer = time.time()
+            decider.signals, frame = signal_queue.get(block=True, timeout=0.001)
             decider.state_machine()
             command_queue.put((decider.command, frame))
-            # stateInfo('Decider frame: ' + str(frame))
+            # stateInfo('Decider frame: ' + str(frame) + ' spend ' + str(int((time.time() - timer) * 1000)) + 'ms')
+        except queue.Empty:
+            pass
 
 
 # program starts ###############################################################
@@ -136,31 +143,35 @@ if __name__ == "__main__" and flag_simulation:
     motors = chassis.WebotsMotorsGroup(robot)
 
     frame = -1
+    timer = time.time()
     # Main loop:
     # - perform simulation steps until Webots is stopping the controller
     while (robot.step(timestep) != -1) and not flag_patio_finished.value:
         frame += 1
-        start = time.time()
+        # debugInfo('b = ' + str(int((time.time() - timer) * 1000)))
         simulation_time.value = sensors.getTime()
-        is_changed = False
         # debugInfo('Simulation frame: ' + str(frame))
         # update sensors data
         if sensors_queue.empty():
+            timer = time.time()
             sensors_queue.put((sensors.update(), frame))
+            # debugInfo('a = ' + str(int((time.time() - timer) * 1000)))
         # limit webots simulation
+        timer = time.time()
         block_time = 30
         while True:
-            if int((time.time() - start) * 1000) > block_time:
+            if int((time.time() - timer) * 1000) > block_time:
                 break
             time.sleep(0.0001)
         # update motors speed
         try:
             velocityDict, motor_frame = motors_queue.get(block=True, timeout=0.01)
-            motors.update(velocityDict)
             # commandInfo('Motor frame: ' + str(motor_frame))
+            # debugInfo('x = ' + str(int((time.time() - timer) * 1000)))
+            timer = time.time()
+            motors.update(velocityDict)
         except queue.Empty:
             pass
-        # debugInfo(int((time.time() - start) * 1000))
         # with lock:
         #     key.value = keyboard.getKey()  # character of the key press
 
