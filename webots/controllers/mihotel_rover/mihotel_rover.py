@@ -67,16 +67,16 @@ def detect(signal_queue, key, sensors_queue):
                 detector.process()
                 # send all signals except object detection to decider
                 signal_queue.put((detector.signals, frame))
-                detectedInfo(' '.join(
-                    ['Detector frame:', str(frame), 'stage1: spend', str(int((time.time() - timer) * 1000)), 'ms']
-                ))
+                # detectedInfo(' '.join(
+                #     ['Detector frame:', str(frame), 'stage1: spend', str(int((time.time() - timer) * 1000)), 'ms']
+                # ))
                 timer = time.time()
                 detector.object_detection()
                 # object detection updated
                 signal_queue.put((detector.signals, frame))
-                detectedInfo(' '.join(
-                    ['Detector frame:', str(frame), 'stage2: spend', str(int((time.time() - timer) * 1000)), 'ms']
-                ))
+                # detectedInfo(' '.join(
+                #     ['Detector frame:', str(frame), 'stage2: spend', str(int((time.time() - timer) * 1000)), 'ms']
+                # ))
             except queue.Empty:
                 pass
         # keyboard events
