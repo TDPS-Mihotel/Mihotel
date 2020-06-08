@@ -29,7 +29,7 @@ class Decider(object):
         巡线
         '''
         if self.signals['Path_Direction'] is None:
-            if self.lost_count > 40:
+            if self.lost_count > 25:
                 if self.signals['Path_color'] is None:
                     # 转过桥状态
                     stateInfo('cross_bridge')
